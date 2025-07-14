@@ -910,17 +910,19 @@
       let isAdminMode = false;
 
       // Initialize Firebase
-      async function initializeFirebase() {
+      async function initializeFirebase(config = null) {
         try {
           updateConnectionStatus('connecting');
           
-          if (!DEFAULT_FIREBASE_CONFIG) {
+          const firebaseConfig = config || getStoredFirebaseConfig() || DEFAULT_FIREBASE_CONFIG;
+          
+          if (!firebaseConfig) {
             throw new Error('No Firebase configuration provided');
           }
           
           // Initialize Firebase
           if (!firebase.apps.length) {
-            firebase.initializeApp(DEFAULT_FIREBASE_CONFIG);
+            firebase.initializeApp(firebaseConfig);
           }
           
           db = firebase.firestore();
@@ -947,6 +949,15 @@
           // Use local storage fallback
           loadDataFromLocalStorage();
         }
+      }
+
+      function getStoredFirebaseConfig() {
+        const stored = localStorage.getItem('firebaseConfig');
+        return stored ? JSON.parse(stored) : null;
+      }
+
+      function storeFirebaseConfig(config) {
+        localStorage.setItem('firebaseConfig', JSON.stringify(config));
       }
 
       async function testFirebaseConnection() {
@@ -1254,6 +1265,92 @@
         document.getElementById('slotDuration').value = localData.eventConfig.slotDuration;
       }
 
+      // Firebase configuration management
+      function updateFirebaseConfig() {
+        const config = {
+          apiKey: document.getElementById('firebaseApiKey').value.trim(),
+          authDomain: document.getElementById('firebaseAuthDomain').value.trim(),
+          projectId: document.getElementById('firebaseProjectId').value.trim(),
+          storageBucket: document.getElementById('firebaseStorageBucket').value.trim(),
+          messagingSenderId: document.getElementById('firebaseMessagingSenderId').value.trim(),
+          appId: document.getElementById('firebaseAppId').value.trim()
+        };
+
+        // Validate required fields
+        if (!config.projectId || !config.apiKey) {
+          showFirebaseConfigStatus('Project ID and API Key are required', 'error');
+          return;
+        }
+
+        storeFirebaseConfig(config);
+        showFirebaseConfigStatus('Configuration saved. Reconnecting...', 'success');
+
+        // Cleanup existing listeners
+        unsubscribeListeners.forEach(unsubscribe => unsubscribe());
+        unsubscribeListeners = [];
+
+        // Reinitialize Firebase
+        setTimeout(() => {
+          initializeFirebase(config);
+        }, 1000);
+      }
+
+      function resetToDemo() {
+        localStorage.removeItem('firebaseConfig');
+        showFirebaseConfigStatus('Configuration reset to default.', 'success');
+        
+        // Load default config into form
+        if (DEFAULT_FIREBASE_CONFIG) {
+          document.getElementById('firebaseApiKey').value = DEFAULT_FIREBASE_CONFIG.apiKey || '';
+          document.getElementById('firebaseAuthDomain').value = DEFAULT_FIREBASE_CONFIG.authDomain || '';
+          document.getElementById('firebaseProjectId').value = DEFAULT_FIREBASE_CONFIG.projectId || '';
+          document.getElementById('firebaseStorageBucket').value = DEFAULT_FIREBASE_CONFIG.storageBucket || '';
+          document.getElementById('firebaseMessagingSenderId').value = DEFAULT_FIREBASE_CONFIG.messagingSenderId || '';
+          document.getElementById('firebaseAppId').value = DEFAULT_FIREBASE_CONFIG.appId || '';
+          
+          // Cleanup existing listeners
+          unsubscribeListeners.forEach(unsubscribe => unsubscribe());
+          unsubscribeListeners = [];
+          
+          // Reinitialize Firebase with default config
+          setTimeout(() => {
+            initializeFirebase(DEFAULT_FIREBASE_CONFIG);
+          }, 1000);
+        } else {
+          // Clear form
+          document.getElementById('firebaseApiKey').value = '';
+          document.getElementById('firebaseAuthDomain').value = '';
+          document.getElementById('firebaseProjectId').value = '';
+          document.getElementById('firebaseStorageBucket').value = '';
+          document.getElementById('firebaseMessagingSenderId').value = '';
+          document.getElementById('firebaseAppId').value = '';
+
+          // Cleanup existing listeners
+          unsubscribeListeners.forEach(unsubscribe => unsubscribe());
+          unsubscribeListeners = [];
+          
+          // Set to offline mode
+          isFirebaseInitialized = false;
+          isOnline = false;
+          db = null;
+          updateConnectionStatus('disconnected');
+          
+          // Load from local storage
+          loadDataFromLocalStorage();
+        }
+      }
+
+      function showFirebaseConfigStatus(message, type) {
+        const element = document.getElementById('firebaseConfigStatus');
+        element.textContent = message;
+        element.className = `status-message ${type}`;
+        element.style.display = 'block';
+
+        setTimeout(() => {
+          element.style.display = 'none';
+        }, 5000);
+      }
+
       // Original functions with Firestore integration
       function showPasswordModal() {
         document.getElementById("overlay").style.display = "block";
@@ -1331,6 +1428,18 @@
       function switchToAdmin() {
         document.getElementById("client-interface").style.display = "none";
         document.getElementById("admin-interface").style.display = "block";
+        
+        // Load current Firebase config into form (stored config takes priority, then default)
+        const config = getStoredFirebaseConfig() || DEFAULT_FIREBASE_CONFIG;
+        if (config) {
+          document.getElementById('firebaseApiKey').value = config.apiKey || '';
+          document.getElementById('firebaseAuthDomain').value = config.authDomain || '';
+          document.getElementById('firebaseProjectId').value = config.projectId || '';
+          document.getElementById('firebaseStorageBucket').value = config.storageBucket || '';
+          document.getElementById('firebaseMessagingSenderId').value = config.messagingSenderId || '';
+          document.getElementById('firebaseAppId').value = config.appId || '';
+        }
+        
         renderBookingsOverview();
       }
 
