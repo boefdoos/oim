@@ -827,6 +827,9 @@
               <button onclick="testEmailConfig()" class="btn-secondary">
                 Test Email
               </button>
+              <button onclick="checkEmailStatus()" class="btn-secondary">
+                Check Status
+              </button>
             </div>
             <div
               id="emailConfigStatus"
@@ -838,27 +841,134 @@
               <h3>EmailJS Setup Instructions</h3>
               <ol style="margin-left: 20px; line-height: 1.8">
                 <li>
-                  Go to
+                  <strong>Create EmailJS Account:</strong> Go to
                   <a href="https://www.emailjs.com" target="_blank"
                     >EmailJS.com</a
                   >
-                  and create an account
+                  and sign up
                 </li>
-                <li>Create a new service (Gmail, Outlook, etc.)</li>
                 <li>
-                  Create an email template with these variables:
-                  <ul style="margin: 10px 0; margin-left: 20px">
-                    <li><code>{{user_name}}</code> - Customer name</li>
-                    <li><code>{{user_email}}</code> - Customer email</li>
-                    <li><code>{{table_name}}</code> - Table name</li>
-                    <li><code>{{speakers}}</code> - Speaker names</li>
-                    <li><code>{{event_date}}</code> - Event date</li>
-                    <li><code>{{time_slot}}</code> - Time slot</li>
+                  <strong>Add Email Service:</strong>
+                  <ul style="margin: 5px 0; margin-left: 20px">
+                    <li>Go to "Email Services" and click "Add New Service"</li>
+                    <li>Choose your email provider (Gmail, Outlook, etc.)</li>
+                    <li>Follow the setup instructions for your provider</li>
+                    <li>
+                      Note your <strong>Service ID</strong> (starts with
+                      "service_")
+                    </li>
                   </ul>
                 </li>
-                <li>Copy your Service ID, Template ID, and Public Key above</li>
-                <li>Test the configuration using the test button</li>
+                <li>
+                  <strong>Create Email Template:</strong>
+                  <ul style="margin: 5px 0; margin-left: 20px">
+                    <li>
+                      Go to "Email Templates" and click "Create New Template"
+                    </li>
+                    <li>Use these variables in your template:</li>
+                    <li style="margin-left: 20px">
+                      <code>{{user_name}}</code> - Customer name
+                    </li>
+                    <li style="margin-left: 20px">
+                      <code>{{user_email}}</code> - Customer email
+                    </li>
+                    <li style="margin-left: 20px">
+                      <code>{{table_name}}</code> - Table name
+                    </li>
+                    <li style="margin-left: 20px">
+                      <code>{{speakers}}</code> - Speaker names
+                    </li>
+                    <li style="margin-left: 20px">
+                      <code>{{event_date}}</code> - Event date
+                    </li>
+                    <li style="margin-left: 20px">
+                      <code>{{time_slot}}</code> - Time slot
+                    </li>
+                    <li style="margin-left: 20px">
+                      <code>{{to_email}}</code> - Recipient email
+                    </li>
+                    <li>
+                      Note your <strong>Template ID</strong> (starts with
+                      "template_")
+                    </li>
+                  </ul>
+                </li>
+                <li>
+                  <strong>Get Public Key:</strong> Go to "Account" → "General"
+                  and copy your <strong>Public Key</strong>
+                </li>
+                <li>
+                  <strong>Configure Above:</strong> Paste all three IDs into the
+                  fields above and click "Save"
+                </li>
+                <li>
+                  <strong>Test Configuration:</strong> Enter a test email and
+                  click "Test Email"
+                </li>
               </ol>
+
+              <div
+                style="
+                  background: #f8f9fa;
+                  padding: 15px;
+                  border-radius: 4px;
+                  margin-top: 15px;
+                  border: 1px solid #e9ecef;
+                "
+              >
+                <h4>Sample Email Template:</h4>
+                <pre
+                  style="
+                    background: white;
+                    padding: 10px;
+                    border-radius: 4px;
+                    overflow-x: auto;
+                    font-size: 0.9em;
+                  "
+                >
+Subject: Booking Confirmed - {{table_name}}
+
+Dear {{user_name}},
+
+Your conversation table booking has been confirmed!
+
+📅 Date: {{event_date}}
+⏰ Time: {{time_slot}}
+📋 Table: {{table_name}}
+🎤 Speakers: {{speakers}}
+
+Please arrive 5 minutes early.
+
+Best regards,
+Event Team</pre
+                >
+              </div>
+
+              <div
+                style="
+                  background: #fff3cd;
+                  padding: 15px;
+                  border-radius: 4px;
+                  margin-top: 15px;
+                  border: 1px solid #ffeaa7;
+                "
+              >
+                <h4>Troubleshooting:</h4>
+                <ul style="margin-left: 20px; line-height: 1.6">
+                  <li>Make sure your Service ID starts with "service_"</li>
+                  <li>Make sure your Template ID starts with "template_"</li>
+                  <li>
+                    Check that your email service is properly configured in
+                    EmailJS
+                  </li>
+                  <li>
+                    Verify that your template variables match exactly
+                    (case-sensitive)
+                  </li>
+                  <li>Check the browser console for detailed error messages</li>
+                  <li>Make sure your EmailJS account has enough quota</li>
+                </ul>
+              </div>
             </div>
           </div>
 
@@ -974,20 +1084,32 @@
     ></script>
 
     <script>
-      // EmailJS Configuration - Replace with your actual values
-      const EMAILJS_CONFIG = {
-        serviceId: "service_0m2owju", // Replace with your EmailJS service ID
-        templateId: "template_m5uymsq", // Replace with your EmailJS template ID
-        publicKey: "VehBeO9qQGs5Tbvvn", // Replace with your EmailJS public key
-        enabled: true, // Set to true after configuring EmailJS
+      // EmailJS Configuration
+      let EMAILJS_CONFIG = {
+        serviceId: "",
+        templateId: "",
+        publicKey: "",
+        enabled: false,
       };
 
-      // Initialize EmailJS
-      (function () {
-        if (typeof emailjs !== "undefined" && EMAILJS_CONFIG.enabled) {
-          emailjs.init(EMAILJS_CONFIG.publicKey);
+      // Initialize EmailJS when needed
+      function initializeEmailJS() {
+        if (
+          typeof emailjs !== "undefined" &&
+          EMAILJS_CONFIG.enabled &&
+          EMAILJS_CONFIG.publicKey
+        ) {
+          try {
+            emailjs.init(EMAILJS_CONFIG.publicKey);
+            console.log("EmailJS initialized successfully");
+            return true;
+          } catch (error) {
+            console.error("EmailJS initialization failed:", error);
+            return false;
+          }
         }
-      })();
+        return false;
+      }
 
       // Storage keys
       const STORAGE_KEYS = {
@@ -1104,22 +1226,102 @@
           return;
         }
 
+        // Basic validation
+        if (!serviceId.startsWith("service_")) {
+          showStatus(
+            "emailConfigStatus",
+            'Service ID should start with "service_"',
+            "error"
+          );
+          return;
+        }
+
+        if (!templateId.startsWith("template_")) {
+          showStatus(
+            "emailConfigStatus",
+            'Template ID should start with "template_"',
+            "error"
+          );
+          return;
+        }
+
+        // Update configuration
         EMAILJS_CONFIG.serviceId = serviceId;
         EMAILJS_CONFIG.templateId = templateId;
         EMAILJS_CONFIG.publicKey = publicKey;
         EMAILJS_CONFIG.enabled = true;
 
-        // Re-initialize EmailJS
-        if (typeof emailjs !== "undefined") {
-          emailjs.init(EMAILJS_CONFIG.publicKey);
+        // Test EmailJS availability
+        if (typeof emailjs === "undefined") {
+          showStatus(
+            "emailConfigStatus",
+            "EmailJS library not loaded. Please refresh the page.",
+            "error"
+          );
+          return;
         }
 
+        // Initialize EmailJS
+        const initialized = initializeEmailJS();
+        if (!initialized) {
+          showStatus(
+            "emailConfigStatus",
+            "Failed to initialize EmailJS. Please check your credentials.",
+            "error"
+          );
+          return;
+        }
+
+        // Save to localStorage
         saveData();
         showStatus(
           "emailConfigStatus",
-          "Email configuration saved successfully",
+          "Email configuration saved successfully! You can now test it.",
           "success"
         );
+      }
+
+      // Check email status for debugging
+      function checkEmailStatus() {
+        let statusMessage = "<strong>Email Configuration Status:</strong><br>";
+
+        // Check EmailJS library
+        if (typeof emailjs === "undefined") {
+          statusMessage += "❌ EmailJS library: Not loaded<br>";
+        } else {
+          statusMessage += "✅ EmailJS library: Loaded<br>";
+        }
+
+        // Check configuration
+        statusMessage += `📧 Service ID: ${
+          EMAILJS_CONFIG.serviceId || "Not set"
+        }<br>`;
+        statusMessage += `📋 Template ID: ${
+          EMAILJS_CONFIG.templateId || "Not set"
+        }<br>`;
+        statusMessage += `🔑 Public Key: ${
+          EMAILJS_CONFIG.publicKey ? "Set" : "Not set"
+        }<br>`;
+        statusMessage += `⚙️ Enabled: ${
+          EMAILJS_CONFIG.enabled ? "Yes" : "No"
+        }<br>`;
+
+        // Check initialization
+        const initialized = initializeEmailJS();
+        statusMessage += `🚀 Initialized: ${initialized ? "Yes" : "No"}<br>`;
+
+        // Display in status area
+        const statusElement = document.getElementById("emailConfigStatus");
+        statusElement.innerHTML = statusMessage;
+        statusElement.className = "status-message success";
+        statusElement.style.display = "block";
+
+        // Also log to console for debugging
+        console.log("Email Configuration Debug:", {
+          emailjsLoaded: typeof emailjs !== "undefined",
+          config: EMAILJS_CONFIG,
+          initialized: initialized,
+        });
       }
 
       // Test email configuration
@@ -1135,12 +1337,18 @@
           return;
         }
 
-        if (
-          !EMAILJS_CONFIG.enabled ||
-          !EMAILJS_CONFIG.serviceId ||
-          !EMAILJS_CONFIG.templateId ||
-          !EMAILJS_CONFIG.publicKey
-        ) {
+        // Validate email format
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(testEmail)) {
+          showStatus(
+            "emailConfigStatus",
+            "Please enter a valid email address",
+            "error"
+          );
+          return;
+        }
+
+        if (!EMAILJS_CONFIG.enabled) {
           showStatus(
             "emailConfigStatus",
             "Please save email configuration first",
@@ -1152,7 +1360,18 @@
         if (typeof emailjs === "undefined") {
           showStatus(
             "emailConfigStatus",
-            "EmailJS library not loaded",
+            "EmailJS library not loaded. Please refresh the page.",
+            "error"
+          );
+          return;
+        }
+
+        // Re-initialize EmailJS to ensure it's working
+        const initialized = initializeEmailJS();
+        if (!initialized) {
+          showStatus(
+            "emailConfigStatus",
+            "Failed to initialize EmailJS. Please check your configuration.",
             "error"
           );
           return;
@@ -1166,9 +1385,24 @@
           event_date: "Monday, January 1, 2024",
           time_slot: "10:00 - 10:10",
           to_email: testEmail,
+          // Additional common template variables
+          to_name: "Test User",
+          from_name: "Event Team",
+          message: "This is a test email to verify your EmailJS configuration.",
         };
 
-        showStatus("emailConfigStatus", "Sending test email...", "success");
+        showStatus(
+          "emailConfigStatus",
+          "Sending test email... Please wait.",
+          "success"
+        );
+
+        console.log("Sending test email with params:", testParams);
+        console.log("Using EmailJS config:", {
+          serviceId: EMAILJS_CONFIG.serviceId,
+          templateId: EMAILJS_CONFIG.templateId,
+          publicKey: EMAILJS_CONFIG.publicKey ? "SET" : "NOT SET",
+        });
 
         emailjs
           .send(
@@ -1182,17 +1416,34 @@
               console.log("Test email sent successfully:", response);
               showStatus(
                 "emailConfigStatus",
-                "Test email sent successfully! Check your inbox.",
+                "Test email sent successfully! Check your inbox (and spam folder).",
                 "success"
               );
             },
             (error) => {
               console.error("Test email failed:", error);
-              showStatus(
-                "emailConfigStatus",
-                "Test email failed: " + error.text,
-                "error"
-              );
+              let errorMessage = "Test email failed: ";
+
+              if (error.text) {
+                errorMessage += error.text;
+              } else if (error.message) {
+                errorMessage += error.message;
+              } else {
+                errorMessage += "Unknown error occurred";
+              }
+
+              // Common error messages
+              if (error.text && error.text.includes("template")) {
+                errorMessage +=
+                  " (Check your template ID and template variables)";
+              } else if (error.text && error.text.includes("service")) {
+                errorMessage +=
+                  " (Check your service ID and service configuration)";
+              } else if (error.text && error.text.includes("public")) {
+                errorMessage += " (Check your public key)";
+              }
+
+              showStatus("emailConfigStatus", errorMessage, "error");
             }
           );
       }
@@ -1223,9 +1474,9 @@
           adminPassword = "admin123";
 
           // Reset email config
-          EMAILJS_CONFIG.serviceId = "YOUR_SERVICE_ID";
-          EMAILJS_CONFIG.templateId = "YOUR_TEMPLATE_ID";
-          EMAILJS_CONFIG.publicKey = "YOUR_PUBLIC_KEY";
+          EMAILJS_CONFIG.serviceId = "";
+          EMAILJS_CONFIG.templateId = "";
+          EMAILJS_CONFIG.publicKey = "";
           EMAILJS_CONFIG.enabled = false;
 
           // Update UI
@@ -1760,14 +2011,26 @@
         confirmBtn.disabled = true;
         confirmBtn.textContent = "Processing...";
 
-        // Check if email is configured
+        // Check if email is configured and working
         if (!EMAILJS_CONFIG.enabled || typeof emailjs === "undefined") {
           showStatus(
             "bookingStatus",
             "Email not configured. Booking will be saved without email confirmation.",
             "warning"
           );
-          setTimeout(() => completeBooking(booking, bookingKey, false), 2000);
+          setTimeout(() => completeBooking(booking, bookingKey, false), 1500);
+          return;
+        }
+
+        // Re-initialize EmailJS to ensure it's working
+        const initialized = initializeEmailJS();
+        if (!initialized) {
+          showStatus(
+            "bookingStatus",
+            "Email service not available. Booking will be saved without email confirmation.",
+            "warning"
+          );
+          setTimeout(() => completeBooking(booking, bookingKey, false), 1500);
           return;
         }
 
@@ -1790,7 +2053,21 @@
           event_date: eventDate,
           time_slot: booking.timeSlot,
           to_email: booking.email,
+          // Additional common template variables
+          to_name: booking.name,
+          from_name: "Event Team",
+          message: `Your booking for ${booking.tableName} on ${eventDate} at ${booking.timeSlot} has been confirmed.`,
         };
+
+        console.log(
+          "Sending booking confirmation email with params:",
+          emailParams
+        );
+        console.log("Using EmailJS config:", {
+          serviceId: EMAILJS_CONFIG.serviceId,
+          templateId: EMAILJS_CONFIG.templateId,
+          publicKey: EMAILJS_CONFIG.publicKey ? "SET" : "NOT SET",
+        });
 
         emailjs
           .send(
@@ -1802,19 +2079,22 @@
           .then(
             (response) => {
               console.log(
-                "Email sent successfully:",
-                response.status,
-                response.text
+                "Booking confirmation email sent successfully:",
+                response
               );
               completeBooking(booking, bookingKey, true);
             },
             (error) => {
-              console.error("Email sending failed:", error);
-              showStatus(
-                "bookingStatus",
-                "Booking saved, but email confirmation failed to send. Please check admin email configuration.",
-                "warning"
-              );
+              console.error("Booking confirmation email failed:", error);
+
+              let errorMessage =
+                "Booking saved, but email confirmation failed to send";
+              if (error.text) {
+                errorMessage += `: ${error.text}`;
+              }
+              errorMessage += ". Please check admin email configuration.";
+
+              showStatus("bookingStatus", errorMessage, "warning");
               setTimeout(
                 () => completeBooking(booking, bookingKey, false),
                 2000
