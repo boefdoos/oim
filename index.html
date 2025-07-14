@@ -467,12 +467,13 @@
         position: fixed;
         top: 20px;
         right: 20px;
-        padding: 8px 15px;
-        border-radius: 20px;
-        font-size: 0.8rem;
-        font-weight: 500;
+        padding: 4px 8px;
+        border-radius: 12px;
+        font-size: 0.7rem;
+        font-weight: 400;
         z-index: 200;
         transition: all 0.3s ease;
+        opacity: 0.7;
       }
 
       .connection-status.connected {
@@ -489,10 +490,10 @@
 
       .sync-indicator {
         display: inline-block;
-        width: 8px;
-        height: 8px;
+        width: 6px;
+        height: 6px;
         border-radius: 50%;
-        margin-right: 8px;
+        margin-right: 6px;
         animation: pulse 2s infinite;
       }
 
@@ -561,14 +562,13 @@
     <div id="loadingOverlay" class="loading-overlay">
       <div>
         <div class="sync-indicator syncing"></div>
-        Initializing Firebase...
+        Loading...
       </div>
     </div>
 
     <!-- Connection Status -->
     <div id="connectionStatus" class="connection-status disconnected">
-      <span class="sync-indicator syncing"></span>
-      Connecting...
+      <span class="sync-indicator syncing"></span>○
     </div>
 
     <div class="container">
@@ -910,19 +910,17 @@
       let isAdminMode = false;
 
       // Initialize Firebase
-      async function initializeFirebase(config = null) {
+      async function initializeFirebase() {
         try {
           updateConnectionStatus('connecting');
           
-          const firebaseConfig = config || getStoredFirebaseConfig() || DEFAULT_FIREBASE_CONFIG;
-          
-          if (!firebaseConfig) {
+          if (!DEFAULT_FIREBASE_CONFIG) {
             throw new Error('No Firebase configuration provided');
           }
           
           // Initialize Firebase
           if (!firebase.apps.length) {
-            firebase.initializeApp(firebaseConfig);
+            firebase.initializeApp(DEFAULT_FIREBASE_CONFIG);
           }
           
           db = firebase.firestore();
@@ -940,9 +938,6 @@
           // Load initial data
           await loadDataFromFirestore();
           
-          console.log('Firebase initialized successfully with project:', firebaseConfig.projectId);
-          showFirebaseConfigStatus(`Connected to Firebase project: ${firebaseConfig.projectId}`, 'success');
-          
         } catch (error) {
           console.error('Firebase initialization failed:', error);
           isFirebaseInitialized = false;
@@ -951,22 +946,7 @@
           
           // Use local storage fallback
           loadDataFromLocalStorage();
-          
-          if (!getStoredFirebaseConfig() && !DEFAULT_FIREBASE_CONFIG) {
-            showFirebaseConfigStatus('No Firebase configuration found. Please configure Firebase in the admin panel or continue in offline mode.', 'warning');
-          } else {
-            showFirebaseConfigStatus('Firebase connection failed. Check your network connection or continue in offline mode.', 'warning');
-          }
         }
-      }
-
-      function getStoredFirebaseConfig() {
-        const stored = localStorage.getItem('firebaseConfig');
-        return stored ? JSON.parse(stored) : null;
-      }
-
-      function storeFirebaseConfig(config) {
-        localStorage.setItem('firebaseConfig', JSON.stringify(config));
       }
 
       async function testFirebaseConnection() {
@@ -983,15 +963,15 @@
         switch (status) {
           case 'connected':
             statusElement.className = 'connection-status connected';
-            statusElement.innerHTML = '<span class="sync-indicator synced"></span>Connected';
+            statusElement.innerHTML = '<span class="sync-indicator synced"></span>●';
             break;
           case 'connecting':
             statusElement.className = 'connection-status disconnected';
-            statusElement.innerHTML = '<span class="sync-indicator syncing"></span>Connecting...';
+            statusElement.innerHTML = '<span class="sync-indicator syncing"></span>●';
             break;
           case 'disconnected':
             statusElement.className = 'connection-status disconnected';
-            statusElement.innerHTML = '<span class="sync-indicator"></span>Offline Mode';
+            statusElement.innerHTML = '<span class="sync-indicator"></span>○';
             break;
           case 'syncing':
             if (statusElement.className.includes('connected')) {
@@ -1024,11 +1004,28 @@
         // Listen to tables changes
         const tablesRef = db.collection('tables');
         const unsubscribeTables = tablesRef.onSnapshot((snapshot) => {
-          localData.tables = [];
-          snapshot.forEach((doc) => {
-            localData.tables.push({ id: doc.id, ...doc.data() });
+          // Only update if this is a remote change (not our own local change)
+          snapshot.docChanges().forEach((change) => {
+            const tableData = { id: change.doc.id, ...change.doc.data() };
+            
+            if (change.type === 'added') {
+              // Check if we already have this table locally (from our own add operation)
+              const existingIndex = localData.tables.findIndex(t => t.id === tableData.id);
+              if (existingIndex === -1) {
+                localData.tables.push(tableData);
+              }
+            } else if (change.type === 'removed') {
+              localData.tables = localData.tables.filter(t => t.id !== tableData.id);
+            } else if (change.type === 'modified') {
+              const index = localData.tables.findIndex(t => t.id === tableData.id);
+              if (index !== -1) {
+                localData.tables[index] = tableData;
+              }
+            }
           });
-          localData.tables.sort((a, b) => a.order - b.order);
+          
+          // Sort tables by order
+          localData.tables.sort((a, b) => (a.order || 0) - (b.order || 0));
           renderTables();
           renderClientInterface();
         }, (error) => {
@@ -1193,11 +1190,17 @@
           }
 
           // Load tables
-          const tablesSnapshot = await db.collection('tables').orderBy('order').get();
+          const tablesSnapshot = await db.collection('tables').get();
           localData.tables = [];
           tablesSnapshot.forEach((doc) => {
-            localData.tables.push({ id: doc.id, ...doc.data() });
+            const tableData = { id: doc.id, ...doc.data() };
+            // Ensure order field exists
+            if (typeof tableData.order === 'undefined') {
+              tableData.order = localData.tables.length;
+            }
+            localData.tables.push(tableData);
           });
+          localData.tables.sort((a, b) => (a.order || 0) - (b.order || 0));
 
           // Load bookings
           const bookingsSnapshot = await db.collection('bookings').get();
@@ -1249,92 +1252,6 @@
         document.getElementById('startTime').value = localData.eventConfig.startTime;
         document.getElementById('endTime').value = localData.eventConfig.endTime;
         document.getElementById('slotDuration').value = localData.eventConfig.slotDuration;
-      }
-
-      // Firebase configuration management
-      function updateFirebaseConfig() {
-        const config = {
-          apiKey: document.getElementById('firebaseApiKey').value.trim(),
-          authDomain: document.getElementById('firebaseAuthDomain').value.trim(),
-          projectId: document.getElementById('firebaseProjectId').value.trim(),
-          storageBucket: document.getElementById('firebaseStorageBucket').value.trim(),
-          messagingSenderId: document.getElementById('firebaseMessagingSenderId').value.trim(),
-          appId: document.getElementById('firebaseAppId').value.trim()
-        };
-
-        // Validate required fields
-        if (!config.projectId || !config.apiKey) {
-          showFirebaseConfigStatus('Project ID and API Key are required', 'error');
-          return;
-        }
-
-        storeFirebaseConfig(config);
-        showFirebaseConfigStatus('Configuration saved. Reconnecting...', 'success');
-
-        // Cleanup existing listeners
-        unsubscribeListeners.forEach(unsubscribe => unsubscribe());
-        unsubscribeListeners = [];
-
-        // Reinitialize Firebase
-        setTimeout(() => {
-          initializeFirebase(config);
-        }, 1000);
-      }
-
-      function resetToDemo() {
-        localStorage.removeItem('firebaseConfig');
-        showFirebaseConfigStatus('Configuration reset to default Firebase project.', 'success');
-        
-        // Load default config into form
-        if (DEFAULT_FIREBASE_CONFIG) {
-          document.getElementById('firebaseApiKey').value = DEFAULT_FIREBASE_CONFIG.apiKey || '';
-          document.getElementById('firebaseAuthDomain').value = DEFAULT_FIREBASE_CONFIG.authDomain || '';
-          document.getElementById('firebaseProjectId').value = DEFAULT_FIREBASE_CONFIG.projectId || '';
-          document.getElementById('firebaseStorageBucket').value = DEFAULT_FIREBASE_CONFIG.storageBucket || '';
-          document.getElementById('firebaseMessagingSenderId').value = DEFAULT_FIREBASE_CONFIG.messagingSenderId || '';
-          document.getElementById('firebaseAppId').value = DEFAULT_FIREBASE_CONFIG.appId || '';
-          
-          // Cleanup existing listeners
-          unsubscribeListeners.forEach(unsubscribe => unsubscribe());
-          unsubscribeListeners = [];
-          
-          // Reinitialize Firebase with default config
-          setTimeout(() => {
-            initializeFirebase(DEFAULT_FIREBASE_CONFIG);
-          }, 1000);
-        } else {
-          // Clear form
-          document.getElementById('firebaseApiKey').value = '';
-          document.getElementById('firebaseAuthDomain').value = '';
-          document.getElementById('firebaseProjectId').value = '';
-          document.getElementById('firebaseStorageBucket').value = '';
-          document.getElementById('firebaseMessagingSenderId').value = '';
-          document.getElementById('firebaseAppId').value = '';
-
-          // Cleanup existing listeners
-          unsubscribeListeners.forEach(unsubscribe => unsubscribe());
-          unsubscribeListeners = [];
-          
-          // Set to offline mode
-          isFirebaseInitialized = false;
-          isOnline = false;
-          db = null;
-          updateConnectionStatus('disconnected');
-          
-          // Load from local storage
-          loadDataFromLocalStorage();
-        }
-      }
-
-      function showFirebaseConfigStatus(message, type) {
-        const element = document.getElementById('firebaseConfigStatus');
-        element.textContent = message;
-        element.className = `status-message ${type}`;
-        element.style.display = 'block';
-
-        setTimeout(() => {
-          element.style.display = 'none';
-        }, 5000);
       }
 
       // Original functions with Firestore integration
@@ -1414,18 +1331,6 @@
       function switchToAdmin() {
         document.getElementById("client-interface").style.display = "none";
         document.getElementById("admin-interface").style.display = "block";
-        
-        // Load current Firebase config into form (stored config takes priority, then default)
-        const config = getStoredFirebaseConfig() || DEFAULT_FIREBASE_CONFIG;
-        if (config) {
-          document.getElementById('firebaseApiKey').value = config.apiKey || '';
-          document.getElementById('firebaseAuthDomain').value = config.authDomain || '';
-          document.getElementById('firebaseProjectId').value = config.projectId || '';
-          document.getElementById('firebaseStorageBucket').value = config.storageBucket || '';
-          document.getElementById('firebaseMessagingSenderId').value = config.messagingSenderId || '';
-          document.getElementById('firebaseAppId').value = config.appId || '';
-        }
-        
         renderBookingsOverview();
       }
 
@@ -1516,23 +1421,42 @@
           order: localData.tables.length
         };
 
-        const tableId = await saveTableToFirestore(table);
-        
-        if (!db) {
-          // Fallback for offline mode
-          table.id = `table_${Date.now()}`;
-          localData.tables.push(table);
-          renderTables();
-        }
+        try {
+          if (db) {
+            // Save to Firestore and get the generated ID
+            const tableId = await saveTableToFirestore(table);
+            
+            // Immediately update local data with the correct ID
+            table.id = tableId;
+            localData.tables.push(table);
+            renderTables(); // Update UI immediately
+          } else {
+            // Fallback for offline mode
+            table.id = `table_${Date.now()}`;
+            localData.tables.push(table);
+            renderTables();
+            saveDataToLocalStorage();
+          }
 
-        // Clear form
-        document.getElementById("tableName").value = "";
-        document.getElementById("speaker1").value = "";
-        document.getElementById("speaker2").value = "";
+          // Clear form
+          document.getElementById("tableName").value = "";
+          document.getElementById("speaker1").value = "";
+          document.getElementById("speaker2").value = "";
+          
+        } catch (error) {
+          console.error('Failed to add table:', error);
+          alert('Failed to add table. Please try again.');
+        }
       }
 
       function renderTables() {
         const grid = document.getElementById("tablesGrid");
+        
+        if (localData.tables.length === 0) {
+          grid.innerHTML = '<p style="text-align: center; color: #666; padding: 20px;">No tables configured yet.</p>';
+          return;
+        }
+        
         grid.innerHTML = localData.tables.map((table, index) => `
           <div class="table-card">
             <h4>Table ${index + 1}: ${table.name}</h4>
@@ -1544,19 +1468,38 @@
 
       async function removeTable(tableId) {
         if (confirm("Are you sure you want to remove this table and all its bookings?")) {
-          await removeTableFromFirestore(tableId);
-          
-          if (!db) {
-            // Fallback for offline mode
-            localData.tables = localData.tables.filter((table) => table.id !== tableId);
-            // Remove related bookings
+          try {
+            // Remove from local data immediately for instant UI feedback
+            const tableIndex = localData.tables.findIndex(t => t.id === tableId);
+            if (tableIndex !== -1) {
+              localData.tables.splice(tableIndex, 1);
+              renderTables(); // Update UI immediately
+            }
+            
+            // Remove related bookings from local data
             Object.keys(localData.bookings).forEach((key) => {
               if (localData.bookings[key].tableId === tableId) {
                 delete localData.bookings[key];
               }
             });
-            renderTables();
-            saveDataToLocalStorage();
+            
+            if (db) {
+              // Remove from Firestore
+              await removeTableFromFirestore(tableId);
+            } else {
+              // Save to local storage if offline
+              saveDataToLocalStorage();
+            }
+            
+          } catch (error) {
+            console.error('Failed to remove table:', error);
+            // Reload data to restore UI state if removal failed
+            if (db) {
+              await loadDataFromFirestore();
+            } else {
+              loadDataFromLocalStorage();
+            }
+            alert('Failed to remove table. Please try again.');
           }
         }
       }
@@ -1698,7 +1641,7 @@
 
         try {
           // Show loading state
-          showStatus("bookingStatus", "Saving booking...", "success");
+          showStatus("bookingStatus", "Processing booking...", "success");
 
           // Save to Firestore first
           await saveBookingToFirestore(bookingKey, booking);
@@ -1714,8 +1657,6 @@
             month: "long",
             day: "numeric",
           });
-
-          showStatus("bookingStatus", "Sending confirmation email...", "success");
 
           const emailParams = {
             user_name: booking.name,
@@ -1734,10 +1675,8 @@
               emailParams,
               EMAILJS_CONFIG.publicKey
             );
-            console.log("Email sent successfully");
           } catch (emailError) {
             console.log("Email sending failed:", emailError);
-            showStatus("bookingStatus", "Booking saved, but email confirmation failed to send", "warning");
           }
 
           closeBookingForm();
