@@ -600,11 +600,28 @@
         </div>
 
         <!-- FIREBASE CONFIGURATION SECTION -->
-        <div class="firebase-config-section">
+                  <div class="firebase-config-section">
           <h3>Firebase Configuration</h3>
           <p style="margin-bottom: 15px; font-size: 0.9rem; color: #0c5aa6;">
-            Configure your Firebase project settings. Leave blank to use demo mode.
+            <strong>✅ Firebase is pre-configured!</strong> Your "ostend-is-music" project is ready for real-time sync.<br>
+            You can update the configuration below if needed, or continue using the current setup.
           </p>
+          
+          <details style="margin-bottom: 15px; padding: 10px; background: #f8f9fa; border-radius: 4px; border: 1px solid #e1e8ed;">
+            <summary style="cursor: pointer; font-weight: 500; color: #2c3e50;">How to get Firebase Configuration</summary>
+            <div style="margin-top: 10px; font-size: 0.85rem; line-height: 1.4;">
+              <ol>
+                <li>Go to <a href="https://console.firebase.google.com" target="_blank">Firebase Console</a></li>
+                <li>Create a new project or select existing project</li>
+                <li>Go to Project Settings (gear icon) → General tab</li>
+                <li>Scroll down to "Your apps" section</li>
+                <li>Add a web app or select existing web app</li>
+                <li>Copy the configuration values from the Firebase SDK snippet</li>
+                <li><strong>Don't forget to enable Firestore Database!</strong></li>
+              </ol>
+            </div>
+          </details>
+          
           <div class="config-form">
             <input type="text" id="firebaseApiKey" placeholder="Firebase API Key" />
             <input type="text" id="firebaseAuthDomain" placeholder="Auth Domain (project-id.firebaseapp.com)" />
@@ -616,7 +633,7 @@
           <div class="config-actions">
             <button onclick="updateFirebaseConfig()" class="btn-success">Update Configuration</button>
             <button onclick="testFirebaseConnection()" class="btn-secondary">Test Connection</button>
-            <button onclick="resetToDemo()" class="btn-secondary">Use Demo Mode</button>
+            <button onclick="resetToDemo()" class="btn-secondary">Clear Config (Offline Mode)</button>
           </div>
           <div id="firebaseConfigStatus" class="status-message" style="display: none"></div>
         </div>
@@ -856,27 +873,16 @@
       let isOnline = false;
       let unsubscribeListeners = [];
 
-// Import the functions you need from the SDKs you need
-import { initializeApp } from "firebase/app";
-import { getAnalytics } from "firebase/analytics";
-// TODO: Add SDKs for Firebase products that you want to use
-// https://firebase.google.com/docs/web/setup#available-libraries
-
-// Your web app's Firebase configuration
-// For Firebase JS SDK v7.20.0 and later, measurementId is optional
-const firebaseConfig = {
-  apiKey: "AIzaSyDTG9ciegpaJBvy4LZt9s9TdemnNAyz1EQ",
-  authDomain: "ostend-is-music.firebaseapp.com",
-  projectId: "ostend-is-music",
-  storageBucket: "ostend-is-music.firebasestorage.app",
-  messagingSenderId: "481655541764",
-  appId: "1:481655541764:web:60b142aafa966c24466551",
-  measurementId: "G-PH6EPPW3BY"
-};
-
-// Initialize Firebase
-const app = initializeApp(firebaseConfig);
-const analytics = getAnalytics(app);
+      // Your Firebase configuration
+      const DEFAULT_FIREBASE_CONFIG = {
+        apiKey: "AIzaSyDTG9ciegpaJBvy4LZt9s9TdemnNAyz1EQ",
+        authDomain: "ostend-is-music.firebaseapp.com",
+        projectId: "ostend-is-music",
+        storageBucket: "ostend-is-music.firebasestorage.app",
+        messagingSenderId: "481655541764",
+        appId: "1:481655541764:web:60b142aafa966c24466551",
+        measurementId: "G-PH6EPPW3BY"
+      };
 
       // EmailJS Configuration
       const EMAILJS_CONFIG = {
@@ -910,6 +916,10 @@ const analytics = getAnalytics(app);
           
           const firebaseConfig = config || getStoredFirebaseConfig() || DEFAULT_FIREBASE_CONFIG;
           
+          if (!firebaseConfig) {
+            throw new Error('No Firebase configuration provided');
+          }
+          
           // Initialize Firebase
           if (!firebase.apps.length) {
             firebase.initializeApp(firebaseConfig);
@@ -930,7 +940,8 @@ const analytics = getAnalytics(app);
           // Load initial data
           await loadDataFromFirestore();
           
-          console.log('Firebase initialized successfully');
+          console.log('Firebase initialized successfully with project:', firebaseConfig.projectId);
+          showFirebaseConfigStatus(`Connected to Firebase project: ${firebaseConfig.projectId}`, 'success');
           
         } catch (error) {
           console.error('Firebase initialization failed:', error);
@@ -940,7 +951,12 @@ const analytics = getAnalytics(app);
           
           // Use local storage fallback
           loadDataFromLocalStorage();
-          showFirebaseConfigStatus('Firebase connection failed. Using offline mode.', 'warning');
+          
+          if (!getStoredFirebaseConfig() && !DEFAULT_FIREBASE_CONFIG) {
+            showFirebaseConfigStatus('No Firebase configuration found. Please configure Firebase in the admin panel or continue in offline mode.', 'warning');
+          } else {
+            showFirebaseConfigStatus('Firebase connection failed. Check your network connection or continue in offline mode.', 'warning');
+          }
         }
       }
 
@@ -1267,24 +1283,47 @@ const analytics = getAnalytics(app);
 
       function resetToDemo() {
         localStorage.removeItem('firebaseConfig');
-        showFirebaseConfigStatus('Reset to demo mode. Reconnecting...', 'success');
+        showFirebaseConfigStatus('Configuration reset to default Firebase project.', 'success');
         
-        // Clear form
-        document.getElementById('firebaseApiKey').value = '';
-        document.getElementById('firebaseAuthDomain').value = '';
-        document.getElementById('firebaseProjectId').value = '';
-        document.getElementById('firebaseStorageBucket').value = '';
-        document.getElementById('firebaseMessagingSenderId').value = '';
-        document.getElementById('firebaseAppId').value = '';
+        // Load default config into form
+        if (DEFAULT_FIREBASE_CONFIG) {
+          document.getElementById('firebaseApiKey').value = DEFAULT_FIREBASE_CONFIG.apiKey || '';
+          document.getElementById('firebaseAuthDomain').value = DEFAULT_FIREBASE_CONFIG.authDomain || '';
+          document.getElementById('firebaseProjectId').value = DEFAULT_FIREBASE_CONFIG.projectId || '';
+          document.getElementById('firebaseStorageBucket').value = DEFAULT_FIREBASE_CONFIG.storageBucket || '';
+          document.getElementById('firebaseMessagingSenderId').value = DEFAULT_FIREBASE_CONFIG.messagingSenderId || '';
+          document.getElementById('firebaseAppId').value = DEFAULT_FIREBASE_CONFIG.appId || '';
+          
+          // Cleanup existing listeners
+          unsubscribeListeners.forEach(unsubscribe => unsubscribe());
+          unsubscribeListeners = [];
+          
+          // Reinitialize Firebase with default config
+          setTimeout(() => {
+            initializeFirebase(DEFAULT_FIREBASE_CONFIG);
+          }, 1000);
+        } else {
+          // Clear form
+          document.getElementById('firebaseApiKey').value = '';
+          document.getElementById('firebaseAuthDomain').value = '';
+          document.getElementById('firebaseProjectId').value = '';
+          document.getElementById('firebaseStorageBucket').value = '';
+          document.getElementById('firebaseMessagingSenderId').value = '';
+          document.getElementById('firebaseAppId').value = '';
 
-        // Cleanup existing listeners
-        unsubscribeListeners.forEach(unsubscribe => unsubscribe());
-        unsubscribeListeners = [];
-
-        // Reinitialize Firebase
-        setTimeout(() => {
-          initializeFirebase(DEFAULT_FIREBASE_CONFIG);
-        }, 1000);
+          // Cleanup existing listeners
+          unsubscribeListeners.forEach(unsubscribe => unsubscribe());
+          unsubscribeListeners = [];
+          
+          // Set to offline mode
+          isFirebaseInitialized = false;
+          isOnline = false;
+          db = null;
+          updateConnectionStatus('disconnected');
+          
+          // Load from local storage
+          loadDataFromLocalStorage();
+        }
       }
 
       function showFirebaseConfigStatus(message, type) {
@@ -1376,8 +1415,8 @@ const analytics = getAnalytics(app);
         document.getElementById("client-interface").style.display = "none";
         document.getElementById("admin-interface").style.display = "block";
         
-        // Load current Firebase config into form
-        const config = getStoredFirebaseConfig();
+        // Load current Firebase config into form (stored config takes priority, then default)
+        const config = getStoredFirebaseConfig() || DEFAULT_FIREBASE_CONFIG;
         if (config) {
           document.getElementById('firebaseApiKey').value = config.apiKey || '';
           document.getElementById('firebaseAuthDomain').value = config.authDomain || '';
