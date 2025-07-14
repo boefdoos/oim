@@ -599,6 +599,44 @@
           </button>
         </div>
 
+        <!-- FIREBASE CONFIGURATION SECTION -->
+                  <div class="firebase-config-section">
+          <h3>Firebase Configuration</h3>
+          <p style="margin-bottom: 15px; font-size: 0.9rem; color: #0c5aa6;">
+            <strong>✅ Firebase is pre-configured!</strong> Your "ostend-is-music" project is ready for real-time sync.<br>
+            You can update the configuration below if needed, or continue using the current setup.
+          </p>
+          
+          <details style="margin-bottom: 15px; padding: 10px; background: #f8f9fa; border-radius: 4px; border: 1px solid #e1e8ed;">
+            <summary style="cursor: pointer; font-weight: 500; color: #2c3e50;">How to get Firebase Configuration</summary>
+            <div style="margin-top: 10px; font-size: 0.85rem; line-height: 1.4;">
+              <ol>
+                <li>Go to <a href="https://console.firebase.google.com" target="_blank">Firebase Console</a></li>
+                <li>Create a new project or select existing project</li>
+                <li>Go to Project Settings (gear icon) → General tab</li>
+                <li>Scroll down to "Your apps" section</li>
+                <li>Add a web app or select existing web app</li>
+                <li>Copy the configuration values from the Firebase SDK snippet</li>
+                <li><strong>Don't forget to enable Firestore Database!</strong></li>
+              </ol>
+            </div>
+          </details>
+          
+          <div class="config-form">
+            <input type="text" id="firebaseApiKey" placeholder="Firebase API Key" />
+            <input type="text" id="firebaseAuthDomain" placeholder="Auth Domain (project-id.firebaseapp.com)" />
+            <input type="text" id="firebaseProjectId" placeholder="Project ID" />
+            <input type="text" id="firebaseStorageBucket" placeholder="Storage Bucket" />
+            <input type="text" id="firebaseMessagingSenderId" placeholder="Messaging Sender ID" />
+            <input type="text" id="firebaseAppId" placeholder="App ID" />
+          </div>
+          <div class="config-actions">
+            <button onclick="updateFirebaseConfig()" class="btn-success">Update Configuration</button>
+            <button onclick="testFirebaseConnection()" class="btn-secondary">Test Connection</button>
+            <button onclick="resetToDemo()" class="btn-secondary">Clear Config (Offline Mode)</button>
+          </div>
+          <div id="firebaseConfigStatus" class="status-message" style="display: none"></div>
+        </div>
 
         <!-- PASSWORD CHANGE SECTION -->
         <div class="password-change-section">
