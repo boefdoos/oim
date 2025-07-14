@@ -97,6 +97,10 @@
         border-color: #3498db;
       }
 
+      input:invalid {
+        border-color: #e74c3c;
+      }
+
       button {
         background: #3498db;
         color: white;
@@ -108,6 +112,11 @@
 
       button:hover {
         background: #2980b9;
+      }
+
+      button:disabled {
+        background: #bdc3c7;
+        cursor: not-allowed;
       }
 
       .btn-secondary {
@@ -266,6 +275,9 @@
         box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
         z-index: 1000;
         min-width: 350px;
+        max-width: 90vw;
+        max-height: 90vh;
+        overflow-y: auto;
       }
 
       .overlay {
@@ -308,6 +320,12 @@
         background: #f8d7da;
         color: #721c24;
         border: 1px solid #f5c6cb;
+      }
+
+      .warning {
+        background: #fff3cd;
+        color: #856404;
+        border: 1px solid #ffeaa7;
       }
 
       .nav-tabs {
@@ -383,6 +401,8 @@
       .bookings-table th {
         background: #f8f9fa;
         font-weight: 500;
+        position: sticky;
+        top: 0;
       }
 
       .bookings-table tr:nth-child(even) {
@@ -394,12 +414,17 @@
         margin-bottom: 20px;
         color: #6c757d;
         font-size: 0.95rem;
+        background: #f8f9fa;
+        padding: 15px;
+        border-radius: 6px;
+        border: 1px solid #e9ecef;
       }
 
       .booking-actions {
         display: flex;
         gap: 10px;
         margin-top: 15px;
+        flex-wrap: wrap;
       }
 
       .confirmation-details {
@@ -427,6 +452,8 @@
         justify-content: space-between;
         align-items: center;
         margin-bottom: 20px;
+        flex-wrap: wrap;
+        gap: 10px;
       }
 
       .password-change-section {
@@ -446,10 +473,129 @@
         display: flex;
         gap: 10px;
         align-items: end;
+        flex-wrap: wrap;
       }
 
       .password-form .form-group {
         flex: 1;
+        min-width: 150px;
+      }
+
+      .no-event-message {
+        text-align: center;
+        padding: 40px;
+        color: #6c757d;
+        background: #f8f9fa;
+        border-radius: 6px;
+        border: 1px solid #e9ecef;
+      }
+
+      .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 15px;
+        margin-bottom: 20px;
+      }
+
+      .stat-card {
+        background: white;
+        padding: 20px;
+        border-radius: 6px;
+        border: 1px solid #e1e8ed;
+        text-align: center;
+      }
+
+      .stat-number {
+        font-size: 1.5rem;
+        font-weight: bold;
+        color: #3498db;
+      }
+
+      .stat-label {
+        font-size: 0.9rem;
+        color: #6c757d;
+        margin-top: 5px;
+      }
+
+      /* Mobile responsiveness */
+      @media (max-width: 768px) {
+        .container {
+          padding: 20px;
+        }
+
+        .form-grid {
+          grid-template-columns: 1fr;
+        }
+
+        .client-booking-grid {
+          grid-template-columns: 1fr;
+        }
+
+        .password-form {
+          flex-direction: column;
+        }
+
+        .password-form .form-group {
+          min-width: unset;
+        }
+
+        .admin-header {
+          flex-direction: column;
+          align-items: stretch;
+        }
+
+        .booking-actions {
+          flex-direction: column;
+        }
+
+        .nav-tabs {
+          flex-wrap: wrap;
+        }
+
+        .nav-tab {
+          flex: 1;
+          min-width: 100px;
+        }
+      }
+
+      /* Loading state */
+      .loading {
+        opacity: 0.6;
+        pointer-events: none;
+      }
+
+      .loading::after {
+        content: "";
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 20px;
+        height: 20px;
+        border: 2px solid #3498db;
+        border-top: 2px solid transparent;
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+      }
+
+      @keyframes spin {
+        0% {
+          transform: translate(-50%, -50%) rotate(0deg);
+        }
+        100% {
+          transform: translate(-50%, -50%) rotate(360deg);
+        }
+      }
+
+      /* Code styling */
+      code {
+        background: #f8f9fa;
+        padding: 2px 4px;
+        border-radius: 3px;
+        font-family: "Courier New", monospace;
+        font-size: 0.9em;
+        color: #e74c3c;
+        border: 1px solid #e9ecef;
       }
     </style>
   </head>
@@ -458,7 +604,12 @@
       <!-- CLIENT INTERFACE -->
       <div id="client-interface" class="client-interface">
         <h1>Conversation Table Booking</h1>
-        <div class="event-info" id="eventInfo"></div>
+        <div class="event-info" id="eventInfo">
+          <div class="no-event-message">
+            Event configuration not available yet. Please contact the
+            administrator.
+          </div>
+        </div>
         <div class="client-booking-grid" id="clientBookingGrid"></div>
       </div>
 
@@ -490,6 +641,7 @@
                 type="password"
                 id="currentPassword"
                 placeholder="Enter current password"
+                autocomplete="current-password"
               />
             </div>
             <div class="form-group">
@@ -498,6 +650,7 @@
                 type="password"
                 id="newPassword"
                 placeholder="Enter new password"
+                autocomplete="new-password"
               />
             </div>
             <div class="form-group">
@@ -506,6 +659,7 @@
                 type="password"
                 id="confirmPassword"
                 placeholder="Confirm new password"
+                autocomplete="new-password"
               />
             </div>
             <button onclick="changePassword()" class="btn-success">
@@ -519,6 +673,26 @@
           ></div>
         </div>
 
+        <!-- Statistics -->
+        <div class="stats-grid">
+          <div class="stat-card">
+            <div class="stat-number" id="totalBookings">0</div>
+            <div class="stat-label">Total Bookings</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-number" id="totalTables">0</div>
+            <div class="stat-label">Active Tables</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-number" id="availableSlots">0</div>
+            <div class="stat-label">Available Slots</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-number" id="bookedSlots">0</div>
+            <div class="stat-label">Booked Slots</div>
+          </div>
+        </div>
+
         <div class="nav-tabs">
           <button class="nav-tab active" onclick="switchTab('setup')">
             Event Setup
@@ -527,7 +701,7 @@
             Manage Bookings
           </button>
           <button class="nav-tab" onclick="switchTab('export')">
-            Export & Reports
+            Email & Export
           </button>
         </div>
 
@@ -537,15 +711,15 @@
             <div class="form-grid">
               <div class="form-group">
                 <label for="eventDate">Event Date:</label>
-                <input type="date" id="eventDate" />
+                <input type="date" id="eventDate" required />
               </div>
               <div class="form-group">
                 <label for="startTime">Start Time:</label>
-                <input type="time" id="startTime" value="09:00" />
+                <input type="time" id="startTime" value="09:00" required />
               </div>
               <div class="form-group">
                 <label for="endTime">End Time:</label>
-                <input type="time" id="endTime" value="17:00" />
+                <input type="time" id="endTime" value="17:00" required />
               </div>
               <div class="form-group">
                 <label for="slotDuration">Slot Duration (minutes):</label>
@@ -554,7 +728,8 @@
                   id="slotDuration"
                   value="10"
                   min="5"
-                  max="30"
+                  max="60"
+                  required
                 />
               </div>
             </div>
@@ -575,15 +750,26 @@
                   type="text"
                   id="tableName"
                   placeholder="e.g., AI & Technology"
+                  required
                 />
               </div>
               <div class="form-group">
                 <label for="speaker1">Speaker 1:</label>
-                <input type="text" id="speaker1" placeholder="Speaker name" />
+                <input
+                  type="text"
+                  id="speaker1"
+                  placeholder="Speaker name"
+                  required
+                />
               </div>
               <div class="form-group">
                 <label for="speaker2">Speaker 2:</label>
-                <input type="text" id="speaker2" placeholder="Speaker name" />
+                <input
+                  type="text"
+                  id="speaker2"
+                  placeholder="Speaker name"
+                  required
+                />
               </div>
             </div>
             <button onclick="addTable()">Add Table</button>
@@ -601,17 +787,94 @@
 
         <div id="export-tab" class="tab-content">
           <div class="section">
+            <h2>Email Configuration</h2>
+            <div class="form-grid">
+              <div class="form-group">
+                <label for="emailServiceId">EmailJS Service ID:</label>
+                <input
+                  type="text"
+                  id="emailServiceId"
+                  placeholder="service_xxxxxxx"
+                />
+              </div>
+              <div class="form-group">
+                <label for="emailTemplateId">EmailJS Template ID:</label>
+                <input
+                  type="text"
+                  id="emailTemplateId"
+                  placeholder="template_xxxxxxx"
+                />
+              </div>
+              <div class="form-group">
+                <label for="emailPublicKey">EmailJS Public Key:</label>
+                <input
+                  type="text"
+                  id="emailPublicKey"
+                  placeholder="Your public key"
+                />
+              </div>
+              <div class="form-group">
+                <label for="testEmail">Test Email:</label>
+                <input
+                  type="email"
+                  id="testEmail"
+                  placeholder="test@example.com"
+                />
+              </div>
+            </div>
+            <div class="booking-actions">
+              <button onclick="saveEmailConfig()">Save Email Config</button>
+              <button onclick="testEmailConfig()" class="btn-secondary">
+                Test Email
+              </button>
+            </div>
+            <div
+              id="emailConfigStatus"
+              class="status-message"
+              style="display: none"
+            ></div>
+
+            <div class="section" style="margin-top: 20px">
+              <h3>EmailJS Setup Instructions</h3>
+              <ol style="margin-left: 20px; line-height: 1.8">
+                <li>
+                  Go to
+                  <a href="https://www.emailjs.com" target="_blank"
+                    >EmailJS.com</a
+                  >
+                  and create an account
+                </li>
+                <li>Create a new service (Gmail, Outlook, etc.)</li>
+                <li>
+                  Create an email template with these variables:
+                  <ul style="margin: 10px 0; margin-left: 20px">
+                    <li><code>{{user_name}}</code> - Customer name</li>
+                    <li><code>{{user_email}}</code> - Customer email</li>
+                    <li><code>{{table_name}}</code> - Table name</li>
+                    <li><code>{{speakers}}</code> - Speaker names</li>
+                    <li><code>{{event_date}}</code> - Event date</li>
+                    <li><code>{{time_slot}}</code> - Time slot</li>
+                  </ul>
+                </li>
+                <li>Copy your Service ID, Template ID, and Public Key above</li>
+                <li>Test the configuration using the test button</li>
+              </ol>
+            </div>
+          </div>
+
+          <div class="section">
             <h2>Export & Reports</h2>
-            <button class="btn-success" onclick="exportToCSV()">
-              Export to CSV
-            </button>
-            <button
-              class="btn-success"
-              onclick="exportToExcel()"
-              style="margin-left: 10px"
-            >
-              Export to Excel
-            </button>
+            <div class="booking-actions">
+              <button class="btn-success" onclick="exportToCSV()">
+                Export to CSV
+              </button>
+              <button class="btn-success" onclick="exportToExcel()">
+                Export to Excel
+              </button>
+              <button class="btn-secondary" onclick="clearAllData()">
+                Clear All Data
+              </button>
+            </div>
             <div
               id="exportStatus"
               class="status-message"
@@ -635,6 +898,7 @@
           placeholder="Password"
           onkeypress="if(event.key==='Enter') checkPassword()"
           style="width: 100%; margin: 15px 0"
+          autocomplete="current-password"
         />
         <div style="text-align: center">
           <button onclick="checkPassword()" style="margin-right: 10px">
@@ -657,22 +921,27 @@
         <h3>Book Your Conversation</h3>
         <div class="form-group">
           <label for="userName">Your Name:</label>
-          <input type="text" id="userName" required />
+          <input type="text" id="userName" required autocomplete="name" />
         </div>
         <div class="form-group">
           <label for="userEmail">Email:</label>
-          <input type="email" id="userEmail" required />
+          <input type="email" id="userEmail" required autocomplete="email" />
         </div>
         <div class="form-group">
           <label for="userPhone">Phone (optional):</label>
-          <input type="tel" id="userPhone" />
+          <input type="tel" id="userPhone" autocomplete="tel" />
         </div>
         <div class="form-group">
           <label>Selected Slot:</label>
           <div id="selectedSlotInfo" class="confirmation-details"></div>
         </div>
         <div class="booking-actions">
-          <button onclick="confirmBooking()">Confirm Booking</button>
+          <button onclick="confirmBooking()" id="confirmBookingBtn">
+            Confirm Booking
+          </button>
+          <button onclick="closeBookingForm()" class="btn-secondary">
+            Cancel
+          </button>
         </div>
         <div
           id="bookingStatus"
@@ -703,18 +972,30 @@
       type="text/javascript"
       src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"
     ></script>
-    <script type="text/javascript">
-      (function () {
-        emailjs.init("YOUR_PUBLIC_KEY"); // Replace with your EmailJS public key
-      })();
-    </script>
 
     <script>
-      // EmailJS Configuration
+      // EmailJS Configuration - Replace with your actual values
       const EMAILJS_CONFIG = {
         serviceId: "service_0m2owju", // Replace with your EmailJS service ID
-        templateId: "template_7xq3pho", // Replace with your EmailJS template ID
-        publicKey: "VehBeO9qQGs5TbvvnY", // Replace with your EmailJS public key
+        templateId: "template_m5uymsq", // Replace with your EmailJS template ID
+        publicKey: "VehBeO9qQGs5Tbvvn", // Replace with your EmailJS public key
+        enabled: true, // Set to true after configuring EmailJS
+      };
+
+      // Initialize EmailJS
+      (function () {
+        if (typeof emailjs !== "undefined" && EMAILJS_CONFIG.enabled) {
+          emailjs.init(EMAILJS_CONFIG.publicKey);
+        }
+      })();
+
+      // Storage keys
+      const STORAGE_KEYS = {
+        EVENT_CONFIG: "conversation_booking_event_config",
+        TABLES: "conversation_booking_tables",
+        BOOKINGS: "conversation_booking_bookings",
+        ADMIN_PASSWORD: "conversation_booking_admin_password",
+        EMAIL_CONFIG: "conversation_booking_email_config",
       };
 
       // Global data storage
@@ -733,10 +1014,269 @@
       let isAdminMode = false;
       let adminPassword = "admin123"; // Default password
 
-      // Set default date to today
-      document.getElementById("eventDate").value = new Date()
-        .toISOString()
-        .split("T")[0];
+      // Load data from localStorage
+      function loadData() {
+        try {
+          const savedEventConfig = localStorage.getItem(
+            STORAGE_KEYS.EVENT_CONFIG
+          );
+          if (savedEventConfig) {
+            eventConfig = JSON.parse(savedEventConfig);
+          }
+
+          const savedTables = localStorage.getItem(STORAGE_KEYS.TABLES);
+          if (savedTables) {
+            tables = JSON.parse(savedTables);
+          }
+
+          const savedBookings = localStorage.getItem(STORAGE_KEYS.BOOKINGS);
+          if (savedBookings) {
+            bookings = JSON.parse(savedBookings);
+          }
+
+          const savedPassword = localStorage.getItem(
+            STORAGE_KEYS.ADMIN_PASSWORD
+          );
+          if (savedPassword) {
+            adminPassword = savedPassword;
+          }
+
+          const savedEmailConfig = localStorage.getItem(
+            STORAGE_KEYS.EMAIL_CONFIG
+          );
+          if (savedEmailConfig) {
+            const emailConfig = JSON.parse(savedEmailConfig);
+            Object.assign(EMAILJS_CONFIG, emailConfig);
+            loadEmailConfigForm();
+          }
+        } catch (error) {
+          console.error("Error loading data from localStorage:", error);
+        }
+      }
+
+      // Save data to localStorage
+      function saveData() {
+        try {
+          localStorage.setItem(
+            STORAGE_KEYS.EVENT_CONFIG,
+            JSON.stringify(eventConfig)
+          );
+          localStorage.setItem(STORAGE_KEYS.TABLES, JSON.stringify(tables));
+          localStorage.setItem(STORAGE_KEYS.BOOKINGS, JSON.stringify(bookings));
+          localStorage.setItem(STORAGE_KEYS.ADMIN_PASSWORD, adminPassword);
+          localStorage.setItem(
+            STORAGE_KEYS.EMAIL_CONFIG,
+            JSON.stringify(EMAILJS_CONFIG)
+          );
+        } catch (error) {
+          console.error("Error saving data to localStorage:", error);
+        }
+      }
+
+      // Load email configuration into form
+      function loadEmailConfigForm() {
+        document.getElementById("emailServiceId").value =
+          EMAILJS_CONFIG.serviceId || "";
+        document.getElementById("emailTemplateId").value =
+          EMAILJS_CONFIG.templateId || "";
+        document.getElementById("emailPublicKey").value =
+          EMAILJS_CONFIG.publicKey || "";
+      }
+
+      // Save email configuration
+      function saveEmailConfig() {
+        const serviceId = document
+          .getElementById("emailServiceId")
+          .value.trim();
+        const templateId = document
+          .getElementById("emailTemplateId")
+          .value.trim();
+        const publicKey = document
+          .getElementById("emailPublicKey")
+          .value.trim();
+
+        if (!serviceId || !templateId || !publicKey) {
+          showStatus(
+            "emailConfigStatus",
+            "Please fill in all email configuration fields",
+            "error"
+          );
+          return;
+        }
+
+        EMAILJS_CONFIG.serviceId = serviceId;
+        EMAILJS_CONFIG.templateId = templateId;
+        EMAILJS_CONFIG.publicKey = publicKey;
+        EMAILJS_CONFIG.enabled = true;
+
+        // Re-initialize EmailJS
+        if (typeof emailjs !== "undefined") {
+          emailjs.init(EMAILJS_CONFIG.publicKey);
+        }
+
+        saveData();
+        showStatus(
+          "emailConfigStatus",
+          "Email configuration saved successfully",
+          "success"
+        );
+      }
+
+      // Test email configuration
+      function testEmailConfig() {
+        const testEmail = document.getElementById("testEmail").value.trim();
+
+        if (!testEmail) {
+          showStatus(
+            "emailConfigStatus",
+            "Please enter a test email address",
+            "error"
+          );
+          return;
+        }
+
+        if (
+          !EMAILJS_CONFIG.enabled ||
+          !EMAILJS_CONFIG.serviceId ||
+          !EMAILJS_CONFIG.templateId ||
+          !EMAILJS_CONFIG.publicKey
+        ) {
+          showStatus(
+            "emailConfigStatus",
+            "Please save email configuration first",
+            "error"
+          );
+          return;
+        }
+
+        if (typeof emailjs === "undefined") {
+          showStatus(
+            "emailConfigStatus",
+            "EmailJS library not loaded",
+            "error"
+          );
+          return;
+        }
+
+        const testParams = {
+          user_name: "Test User",
+          user_email: testEmail,
+          table_name: "Test Table",
+          speakers: "Speaker 1 & Speaker 2",
+          event_date: "Monday, January 1, 2024",
+          time_slot: "10:00 - 10:10",
+          to_email: testEmail,
+        };
+
+        showStatus("emailConfigStatus", "Sending test email...", "success");
+
+        emailjs
+          .send(
+            EMAILJS_CONFIG.serviceId,
+            EMAILJS_CONFIG.templateId,
+            testParams,
+            EMAILJS_CONFIG.publicKey
+          )
+          .then(
+            (response) => {
+              console.log("Test email sent successfully:", response);
+              showStatus(
+                "emailConfigStatus",
+                "Test email sent successfully! Check your inbox.",
+                "success"
+              );
+            },
+            (error) => {
+              console.error("Test email failed:", error);
+              showStatus(
+                "emailConfigStatus",
+                "Test email failed: " + error.text,
+                "error"
+              );
+            }
+          );
+      }
+
+      // Clear all data
+      function clearAllData() {
+        if (
+          confirm(
+            "Are you sure you want to clear all data? This action cannot be undone."
+          )
+        ) {
+          localStorage.removeItem(STORAGE_KEYS.EVENT_CONFIG);
+          localStorage.removeItem(STORAGE_KEYS.TABLES);
+          localStorage.removeItem(STORAGE_KEYS.BOOKINGS);
+          localStorage.removeItem(STORAGE_KEYS.ADMIN_PASSWORD);
+          localStorage.removeItem(STORAGE_KEYS.EMAIL_CONFIG);
+
+          // Reset to defaults
+          eventConfig = {
+            date: "",
+            startTime: "09:00",
+            endTime: "17:00",
+            slotDuration: 10,
+            timeSlots: [],
+          };
+          tables = [];
+          bookings = {};
+          adminPassword = "admin123";
+
+          // Reset email config
+          EMAILJS_CONFIG.serviceId = "YOUR_SERVICE_ID";
+          EMAILJS_CONFIG.templateId = "YOUR_TEMPLATE_ID";
+          EMAILJS_CONFIG.publicKey = "YOUR_PUBLIC_KEY";
+          EMAILJS_CONFIG.enabled = false;
+
+          // Update UI
+          loadFormData();
+          loadEmailConfigForm();
+          renderTables();
+          renderBookingsOverview();
+          renderClientInterface();
+          updateStatistics();
+
+          showStatus(
+            "exportStatus",
+            "All data cleared successfully",
+            "success"
+          );
+        }
+      }
+
+      // Load form data from stored config
+      function loadFormData() {
+        if (eventConfig.date) {
+          document.getElementById("eventDate").value = eventConfig.date;
+        } else {
+          // Set default date to today
+          document.getElementById("eventDate").value = new Date()
+            .toISOString()
+            .split("T")[0];
+        }
+
+        document.getElementById("startTime").value = eventConfig.startTime;
+        document.getElementById("endTime").value = eventConfig.endTime;
+        document.getElementById("slotDuration").value =
+          eventConfig.slotDuration;
+      }
+
+      // Update statistics
+      function updateStatistics() {
+        const totalBookings = Object.keys(bookings).length;
+        const totalTables = tables.length;
+        const totalSlots = totalTables * eventConfig.timeSlots.length;
+        const bookedSlots = totalBookings;
+        const availableSlots = totalSlots - bookedSlots;
+
+        document.getElementById("totalBookings").textContent = totalBookings;
+        document.getElementById("totalTables").textContent = totalTables;
+        document.getElementById("availableSlots").textContent = Math.max(
+          0,
+          availableSlots
+        );
+        document.getElementById("bookedSlots").textContent = bookedSlots;
+      }
 
       function showPasswordModal() {
         document.getElementById("overlay").style.display = "block";
@@ -795,6 +1335,7 @@
         }
 
         adminPassword = newPwd;
+        saveData();
         showPasswordChangeStatus("Password changed successfully", "success");
 
         // Clear form
@@ -817,7 +1358,11 @@
       function switchToAdmin() {
         document.getElementById("client-interface").style.display = "none";
         document.getElementById("admin-interface").style.display = "block";
+        loadFormData();
+        loadEmailConfigForm();
+        renderTables();
         renderBookingsOverview();
+        updateStatistics();
       }
 
       function switchToClient() {
@@ -847,7 +1392,7 @@
         }
       }
 
-      function generateTimeSlots() {
+      function validateTimeSlots() {
         const date = document.getElementById("eventDate").value;
         const startTime = document.getElementById("startTime").value;
         const endTime = document.getElementById("endTime").value;
@@ -855,10 +1400,43 @@
           document.getElementById("slotDuration").value
         );
 
-        if (!date || !startTime || !endTime) {
-          showStatus("eventStatus", "Please fill in all fields", "error");
+        if (!date || !startTime || !endTime || !duration) {
+          return { valid: false, message: "Please fill in all fields" };
+        }
+
+        const start = new Date(`${date}T${startTime}`);
+        const end = new Date(`${date}T${endTime}`);
+
+        if (start >= end) {
+          return { valid: false, message: "End time must be after start time" };
+        }
+
+        const durationMs = end - start;
+        const slotDurationMs = duration * 60000;
+
+        if (durationMs < slotDurationMs) {
+          return {
+            valid: false,
+            message: "Time range too short for slot duration",
+          };
+        }
+
+        return { valid: true };
+      }
+
+      function generateTimeSlots() {
+        const validation = validateTimeSlots();
+        if (!validation.valid) {
+          showStatus("eventStatus", validation.message, "error");
           return;
         }
+
+        const date = document.getElementById("eventDate").value;
+        const startTime = document.getElementById("startTime").value;
+        const endTime = document.getElementById("endTime").value;
+        const duration = parseInt(
+          document.getElementById("slotDuration").value
+        );
 
         eventConfig.date = date;
         eventConfig.startTime = startTime;
@@ -888,37 +1466,65 @@
         }
 
         eventConfig.timeSlots = slots;
+        saveData();
+        updateStatistics();
         showStatus(
           "eventStatus",
           `Generated ${slots.length} time slots from ${startTime} to ${endTime}`,
           "success"
         );
+
+        // Update client interface
+        renderClientInterface();
       }
 
-      function addTable() {
+      function validateTableInput() {
         const name = document.getElementById("tableName").value.trim();
         const speaker1 = document.getElementById("speaker1").value.trim();
         const speaker2 = document.getElementById("speaker2").value.trim();
 
         if (!name || !speaker1 || !speaker2) {
-          alert("Please fill in all table fields");
-          return;
+          return { valid: false, message: "Please fill in all table fields" };
+        }
+
+        if (
+          tables.some(
+            (table) => table.name.toLowerCase() === name.toLowerCase()
+          )
+        ) {
+          return { valid: false, message: "Table name already exists" };
         }
 
         if (tables.length >= 20) {
-          alert("Maximum of 20 tables allowed");
+          return { valid: false, message: "Maximum of 20 tables allowed" };
+        }
+
+        return { valid: true };
+      }
+
+      function addTable() {
+        const validation = validateTableInput();
+        if (!validation.valid) {
+          alert(validation.message);
           return;
         }
 
+        const name = document.getElementById("tableName").value.trim();
+        const speaker1 = document.getElementById("speaker1").value.trim();
+        const speaker2 = document.getElementById("speaker2").value.trim();
+
         const table = {
-          id: tables.length,
+          id: Date.now(), // Use timestamp for unique ID
           name: name,
           speaker1: speaker1,
           speaker2: speaker2,
         };
 
         tables.push(table);
+        saveData();
         renderTables();
+        updateStatistics();
+        renderClientInterface();
 
         // Clear form
         document.getElementById("tableName").value = "";
@@ -930,34 +1536,41 @@
         const grid = document.getElementById("tablesGrid");
         grid.innerHTML = tables
           .map(
-            (table) => `
-                <div class="table-card">
-                    <h4>Table ${table.id + 1}: ${table.name}</h4>
-                    <p><strong>Speakers:</strong> ${table.speaker1} & ${
+            (table, index) => `
+          <div class="table-card">
+            <h4>Table ${index + 1}: ${table.name}</h4>
+            <p><strong>Speakers:</strong> ${table.speaker1} & ${
               table.speaker2
             }</p>
-                    <button onclick="removeTable(${
-                      table.id
-                    })" class="btn-danger" style="margin-top: 10px;">Remove</button>
-                </div>
-            `
+            <button onclick="removeTable(${
+              table.id
+            })" class="btn-danger" style="margin-top: 10px;">Remove</button>
+          </div>
+        `
           )
           .join("");
       }
 
       function removeTable(tableId) {
-        tables = tables.filter((table) => table.id !== tableId);
-        // Reindex tables
-        tables.forEach((table, index) => {
-          table.id = index;
-        });
-        // Remove related bookings
-        Object.keys(bookings).forEach((key) => {
-          if (key.startsWith(`${tableId}-`)) {
-            delete bookings[key];
-          }
-        });
-        renderTables();
+        if (
+          confirm(
+            "Are you sure you want to remove this table? All bookings for this table will be lost."
+          )
+        ) {
+          tables = tables.filter((table) => table.id !== tableId);
+
+          // Remove related bookings
+          Object.keys(bookings).forEach((key) => {
+            if (key.startsWith(`${tableId}-`)) {
+              delete bookings[key];
+            }
+          });
+
+          saveData();
+          renderTables();
+          updateStatistics();
+          renderClientInterface();
+        }
       }
 
       function renderClientInterface() {
@@ -974,61 +1587,66 @@
             }
           );
           eventInfo.innerHTML = `
-                    <strong>${eventDate}</strong><br>
-                    ${eventConfig.startTime} - ${eventConfig.endTime} | ${eventConfig.slotDuration} minutes per session
-                `;
+            <strong>${eventDate}</strong><br>
+            ${eventConfig.startTime} - ${eventConfig.endTime} | ${eventConfig.slotDuration} minutes per session
+          `;
         } else {
-          eventInfo.innerHTML = "Event not configured yet";
+          eventInfo.innerHTML = `
+            <div class="no-event-message">
+              Event configuration not available yet. Please contact the administrator.
+            </div>
+          `;
         }
 
         const container = document.getElementById("clientBookingGrid");
 
         if (tables.length === 0 || eventConfig.timeSlots.length === 0) {
-          container.innerHTML =
-            "<p>No tables available for booking at this time.</p>";
+          container.innerHTML = `
+            <div class="no-event-message">
+              No tables available for booking at this time.
+            </div>
+          `;
           return;
         }
 
         container.innerHTML = tables
           .map(
             (table) => `
-                <div class="client-table-card">
-                    <div class="table-header">
-                        <div class="table-title">${table.name}</div>
-                        <div class="speakers">with ${table.speaker1} & ${
+          <div class="client-table-card">
+            <div class="table-header">
+              <div class="table-title">${table.name}</div>
+              <div class="speakers">with ${table.speaker1} & ${
               table.speaker2
             }</div>
-                    </div>
-                    <div class="time-slots-container">
-                        ${eventConfig.timeSlots
-                          .map((slot) => {
-                            const bookingKey = `${table.id}-${slot.index}`;
-                            const isBooked = bookings[bookingKey];
-                            return `
-                                <div class="time-slot-item ${
-                                  isBooked ? "booked" : "available"
-                                }">
-                                    <div class="time-info">${slot.start} - ${
-                              slot.end
-                            }</div>
-                                    <button class="slot-btn ${
-                                      isBooked ? "booked" : "available"
-                                    }" 
-                                            ${
-                                              !isBooked
-                                                ? `onclick="openBookingForm(${table.id}, ${slot.index})"`
-                                                : ""
-                                            }
-                                            ${isBooked ? "disabled" : ""}>
-                                        ${isBooked ? "Booked" : "Book"}
-                                    </button>
-                                </div>
-                            `;
-                          })
-                          .join("")}
-                    </div>
-                </div>
-            `
+            </div>
+            <div class="time-slots-container">
+              ${eventConfig.timeSlots
+                .map((slot) => {
+                  const bookingKey = `${table.id}-${slot.index}`;
+                  const isBooked = bookings[bookingKey];
+                  return `
+                  <div class="time-slot-item ${
+                    isBooked ? "booked" : "available"
+                  }">
+                    <div class="time-info">${slot.start} - ${slot.end}</div>
+                    <button class="slot-btn ${
+                      isBooked ? "booked" : "available"
+                    }" 
+                            ${
+                              !isBooked
+                                ? `onclick="openBookingForm(${table.id}, ${slot.index})"`
+                                : ""
+                            }
+                            ${isBooked ? "disabled" : ""}>
+                      ${isBooked ? "Booked" : "Book"}
+                    </button>
+                  </div>
+                `;
+                })
+                .join("")}
+            </div>
+          </div>
+        `
           )
           .join("");
       }
@@ -1036,6 +1654,11 @@
       function openBookingForm(tableId, slotIndex) {
         const table = tables.find((t) => t.id === tableId);
         const slot = eventConfig.timeSlots.find((s) => s.index === slotIndex);
+
+        if (!table || !slot) {
+          alert("Error: Table or time slot not found");
+          return;
+        }
 
         currentBookingSelection = { tableId, slotIndex };
 
@@ -1050,11 +1673,11 @@
         );
 
         document.getElementById("selectedSlotInfo").innerHTML = `
-                <strong>${table.name}</strong><br>
-                ${eventDate}<br>
-                ${slot.start} - ${slot.end}<br>
-                Speakers: ${table.speaker1} & ${table.speaker2}
-            `;
+          <strong>${table.name}</strong><br>
+          ${eventDate}<br>
+          ${slot.start} - ${slot.end}<br>
+          Speakers: ${table.speaker1} & ${table.speaker2}
+        `;
 
         document.getElementById("overlay").style.display = "block";
         document.getElementById("bookingForm").style.display = "block";
@@ -1062,6 +1685,7 @@
         document.getElementById("userEmail").value = "";
         document.getElementById("userPhone").value = "";
         document.getElementById("bookingStatus").style.display = "none";
+        document.getElementById("userName").focus();
       }
 
       function closeBookingForm() {
@@ -1070,28 +1694,49 @@
         currentBookingSelection = null;
       }
 
-      function confirmBooking() {
+      function validateBookingForm() {
         const name = document.getElementById("userName").value.trim();
         const email = document.getElementById("userEmail").value.trim();
-        const phone = document.getElementById("userPhone").value.trim();
 
         if (!name || !email) {
-          showStatus("bookingStatus", "Please fill in name and email", "error");
-          return;
+          return { valid: false, message: "Please fill in name and email" };
+        }
+
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(email)) {
+          return {
+            valid: false,
+            message: "Please enter a valid email address",
+          };
         }
 
         if (!currentBookingSelection) {
-          showStatus("bookingStatus", "No slot selected", "error");
-          return;
+          return { valid: false, message: "No slot selected" };
         }
 
         const { tableId, slotIndex } = currentBookingSelection;
         const bookingKey = `${tableId}-${slotIndex}`;
 
         if (bookings[bookingKey]) {
-          showStatus("bookingStatus", "This slot is already booked", "error");
+          return { valid: false, message: "This slot is already booked" };
+        }
+
+        return { valid: true };
+      }
+
+      function confirmBooking() {
+        const validation = validateBookingForm();
+        if (!validation.valid) {
+          showStatus("bookingStatus", validation.message, "error");
           return;
         }
+
+        const name = document.getElementById("userName").value.trim();
+        const email = document.getElementById("userEmail").value.trim();
+        const phone = document.getElementById("userPhone").value.trim();
+
+        const { tableId, slotIndex } = currentBookingSelection;
+        const bookingKey = `${tableId}-${slotIndex}`;
 
         const table = tables.find((t) => t.id === tableId);
         const slot = eventConfig.timeSlots.find((s) => s.index === slotIndex);
@@ -1109,6 +1754,22 @@
           date: eventConfig.date,
           timestamp: new Date().toISOString(),
         };
+
+        // Disable the confirm button to prevent double-booking
+        const confirmBtn = document.getElementById("confirmBookingBtn");
+        confirmBtn.disabled = true;
+        confirmBtn.textContent = "Processing...";
+
+        // Check if email is configured
+        if (!EMAILJS_CONFIG.enabled || typeof emailjs === "undefined") {
+          showStatus(
+            "bookingStatus",
+            "Email not configured. Booking will be saved without email confirmation.",
+            "warning"
+          );
+          setTimeout(() => completeBooking(booking, bookingKey, false), 2000);
+          return;
+        }
 
         // Show loading state
         showStatus("bookingStatus", "Sending confirmation email...", "success");
@@ -1145,37 +1806,42 @@
                 response.status,
                 response.text
               );
-
-              // Save booking after successful email
-              bookings[bookingKey] = booking;
-              currentBookingConfirmation = booking;
-
-              closeBookingForm();
-              showConfirmationModal();
-              renderClientInterface();
+              completeBooking(booking, bookingKey, true);
             },
             (error) => {
-              console.log("Email sending failed:", error);
+              console.error("Email sending failed:", error);
               showStatus(
                 "bookingStatus",
-                "Booking saved, but email confirmation failed to send",
-                "error"
+                "Booking saved, but email confirmation failed to send. Please check admin email configuration.",
+                "warning"
               );
-
-              // Save booking even if email fails
-              bookings[bookingKey] = booking;
-              currentBookingConfirmation = booking;
-
-              setTimeout(() => {
-                closeBookingForm();
-                showConfirmationModal();
-                renderClientInterface();
-              }, 2000);
+              setTimeout(
+                () => completeBooking(booking, bookingKey, false),
+                2000
+              );
             }
           );
       }
 
-      function showConfirmationModal() {
+      function completeBooking(booking, bookingKey, emailSent = false) {
+        // Save booking
+        bookings[bookingKey] = booking;
+        bookings[bookingKey].emailSent = emailSent;
+        currentBookingConfirmation = booking;
+        saveData();
+
+        // Reset form
+        const confirmBtn = document.getElementById("confirmBookingBtn");
+        confirmBtn.disabled = false;
+        confirmBtn.textContent = "Confirm Booking";
+
+        closeBookingForm();
+        showConfirmationModal(emailSent);
+        renderClientInterface();
+        updateStatistics();
+      }
+
+      function showConfirmationModal(emailSent = false) {
         const booking = currentBookingConfirmation;
         const eventDate = new Date(booking.date).toLocaleDateString("en-US", {
           weekday: "long",
@@ -1184,24 +1850,29 @@
           day: "numeric",
         });
 
+        const emailStatus = emailSent
+          ? '<div style="color: #27ae60; margin-bottom: 10px;"><strong>✓ Confirmation email sent successfully!</strong></div>'
+          : '<div style="color: #f39c12; margin-bottom: 10px;"><strong>⚠ Email not sent (check admin configuration)</strong></div>';
+
         document.getElementById("confirmationDetails").innerHTML = `
-                <div class="confirmation-details">
-                    <strong>Booking Details:</strong><br>
-                    <strong>Name:</strong> ${booking.name}<br>
-                    <strong>Email:</strong> ${booking.email}<br>
-                    ${
-                      booking.phone
-                        ? `<strong>Phone:</strong> ${booking.phone}<br>`
-                        : ""
-                    }
-                    <strong>Table:</strong> ${booking.tableName}<br>
-                    <strong>Speakers:</strong> ${booking.speaker1} & ${
+          ${emailStatus}
+          <div class="confirmation-details">
+            <strong>Booking Details:</strong><br>
+            <strong>Name:</strong> ${booking.name}<br>
+            <strong>Email:</strong> ${booking.email}<br>
+            ${
+              booking.phone
+                ? `<strong>Phone:</strong> ${booking.phone}<br>`
+                : ""
+            }
+            <strong>Table:</strong> ${booking.tableName}<br>
+            <strong>Speakers:</strong> ${booking.speaker1} & ${
           booking.speaker2
         }<br>
-                    <strong>Date:</strong> ${eventDate}<br>
-                    <strong>Time:</strong> ${booking.timeSlot}
-                </div>
-            `;
+            <strong>Date:</strong> ${eventDate}<br>
+            <strong>Time:</strong> ${booking.timeSlot}
+          </div>
+        `;
 
         document.getElementById("overlay").style.display = "block";
         document.getElementById("confirmationModal").style.display = "block";
@@ -1237,14 +1908,17 @@
           location: "Event Venue",
         };
 
+        const formatDate = (date) =>
+          date.toISOString().replace(/[-:]/g, "").split(".")[0] + "Z";
+
         const icsContent = `BEGIN:VCALENDAR
 VERSION:2.0
 PRODID:-//Your Company//Event//EN
 BEGIN:VEVENT
 UID:${Date.now()}@yourcompany.com
-DTSTAMP:${new Date().toISOString().replace(/[-:]/g, "").split(".")[0]}Z
-DTSTART:${startTime.toISOString().replace(/[-:]/g, "").split(".")[0]}Z
-DTEND:${endTime.toISOString().replace(/[-:]/g, "").split(".")[0]}Z
+DTSTAMP:${formatDate(new Date())}
+DTSTART:${formatDate(startTime)}
+DTEND:${formatDate(endTime)}
 SUMMARY:${event.title}
 DESCRIPTION:${event.description}
 LOCATION:${event.location}
@@ -1270,28 +1944,28 @@ END:VCALENDAR`;
         });
 
         const emailContent = `
-                <h4>Email Confirmation Preview</h4>
-                <div style="border: 1px solid #ddd; padding: 15px; background: white; margin-top: 10px;">
-                    <strong>Subject:</strong> Conversation Table Booking Confirmed<br><br>
-                    <strong>Dear ${booking.name},</strong><br><br>
-                    
-                    Your booking has been confirmed.<br><br>
-                    
-                    <strong>Event Details:</strong><br>
-                    Date: ${eventDate}<br>
-                    Time: ${booking.timeSlot}<br>
-                    Table: ${booking.tableName}<br>
-                    Speakers: ${booking.speaker1} & ${booking.speaker2}<br><br>
-                    
-                    Please arrive 5 minutes before your scheduled time.<br><br>
-                    
-                    Best regards,<br>
-                    Event Team
-                </div>
-                <p style="font-size: 0.9rem; color: #666; margin-top: 10px;">
-                    <em>Note: This is a preview. In a live system, this email would be sent automatically to ${booking.email}</em>
-                </p>
-            `;
+          <h4>Email Confirmation Preview</h4>
+          <div style="border: 1px solid #ddd; padding: 15px; background: white; margin-top: 10px;">
+            <strong>Subject:</strong> Conversation Table Booking Confirmed<br><br>
+            <strong>Dear ${booking.name},</strong><br><br>
+            
+            Your booking has been confirmed.<br><br>
+            
+            <strong>Event Details:</strong><br>
+            Date: ${eventDate}<br>
+            Time: ${booking.timeSlot}<br>
+            Table: ${booking.tableName}<br>
+            Speakers: ${booking.speaker1} & ${booking.speaker2}<br><br>
+            
+            Please arrive 5 minutes before your scheduled time.<br><br>
+            
+            Best regards,<br>
+            Event Team
+          </div>
+          <p style="font-size: 0.9rem; color: #666; margin-top: 10px;">
+            <em>Note: This email would be sent automatically to ${booking.email}</em>
+          </p>
+        `;
 
         document.getElementById("emailPreview").innerHTML = emailContent;
         document.getElementById("emailPreview").classList.remove("hidden");
@@ -1306,51 +1980,60 @@ END:VCALENDAR`;
           return;
         }
 
+        // Sort bookings by date and time
+        bookingsList.sort((a, b) => {
+          const dateA = new Date(`${a.date}T${a.timeSlot.split(" - ")[0]}`);
+          const dateB = new Date(`${b.date}T${b.timeSlot.split(" - ")[0]}`);
+          return dateA - dateB;
+        });
+
         const tableHTML = `
-                <table class="bookings-table">
-                    <thead>
-                        <tr>
-                            <th>Name</th>
-                            <th>Email</th>
-                            <th>Phone</th>
-                            <th>Table</th>
-                            <th>Date</th>
-                            <th>Time</th>
-                            <th>Speakers</th>
-                            <th>Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        ${bookingsList
-                          .map(
-                            (booking) => `
-                            <tr>
-                                <td>${booking.name}</td>
-                                <td>${booking.email}</td>
-                                <td>${booking.phone || "N/A"}</td>
-                                <td>${booking.tableName}</td>
-                                <td>${new Date(
-                                  booking.date
-                                ).toLocaleDateString()}</td>
-                                <td>${booking.timeSlot}</td>
-                                <td>${booking.speaker1} & ${
-                              booking.speaker2
-                            }</td>
-                                <td>
-                                    <button onclick="cancelBooking('${
-                                      booking.tableId
-                                    }-${booking.slotIndex}')" 
-                                            class="btn-danger" style="padding: 5px 10px; font-size: 12px;">
-                                        Cancel
-                                    </button>
-                                </td>
-                            </tr>
-                        `
-                          )
-                          .join("")}
-                    </tbody>
-                </table>
-            `;
+          <table class="bookings-table">
+            <thead>
+              <tr>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Phone</th>
+                <th>Table</th>
+                <th>Date</th>
+                <th>Time</th>
+                <th>Speakers</th>
+                <th>Email Status</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${bookingsList
+                .map(
+                  (booking) => `
+                <tr>
+                  <td>${booking.name}</td>
+                  <td>${booking.email}</td>
+                  <td>${booking.phone || "N/A"}</td>
+                  <td>${booking.tableName}</td>
+                  <td>${new Date(booking.date).toLocaleDateString()}</td>
+                  <td>${booking.timeSlot}</td>
+                  <td>${booking.speaker1} & ${booking.speaker2}</td>
+                  <td>${
+                    booking.emailSent
+                      ? '<span style="color: #27ae60;">✓ Sent</span>'
+                      : '<span style="color: #f39c12;">⚠ Not sent</span>'
+                  }</td>
+                  <td>
+                    <button onclick="cancelBooking('${booking.tableId}-${
+                    booking.slotIndex
+                  }')" 
+                            class="btn-danger" style="padding: 5px 10px; font-size: 12px;">
+                      Cancel
+                    </button>
+                  </td>
+                </tr>
+              `
+                )
+                .join("")}
+            </tbody>
+          </table>
+        `;
 
         container.innerHTML = tableHTML;
       }
@@ -1358,8 +2041,10 @@ END:VCALENDAR`;
       function cancelBooking(bookingKey) {
         if (confirm("Are you sure you want to cancel this booking?")) {
           delete bookings[bookingKey];
+          saveData();
           renderBookingsOverview();
           renderClientInterface();
+          updateStatistics();
         }
       }
 
@@ -1381,6 +2066,7 @@ END:VCALENDAR`;
           "Speaker 2",
           "Booking Time",
         ];
+
         const csvContent = [
           headers.join(","),
           ...bookingsList.map((booking) =>
@@ -1411,7 +2097,6 @@ END:VCALENDAR`;
           return;
         }
 
-        // Create a more detailed Excel-like format
         const excelContent = [
           "Conversation Table Booking Report",
           `Generated on: ${new Date().toLocaleString()}`,
@@ -1468,20 +2153,37 @@ END:VCALENDAR`;
         }, 5000);
       }
 
-      // Initialize with default settings
+      // Initialize application
       window.addEventListener("load", function () {
-        generateTimeSlots();
+        loadData();
+        loadFormData();
         renderClientInterface();
+        updateStatistics();
 
         // Close modals when clicking overlay
         document
           .getElementById("overlay")
-          .addEventListener("click", function () {
-            closeBookingForm();
-            closePasswordModal();
-            closeConfirmationModal();
+          .addEventListener("click", function (e) {
+            if (e.target === this) {
+              closeBookingForm();
+              closePasswordModal();
+              closeConfirmationModal();
+            }
           });
+
+        // Auto-save on form changes
+        ["eventDate", "startTime", "endTime", "slotDuration"].forEach((id) => {
+          document.getElementById(id).addEventListener("change", () => {
+            setTimeout(saveData, 100);
+          });
+        });
       });
+
+      // Auto-save periodically
+      setInterval(saveData, 30000); // Save every 30 seconds
+
+      // Save data before page unload
+      window.addEventListener("beforeunload", saveData);
     </script>
   </body>
 </html>
