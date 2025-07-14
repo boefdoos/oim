@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Ostend Is Music 2025 // Boek je gesprek! </title>
+    <title>Conversation Table Booking</title>
     <style>
       * {
         margin: 0;
@@ -95,10 +95,6 @@
       select:focus {
         outline: none;
         border-color: #3498db;
-      }
-
-      input:invalid {
-        border-color: #e74c3c;
       }
 
       button {
@@ -275,9 +271,6 @@
         box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
         z-index: 1000;
         min-width: 350px;
-        max-width: 90vw;
-        max-height: 90vh;
-        overflow-y: auto;
       }
 
       .overlay {
@@ -401,8 +394,6 @@
       .bookings-table th {
         background: #f8f9fa;
         font-weight: 500;
-        position: sticky;
-        top: 0;
       }
 
       .bookings-table tr:nth-child(even) {
@@ -414,17 +405,12 @@
         margin-bottom: 20px;
         color: #6c757d;
         font-size: 0.95rem;
-        background: #f8f9fa;
-        padding: 15px;
-        border-radius: 6px;
-        border: 1px solid #e9ecef;
       }
 
       .booking-actions {
         display: flex;
         gap: 10px;
         margin-top: 15px;
-        flex-wrap: wrap;
       }
 
       .confirmation-details {
@@ -452,8 +438,6 @@
         justify-content: space-between;
         align-items: center;
         margin-bottom: 20px;
-        flex-wrap: wrap;
-        gap: 10px;
       }
 
       .password-change-section {
@@ -473,144 +457,128 @@
         display: flex;
         gap: 10px;
         align-items: end;
-        flex-wrap: wrap;
       }
 
       .password-form .form-group {
         flex: 1;
-        min-width: 150px;
       }
 
-      .no-event-message {
-        text-align: center;
-        padding: 40px;
-        color: #6c757d;
-        background: #f8f9fa;
-        border-radius: 6px;
-        border: 1px solid #e9ecef;
+      .connection-status {
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        padding: 8px 15px;
+        border-radius: 20px;
+        font-size: 0.8rem;
+        font-weight: 500;
+        z-index: 200;
+        transition: all 0.3s ease;
       }
 
-      .stats-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-        gap: 15px;
+      .connection-status.connected {
+        background: #d4edda;
+        color: #155724;
+        border: 1px solid #c3e6cb;
+      }
+
+      .connection-status.disconnected {
+        background: #f8d7da;
+        color: #721c24;
+        border: 1px solid #f5c6cb;
+      }
+
+      .sync-indicator {
+        display: inline-block;
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        margin-right: 8px;
+        animation: pulse 2s infinite;
+      }
+
+      .sync-indicator.syncing {
+        background: #ffc107;
+      }
+
+      .sync-indicator.synced {
+        background: #28a745;
+      }
+
+      @keyframes pulse {
+        0% { opacity: 1; }
+        50% { opacity: 0.5; }
+        100% { opacity: 1; }
+      }
+
+      .loading-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(255, 255, 255, 0.9);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        z-index: 2000;
+        font-size: 1.2rem;
+        color: #666;
+      }
+
+      .firebase-config-section {
+        background: #e7f3ff;
+        border: 1px solid #b3d4fc;
+        padding: 15px;
+        border-radius: 4px;
         margin-bottom: 20px;
       }
 
-      .stat-card {
-        background: white;
-        padding: 20px;
-        border-radius: 6px;
-        border: 1px solid #e1e8ed;
-        text-align: center;
+      .firebase-config-section h3 {
+        color: #0c5aa6;
+        margin-bottom: 10px;
       }
 
-      .stat-number {
-        font-size: 1.5rem;
-        font-weight: bold;
-        color: #3498db;
+      .config-form {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 10px;
+        margin-bottom: 15px;
       }
 
-      .stat-label {
-        font-size: 0.9rem;
-        color: #6c757d;
-        margin-top: 5px;
+      .config-form input {
+        font-size: 0.8rem;
+        padding: 8px;
       }
 
-      /* Mobile responsiveness */
-      @media (max-width: 768px) {
-        .container {
-          padding: 20px;
-        }
-
-        .form-grid {
-          grid-template-columns: 1fr;
-        }
-
-        .client-booking-grid {
-          grid-template-columns: 1fr;
-        }
-
-        .password-form {
-          flex-direction: column;
-        }
-
-        .password-form .form-group {
-          min-width: unset;
-        }
-
-        .admin-header {
-          flex-direction: column;
-          align-items: stretch;
-        }
-
-        .booking-actions {
-          flex-direction: column;
-        }
-
-        .nav-tabs {
-          flex-wrap: wrap;
-        }
-
-        .nav-tab {
-          flex: 1;
-          min-width: 100px;
-        }
-      }
-
-      /* Loading state */
-      .loading {
-        opacity: 0.6;
-        pointer-events: none;
-      }
-
-      .loading::after {
-        content: "";
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-        width: 20px;
-        height: 20px;
-        border: 2px solid #3498db;
-        border-top: 2px solid transparent;
-        border-radius: 50%;
-        animation: spin 1s linear infinite;
-      }
-
-      @keyframes spin {
-        0% {
-          transform: translate(-50%, -50%) rotate(0deg);
-        }
-        100% {
-          transform: translate(-50%, -50%) rotate(360deg);
-        }
-      }
-
-      /* Code styling */
-      code {
-        background: #f8f9fa;
-        padding: 2px 4px;
-        border-radius: 3px;
-        font-family: "Courier New", monospace;
-        font-size: 0.9em;
-        color: #e74c3c;
-        border: 1px solid #e9ecef;
+      .config-actions {
+        display: flex;
+        gap: 10px;
       }
     </style>
   </head>
   <body>
+    <!-- Loading Overlay -->
+    <div id="loadingOverlay" class="loading-overlay">
+      <div>
+        <div class="sync-indicator syncing"></div>
+        Initializing Firebase...
+      </div>
+    </div>
+
+    <!-- Connection Status -->
+    <div id="connectionStatus" class="connection-status disconnected">
+      <span class="sync-indicator syncing"></span>
+      Connecting...
+    </div>
+
     <div class="container">
       <!-- CLIENT INTERFACE -->
       <div id="client-interface" class="client-interface">
         <h1>Conversation Table Booking</h1>
-        <div class="event-info" id="eventInfo">
-          <div class="no-event-message">
-            Event configuration not available yet. Please contact the
-            administrator.
-          </div>
+        <div class="event-info" id="eventInfo">Loading event information...</div>
+        <div class="client-booking-grid" id="clientBookingGrid">
+          Loading booking slots...
         </div>
-        <div class="client-booking-grid" id="clientBookingGrid"></div>
       </div>
 
       <!-- ADMIN ACCESS BUTTON -->
@@ -631,6 +599,28 @@
           </button>
         </div>
 
+        <!-- FIREBASE CONFIGURATION SECTION -->
+        <div class="firebase-config-section">
+          <h3>Firebase Configuration</h3>
+          <p style="margin-bottom: 15px; font-size: 0.9rem; color: #0c5aa6;">
+            Configure your Firebase project settings. Leave blank to use demo mode.
+          </p>
+          <div class="config-form">
+            <input type="text" id="firebaseApiKey" placeholder="Firebase API Key" />
+            <input type="text" id="firebaseAuthDomain" placeholder="Auth Domain (project-id.firebaseapp.com)" />
+            <input type="text" id="firebaseProjectId" placeholder="Project ID" />
+            <input type="text" id="firebaseStorageBucket" placeholder="Storage Bucket" />
+            <input type="text" id="firebaseMessagingSenderId" placeholder="Messaging Sender ID" />
+            <input type="text" id="firebaseAppId" placeholder="App ID" />
+          </div>
+          <div class="config-actions">
+            <button onclick="updateFirebaseConfig()" class="btn-success">Update Configuration</button>
+            <button onclick="testFirebaseConnection()" class="btn-secondary">Test Connection</button>
+            <button onclick="resetToDemo()" class="btn-secondary">Use Demo Mode</button>
+          </div>
+          <div id="firebaseConfigStatus" class="status-message" style="display: none"></div>
+        </div>
+
         <!-- PASSWORD CHANGE SECTION -->
         <div class="password-change-section">
           <h3>Change Admin Password</h3>
@@ -641,7 +631,6 @@
                 type="password"
                 id="currentPassword"
                 placeholder="Enter current password"
-                autocomplete="current-password"
               />
             </div>
             <div class="form-group">
@@ -650,7 +639,6 @@
                 type="password"
                 id="newPassword"
                 placeholder="Enter new password"
-                autocomplete="new-password"
               />
             </div>
             <div class="form-group">
@@ -659,7 +647,6 @@
                 type="password"
                 id="confirmPassword"
                 placeholder="Confirm new password"
-                autocomplete="new-password"
               />
             </div>
             <button onclick="changePassword()" class="btn-success">
@@ -673,26 +660,6 @@
           ></div>
         </div>
 
-        <!-- Statistics -->
-        <div class="stats-grid">
-          <div class="stat-card">
-            <div class="stat-number" id="totalBookings">0</div>
-            <div class="stat-label">Total Bookings</div>
-          </div>
-          <div class="stat-card">
-            <div class="stat-number" id="totalTables">0</div>
-            <div class="stat-label">Active Tables</div>
-          </div>
-          <div class="stat-card">
-            <div class="stat-number" id="availableSlots">0</div>
-            <div class="stat-label">Available Slots</div>
-          </div>
-          <div class="stat-card">
-            <div class="stat-number" id="bookedSlots">0</div>
-            <div class="stat-label">Booked Slots</div>
-          </div>
-        </div>
-
         <div class="nav-tabs">
           <button class="nav-tab active" onclick="switchTab('setup')">
             Event Setup
@@ -701,7 +668,7 @@
             Manage Bookings
           </button>
           <button class="nav-tab" onclick="switchTab('export')">
-            Email & Export
+            Export & Reports
           </button>
         </div>
 
@@ -711,15 +678,15 @@
             <div class="form-grid">
               <div class="form-group">
                 <label for="eventDate">Event Date:</label>
-                <input type="date" id="eventDate" required />
+                <input type="date" id="eventDate" />
               </div>
               <div class="form-group">
                 <label for="startTime">Start Time:</label>
-                <input type="time" id="startTime" value="09:00" required />
+                <input type="time" id="startTime" value="09:00" />
               </div>
               <div class="form-group">
                 <label for="endTime">End Time:</label>
-                <input type="time" id="endTime" value="17:00" required />
+                <input type="time" id="endTime" value="17:00" />
               </div>
               <div class="form-group">
                 <label for="slotDuration">Slot Duration (minutes):</label>
@@ -728,8 +695,7 @@
                   id="slotDuration"
                   value="10"
                   min="5"
-                  max="60"
-                  required
+                  max="30"
                 />
               </div>
             </div>
@@ -750,26 +716,15 @@
                   type="text"
                   id="tableName"
                   placeholder="e.g., AI & Technology"
-                  required
                 />
               </div>
               <div class="form-group">
                 <label for="speaker1">Speaker 1:</label>
-                <input
-                  type="text"
-                  id="speaker1"
-                  placeholder="Speaker name"
-                  required
-                />
+                <input type="text" id="speaker1" placeholder="Speaker name" />
               </div>
               <div class="form-group">
                 <label for="speaker2">Speaker 2:</label>
-                <input
-                  type="text"
-                  id="speaker2"
-                  placeholder="Speaker name"
-                  required
-                />
+                <input type="text" id="speaker2" placeholder="Speaker name" />
               </div>
             </div>
             <button onclick="addTable()">Add Table</button>
@@ -781,210 +736,23 @@
         <div id="bookings-tab" class="tab-content">
           <div class="section">
             <h2>Current Bookings</h2>
-            <div id="bookingsOverview"></div>
+            <div id="bookingsOverview">Loading bookings...</div>
           </div>
         </div>
 
         <div id="export-tab" class="tab-content">
           <div class="section">
-            <h2>Email Configuration</h2>
-            <div class="form-grid">
-              <div class="form-group">
-                <label for="emailServiceId">EmailJS Service ID:</label>
-                <input
-                  type="text"
-                  id="emailServiceId"
-                  placeholder="service_xxxxxxx"
-                />
-              </div>
-              <div class="form-group">
-                <label for="emailTemplateId">EmailJS Template ID:</label>
-                <input
-                  type="text"
-                  id="emailTemplateId"
-                  placeholder="template_xxxxxxx"
-                />
-              </div>
-              <div class="form-group">
-                <label for="emailPublicKey">EmailJS Public Key:</label>
-                <input
-                  type="text"
-                  id="emailPublicKey"
-                  placeholder="Your public key"
-                />
-              </div>
-              <div class="form-group">
-                <label for="testEmail">Test Email:</label>
-                <input
-                  type="email"
-                  id="testEmail"
-                  placeholder="test@example.com"
-                />
-              </div>
-            </div>
-            <div class="booking-actions">
-              <button onclick="saveEmailConfig()">Save Email Config</button>
-              <button onclick="testEmailConfig()" class="btn-secondary">
-                Test Email
-              </button>
-              <button onclick="checkEmailStatus()" class="btn-secondary">
-                Check Status
-              </button>
-            </div>
-            <div
-              id="emailConfigStatus"
-              class="status-message"
-              style="display: none"
-            ></div>
-
-            <div class="section" style="margin-top: 20px">
-              <h3>EmailJS Setup Instructions</h3>
-              <ol style="margin-left: 20px; line-height: 1.8">
-                <li>
-                  <strong>Create EmailJS Account:</strong> Go to
-                  <a href="https://www.emailjs.com" target="_blank"
-                    >EmailJS.com</a
-                  >
-                  and sign up
-                </li>
-                <li>
-                  <strong>Add Email Service:</strong>
-                  <ul style="margin: 5px 0; margin-left: 20px">
-                    <li>Go to "Email Services" and click "Add New Service"</li>
-                    <li>Choose your email provider (Gmail, Outlook, etc.)</li>
-                    <li>Follow the setup instructions for your provider</li>
-                    <li>
-                      Note your <strong>Service ID</strong> (starts with
-                      "service_")
-                    </li>
-                  </ul>
-                </li>
-                <li>
-                  <strong>Create Email Template:</strong>
-                  <ul style="margin: 5px 0; margin-left: 20px">
-                    <li>
-                      Go to "Email Templates" and click "Create New Template"
-                    </li>
-                    <li>Use these variables in your template:</li>
-                    <li style="margin-left: 20px">
-                      <code>{{user_name}}</code> - Customer name
-                    </li>
-                    <li style="margin-left: 20px">
-                      <code>{{user_email}}</code> - Customer email
-                    </li>
-                    <li style="margin-left: 20px">
-                      <code>{{table_name}}</code> - Table name
-                    </li>
-                    <li style="margin-left: 20px">
-                      <code>{{speakers}}</code> - Speaker names
-                    </li>
-                    <li style="margin-left: 20px">
-                      <code>{{event_date}}</code> - Event date
-                    </li>
-                    <li style="margin-left: 20px">
-                      <code>{{time_slot}}</code> - Time slot
-                    </li>
-                    <li style="margin-left: 20px">
-                      <code>{{to_email}}</code> - Recipient email
-                    </li>
-                    <li>
-                      Note your <strong>Template ID</strong> (starts with
-                      "template_")
-                    </li>
-                  </ul>
-                </li>
-                <li>
-                  <strong>Get Public Key:</strong> Go to "Account" → "General"
-                  and copy your <strong>Public Key</strong>
-                </li>
-                <li>
-                  <strong>Configure Above:</strong> Paste all three IDs into the
-                  fields above and click "Save"
-                </li>
-                <li>
-                  <strong>Test Configuration:</strong> Enter a test email and
-                  click "Test Email"
-                </li>
-              </ol>
-
-              <div
-                style="
-                  background: #f8f9fa;
-                  padding: 15px;
-                  border-radius: 4px;
-                  margin-top: 15px;
-                  border: 1px solid #e9ecef;
-                "
-              >
-                <h4>Sample Email Template:</h4>
-                <pre
-                  style="
-                    background: white;
-                    padding: 10px;
-                    border-radius: 4px;
-                    overflow-x: auto;
-                    font-size: 0.9em;
-                  "
-                >
-Subject: Booking Confirmed - {{table_name}}
-
-Dear {{user_name}},
-
-Your conversation table booking has been confirmed!
-
-📅 Date: {{event_date}}
-⏰ Time: {{time_slot}}
-📋 Table: {{table_name}}
-🎤 Speakers: {{speakers}}
-
-Please arrive 5 minutes early.
-
-Best regards,
-Event Team</pre
-                >
-              </div>
-
-              <div
-                style="
-                  background: #fff3cd;
-                  padding: 15px;
-                  border-radius: 4px;
-                  margin-top: 15px;
-                  border: 1px solid #ffeaa7;
-                "
-              >
-                <h4>Troubleshooting:</h4>
-                <ul style="margin-left: 20px; line-height: 1.6">
-                  <li>Make sure your Service ID starts with "service_"</li>
-                  <li>Make sure your Template ID starts with "template_"</li>
-                  <li>
-                    Check that your email service is properly configured in
-                    EmailJS
-                  </li>
-                  <li>
-                    Verify that your template variables match exactly
-                    (case-sensitive)
-                  </li>
-                  <li>Check the browser console for detailed error messages</li>
-                  <li>Make sure your EmailJS account has enough quota</li>
-                </ul>
-              </div>
-            </div>
-          </div>
-
-          <div class="section">
             <h2>Export & Reports</h2>
-            <div class="booking-actions">
-              <button class="btn-success" onclick="exportToCSV()">
-                Export to CSV
-              </button>
-              <button class="btn-success" onclick="exportToExcel()">
-                Export to Excel
-              </button>
-              <button class="btn-secondary" onclick="clearAllData()">
-                Clear All Data
-              </button>
-            </div>
+            <button class="btn-success" onclick="exportToCSV()">
+              Export to CSV
+            </button>
+            <button
+              class="btn-success"
+              onclick="exportToExcel()"
+              style="margin-left: 10px"
+            >
+              Export to Excel
+            </button>
             <div
               id="exportStatus"
               class="status-message"
@@ -1008,7 +776,6 @@ Event Team</pre
           placeholder="Password"
           onkeypress="if(event.key==='Enter') checkPassword()"
           style="width: 100%; margin: 15px 0"
-          autocomplete="current-password"
         />
         <div style="text-align: center">
           <button onclick="checkPassword()" style="margin-right: 10px">
@@ -1031,27 +798,22 @@ Event Team</pre
         <h3>Book Your Conversation</h3>
         <div class="form-group">
           <label for="userName">Your Name:</label>
-          <input type="text" id="userName" required autocomplete="name" />
+          <input type="text" id="userName" required />
         </div>
         <div class="form-group">
           <label for="userEmail">Email:</label>
-          <input type="email" id="userEmail" required autocomplete="email" />
+          <input type="email" id="userEmail" required />
         </div>
         <div class="form-group">
           <label for="userPhone">Phone (optional):</label>
-          <input type="tel" id="userPhone" autocomplete="tel" />
+          <input type="tel" id="userPhone" />
         </div>
         <div class="form-group">
           <label>Selected Slot:</label>
           <div id="selectedSlotInfo" class="confirmation-details"></div>
         </div>
         <div class="booking-actions">
-          <button onclick="confirmBooking()" id="confirmBookingBtn">
-            Confirm Booking
-          </button>
-          <button onclick="closeBookingForm()" class="btn-secondary">
-            Cancel
-          </button>
+          <button onclick="confirmBooking()" id="confirmBookingBtn">Confirm Booking</button>
         </div>
         <div
           id="bookingStatus"
@@ -1077,6 +839,10 @@ Event Team</pre
       </div>
     </div>
 
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+    
     <!-- EmailJS SDK -->
     <script
       type="text/javascript"
@@ -1084,451 +850,443 @@ Event Team</pre
     ></script>
 
     <script>
+      // Firebase and Database Configuration
+      let db = null;
+      let isFirebaseInitialized = false;
+      let isOnline = false;
+      let unsubscribeListeners = [];
+
+      // Demo Firebase configuration (you should replace with your own)
+      const DEFAULT_FIREBASE_CONFIG = {
+        apiKey: "demo-api-key",
+        authDomain: "demo-project.firebaseapp.com",
+        projectId: "demo-project",
+        storageBucket: "demo-project.appspot.com",
+        messagingSenderId: "123456789",
+        appId: "1:123456789:web:abcdef123456789"
+      };
+
       // EmailJS Configuration
-      let EMAILJS_CONFIG = {
-        serviceId: "",
-        templateId: "",
-        publicKey: "",
-        enabled: false,
+      const EMAILJS_CONFIG = {
+        serviceId: "service_0m2owju", // Replace with your EmailJS service ID
+        templateId: "template_7xq3pho", // Replace with your EmailJS template ID
+        publicKey: "VehBeO9qQGs5TbvvnY", // Replace with your EmailJS public key
       };
 
-      // Initialize EmailJS when needed
-      function initializeEmailJS() {
-        if (
-          typeof emailjs !== "undefined" &&
-          EMAILJS_CONFIG.enabled &&
-          EMAILJS_CONFIG.publicKey
-        ) {
-          try {
-            emailjs.init(EMAILJS_CONFIG.publicKey);
-            console.log("EmailJS initialized successfully");
-            return true;
-          } catch (error) {
-            console.error("EmailJS initialization failed:", error);
-            return false;
-          }
-        }
-        return false;
-      }
-
-      // Storage keys
-      const STORAGE_KEYS = {
-        EVENT_CONFIG: "conversation_booking_event_config",
-        TABLES: "conversation_booking_tables",
-        BOOKINGS: "conversation_booking_bookings",
-        ADMIN_PASSWORD: "conversation_booking_admin_password",
-        EMAIL_CONFIG: "conversation_booking_email_config",
+      // Global data storage (fallback for offline mode)
+      let localData = {
+        eventConfig: {
+          date: "",
+          startTime: "09:00",
+          endTime: "17:00",
+          slotDuration: 10,
+          timeSlots: [],
+        },
+        tables: [],
+        bookings: {},
+        adminPassword: "admin123"
       };
 
-      // Global data storage
-      let eventConfig = {
-        date: "",
-        startTime: "09:00",
-        endTime: "17:00",
-        slotDuration: 10,
-        timeSlots: [],
-      };
-
-      let tables = [];
-      let bookings = {}; // Format: "tableId-slotIndex": {name, email, phone, time, table, slot}
       let currentBookingSelection = null;
       let currentBookingConfirmation = null;
       let isAdminMode = false;
-      let adminPassword = "admin123"; // Default password
 
-      // Load data from localStorage
-      function loadData() {
+      // Initialize Firebase
+      async function initializeFirebase(config = null) {
         try {
-          const savedEventConfig = localStorage.getItem(
-            STORAGE_KEYS.EVENT_CONFIG
-          );
-          if (savedEventConfig) {
-            eventConfig = JSON.parse(savedEventConfig);
+          updateConnectionStatus('connecting');
+          
+          const firebaseConfig = config || getStoredFirebaseConfig() || DEFAULT_FIREBASE_CONFIG;
+          
+          // Initialize Firebase
+          if (!firebase.apps.length) {
+            firebase.initializeApp(firebaseConfig);
           }
-
-          const savedTables = localStorage.getItem(STORAGE_KEYS.TABLES);
-          if (savedTables) {
-            tables = JSON.parse(savedTables);
-          }
-
-          const savedBookings = localStorage.getItem(STORAGE_KEYS.BOOKINGS);
-          if (savedBookings) {
-            bookings = JSON.parse(savedBookings);
-          }
-
-          const savedPassword = localStorage.getItem(
-            STORAGE_KEYS.ADMIN_PASSWORD
-          );
-          if (savedPassword) {
-            adminPassword = savedPassword;
-          }
-
-          const savedEmailConfig = localStorage.getItem(
-            STORAGE_KEYS.EMAIL_CONFIG
-          );
-          if (savedEmailConfig) {
-            const emailConfig = JSON.parse(savedEmailConfig);
-            Object.assign(EMAILJS_CONFIG, emailConfig);
-            loadEmailConfigForm();
-          }
+          
+          db = firebase.firestore();
+          
+          // Test connection
+          await testFirebaseConnection();
+          
+          isFirebaseInitialized = true;
+          isOnline = true;
+          updateConnectionStatus('connected');
+          
+          // Set up real-time listeners
+          setupRealtimeListeners();
+          
+          // Load initial data
+          await loadDataFromFirestore();
+          
+          console.log('Firebase initialized successfully');
+          
         } catch (error) {
-          console.error("Error loading data from localStorage:", error);
+          console.error('Firebase initialization failed:', error);
+          isFirebaseInitialized = false;
+          isOnline = false;
+          updateConnectionStatus('disconnected');
+          
+          // Use local storage fallback
+          loadDataFromLocalStorage();
+          showFirebaseConfigStatus('Firebase connection failed. Using offline mode.', 'warning');
         }
       }
 
-      // Save data to localStorage
-      function saveData() {
-        try {
-          localStorage.setItem(
-            STORAGE_KEYS.EVENT_CONFIG,
-            JSON.stringify(eventConfig)
-          );
-          localStorage.setItem(STORAGE_KEYS.TABLES, JSON.stringify(tables));
-          localStorage.setItem(STORAGE_KEYS.BOOKINGS, JSON.stringify(bookings));
-          localStorage.setItem(STORAGE_KEYS.ADMIN_PASSWORD, adminPassword);
-          localStorage.setItem(
-            STORAGE_KEYS.EMAIL_CONFIG,
-            JSON.stringify(EMAILJS_CONFIG)
-          );
-        } catch (error) {
-          console.error("Error saving data to localStorage:", error);
-        }
+      function getStoredFirebaseConfig() {
+        const stored = localStorage.getItem('firebaseConfig');
+        return stored ? JSON.parse(stored) : null;
       }
 
-      // Load email configuration into form
-      function loadEmailConfigForm() {
-        document.getElementById("emailServiceId").value =
-          EMAILJS_CONFIG.serviceId || "";
-        document.getElementById("emailTemplateId").value =
-          EMAILJS_CONFIG.templateId || "";
-        document.getElementById("emailPublicKey").value =
-          EMAILJS_CONFIG.publicKey || "";
+      function storeFirebaseConfig(config) {
+        localStorage.setItem('firebaseConfig', JSON.stringify(config));
       }
 
-      // Save email configuration
-      function saveEmailConfig() {
-        const serviceId = document
-          .getElementById("emailServiceId")
-          .value.trim();
-        const templateId = document
-          .getElementById("emailTemplateId")
-          .value.trim();
-        const publicKey = document
-          .getElementById("emailPublicKey")
-          .value.trim();
-
-        if (!serviceId || !templateId || !publicKey) {
-          showStatus(
-            "emailConfigStatus",
-            "Please fill in all email configuration fields",
-            "error"
-          );
-          return;
-        }
-
-        // Basic validation
-        if (!serviceId.startsWith("service_")) {
-          showStatus(
-            "emailConfigStatus",
-            'Service ID should start with "service_"',
-            "error"
-          );
-          return;
-        }
-
-        if (!templateId.startsWith("template_")) {
-          showStatus(
-            "emailConfigStatus",
-            'Template ID should start with "template_"',
-            "error"
-          );
-          return;
-        }
-
-        // Update configuration
-        EMAILJS_CONFIG.serviceId = serviceId;
-        EMAILJS_CONFIG.templateId = templateId;
-        EMAILJS_CONFIG.publicKey = publicKey;
-        EMAILJS_CONFIG.enabled = true;
-
-        // Test EmailJS availability
-        if (typeof emailjs === "undefined") {
-          showStatus(
-            "emailConfigStatus",
-            "EmailJS library not loaded. Please refresh the page.",
-            "error"
-          );
-          return;
-        }
-
-        // Initialize EmailJS
-        const initialized = initializeEmailJS();
-        if (!initialized) {
-          showStatus(
-            "emailConfigStatus",
-            "Failed to initialize EmailJS. Please check your credentials.",
-            "error"
-          );
-          return;
-        }
-
-        // Save to localStorage
-        saveData();
-        showStatus(
-          "emailConfigStatus",
-          "Email configuration saved successfully! You can now test it.",
-          "success"
-        );
+      async function testFirebaseConnection() {
+        if (!db) throw new Error('Firestore not initialized');
+        
+        // Try to read a document to test connectivity
+        await db.collection('system').doc('test').get();
       }
 
-      // Check email status for debugging
-      function checkEmailStatus() {
-        let statusMessage = "<strong>Email Configuration Status:</strong><br>";
-
-        // Check EmailJS library
-        if (typeof emailjs === "undefined") {
-          statusMessage += "❌ EmailJS library: Not loaded<br>";
-        } else {
-          statusMessage += "✅ EmailJS library: Loaded<br>";
-        }
-
-        // Check configuration
-        statusMessage += `📧 Service ID: ${
-          EMAILJS_CONFIG.serviceId || "Not set"
-        }<br>`;
-        statusMessage += `📋 Template ID: ${
-          EMAILJS_CONFIG.templateId || "Not set"
-        }<br>`;
-        statusMessage += `🔑 Public Key: ${
-          EMAILJS_CONFIG.publicKey ? "Set" : "Not set"
-        }<br>`;
-        statusMessage += `⚙️ Enabled: ${
-          EMAILJS_CONFIG.enabled ? "Yes" : "No"
-        }<br>`;
-
-        // Check initialization
-        const initialized = initializeEmailJS();
-        statusMessage += `🚀 Initialized: ${initialized ? "Yes" : "No"}<br>`;
-
-        // Display in status area
-        const statusElement = document.getElementById("emailConfigStatus");
-        statusElement.innerHTML = statusMessage;
-        statusElement.className = "status-message success";
-        statusElement.style.display = "block";
-
-        // Also log to console for debugging
-        console.log("Email Configuration Debug:", {
-          emailjsLoaded: typeof emailjs !== "undefined",
-          config: EMAILJS_CONFIG,
-          initialized: initialized,
-        });
-      }
-
-      // Test email configuration
-      function testEmailConfig() {
-        const testEmail = document.getElementById("testEmail").value.trim();
-
-        if (!testEmail) {
-          showStatus(
-            "emailConfigStatus",
-            "Please enter a test email address",
-            "error"
-          );
-          return;
-        }
-
-        // Validate email format
-        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        if (!emailRegex.test(testEmail)) {
-          showStatus(
-            "emailConfigStatus",
-            "Please enter a valid email address",
-            "error"
-          );
-          return;
-        }
-
-        if (!EMAILJS_CONFIG.enabled) {
-          showStatus(
-            "emailConfigStatus",
-            "Please save email configuration first",
-            "error"
-          );
-          return;
-        }
-
-        if (typeof emailjs === "undefined") {
-          showStatus(
-            "emailConfigStatus",
-            "EmailJS library not loaded. Please refresh the page.",
-            "error"
-          );
-          return;
-        }
-
-        // Re-initialize EmailJS to ensure it's working
-        const initialized = initializeEmailJS();
-        if (!initialized) {
-          showStatus(
-            "emailConfigStatus",
-            "Failed to initialize EmailJS. Please check your configuration.",
-            "error"
-          );
-          return;
-        }
-
-        const testParams = {
-          user_name: "Test User",
-          user_email: testEmail,
-          table_name: "Test Table",
-          speakers: "Speaker 1 & Speaker 2",
-          event_date: "Monday, January 1, 2024",
-          time_slot: "10:00 - 10:10",
-          to_email: testEmail,
-          // Additional common template variables
-          to_name: "Test User",
-          from_name: "Event Team",
-          message: "This is a test email to verify your EmailJS configuration.",
-        };
-
-        showStatus(
-          "emailConfigStatus",
-          "Sending test email... Please wait.",
-          "success"
-        );
-
-        console.log("Sending test email with params:", testParams);
-        console.log("Using EmailJS config:", {
-          serviceId: EMAILJS_CONFIG.serviceId,
-          templateId: EMAILJS_CONFIG.templateId,
-          publicKey: EMAILJS_CONFIG.publicKey ? "SET" : "NOT SET",
-        });
-
-        emailjs
-          .send(
-            EMAILJS_CONFIG.serviceId,
-            EMAILJS_CONFIG.templateId,
-            testParams,
-            EMAILJS_CONFIG.publicKey
-          )
-          .then(
-            (response) => {
-              console.log("Test email sent successfully:", response);
-              showStatus(
-                "emailConfigStatus",
-                "Test email sent successfully! Check your inbox (and spam folder).",
-                "success"
-              );
-            },
-            (error) => {
-              console.error("Test email failed:", error);
-              let errorMessage = "Test email failed: ";
-
-              if (error.text) {
-                errorMessage += error.text;
-              } else if (error.message) {
-                errorMessage += error.message;
-              } else {
-                errorMessage += "Unknown error occurred";
-              }
-
-              // Common error messages
-              if (error.text && error.text.includes("template")) {
-                errorMessage +=
-                  " (Check your template ID and template variables)";
-              } else if (error.text && error.text.includes("service")) {
-                errorMessage +=
-                  " (Check your service ID and service configuration)";
-              } else if (error.text && error.text.includes("public")) {
-                errorMessage += " (Check your public key)";
-              }
-
-              showStatus("emailConfigStatus", errorMessage, "error");
+      function updateConnectionStatus(status) {
+        const statusElement = document.getElementById('connectionStatus');
+        const indicator = statusElement.querySelector('.sync-indicator');
+        
+        switch (status) {
+          case 'connected':
+            statusElement.className = 'connection-status connected';
+            statusElement.innerHTML = '<span class="sync-indicator synced"></span>Connected';
+            break;
+          case 'connecting':
+            statusElement.className = 'connection-status disconnected';
+            statusElement.innerHTML = '<span class="sync-indicator syncing"></span>Connecting...';
+            break;
+          case 'disconnected':
+            statusElement.className = 'connection-status disconnected';
+            statusElement.innerHTML = '<span class="sync-indicator"></span>Offline Mode';
+            break;
+          case 'syncing':
+            if (statusElement.className.includes('connected')) {
+              indicator.className = 'sync-indicator syncing';
             }
-          );
+            break;
+          case 'synced':
+            if (statusElement.className.includes('connected')) {
+              indicator.className = 'sync-indicator synced';
+            }
+            break;
+        }
       }
 
-      // Clear all data
-      function clearAllData() {
-        if (
-          confirm(
-            "Are you sure you want to clear all data? This action cannot be undone."
-          )
-        ) {
-          localStorage.removeItem(STORAGE_KEYS.EVENT_CONFIG);
-          localStorage.removeItem(STORAGE_KEYS.TABLES);
-          localStorage.removeItem(STORAGE_KEYS.BOOKINGS);
-          localStorage.removeItem(STORAGE_KEYS.ADMIN_PASSWORD);
-          localStorage.removeItem(STORAGE_KEYS.EMAIL_CONFIG);
+      function setupRealtimeListeners() {
+        if (!db) return;
 
-          // Reset to defaults
-          eventConfig = {
-            date: "",
-            startTime: "09:00",
-            endTime: "17:00",
-            slotDuration: 10,
-            timeSlots: [],
-          };
-          tables = [];
-          bookings = {};
-          adminPassword = "admin123";
+        // Listen to event configuration changes
+        const eventConfigRef = db.collection('system').doc('eventConfig');
+        const unsubscribeEventConfig = eventConfigRef.onSnapshot((doc) => {
+          if (doc.exists) {
+            localData.eventConfig = doc.data();
+            updateEventUI();
+            renderClientInterface();
+          }
+        }, (error) => {
+          console.error('Error listening to event config:', error);
+        });
 
-          // Reset email config
-          EMAILJS_CONFIG.serviceId = "";
-          EMAILJS_CONFIG.templateId = "";
-          EMAILJS_CONFIG.publicKey = "";
-          EMAILJS_CONFIG.enabled = false;
-
-          // Update UI
-          loadFormData();
-          loadEmailConfigForm();
+        // Listen to tables changes
+        const tablesRef = db.collection('tables');
+        const unsubscribeTables = tablesRef.onSnapshot((snapshot) => {
+          localData.tables = [];
+          snapshot.forEach((doc) => {
+            localData.tables.push({ id: doc.id, ...doc.data() });
+          });
+          localData.tables.sort((a, b) => a.order - b.order);
           renderTables();
+          renderClientInterface();
+        }, (error) => {
+          console.error('Error listening to tables:', error);
+        });
+
+        // Listen to bookings changes
+        const bookingsRef = db.collection('bookings');
+        const unsubscribeBookings = bookingsRef.onSnapshot((snapshot) => {
+          localData.bookings = {};
+          snapshot.forEach((doc) => {
+            localData.bookings[doc.id] = doc.data();
+          });
           renderBookingsOverview();
           renderClientInterface();
-          updateStatistics();
+        }, (error) => {
+          console.error('Error listening to bookings:', error);
+        });
 
-          showStatus(
-            "exportStatus",
-            "All data cleared successfully",
-            "success"
-          );
+        // Listen to admin settings
+        const adminRef = db.collection('system').doc('admin');
+        const unsubscribeAdmin = adminRef.onSnapshot((doc) => {
+          if (doc.exists) {
+            const adminData = doc.data();
+            if (adminData.password) {
+              localData.adminPassword = adminData.password;
+            }
+          }
+        }, (error) => {
+          console.error('Error listening to admin settings:', error);
+        });
+
+        unsubscribeListeners = [unsubscribeEventConfig, unsubscribeTables, unsubscribeBookings, unsubscribeAdmin];
+      }
+
+      // Firestore data operations
+      async function saveEventConfigToFirestore() {
+        if (!db) {
+          saveDataToLocalStorage();
+          return;
+        }
+
+        try {
+          updateConnectionStatus('syncing');
+          await db.collection('system').doc('eventConfig').set(localData.eventConfig);
+          updateConnectionStatus('synced');
+        } catch (error) {
+          console.error('Error saving event config:', error);
+          saveDataToLocalStorage();
         }
       }
 
-      // Load form data from stored config
-      function loadFormData() {
-        if (eventConfig.date) {
-          document.getElementById("eventDate").value = eventConfig.date;
-        } else {
-          // Set default date to today
-          document.getElementById("eventDate").value = new Date()
-            .toISOString()
-            .split("T")[0];
+      async function saveTableToFirestore(table) {
+        if (!db) {
+          saveDataToLocalStorage();
+          return table.id;
         }
 
-        document.getElementById("startTime").value = eventConfig.startTime;
-        document.getElementById("endTime").value = eventConfig.endTime;
-        document.getElementById("slotDuration").value =
-          eventConfig.slotDuration;
+        try {
+          updateConnectionStatus('syncing');
+          const docRef = await db.collection('tables').add({
+            ...table,
+            createdAt: firebase.firestore.FieldValue.serverTimestamp()
+          });
+          updateConnectionStatus('synced');
+          return docRef.id;
+        } catch (error) {
+          console.error('Error saving table:', error);
+          saveDataToLocalStorage();
+          return table.id;
+        }
       }
 
-      // Update statistics
-      function updateStatistics() {
-        const totalBookings = Object.keys(bookings).length;
-        const totalTables = tables.length;
-        const totalSlots = totalTables * eventConfig.timeSlots.length;
-        const bookedSlots = totalBookings;
-        const availableSlots = totalSlots - bookedSlots;
+      async function removeTableFromFirestore(tableId) {
+        if (!db) {
+          saveDataToLocalStorage();
+          return;
+        }
 
-        document.getElementById("totalBookings").textContent = totalBookings;
-        document.getElementById("totalTables").textContent = totalTables;
-        document.getElementById("availableSlots").textContent = Math.max(
-          0,
-          availableSlots
-        );
-        document.getElementById("bookedSlots").textContent = bookedSlots;
+        try {
+          updateConnectionStatus('syncing');
+          await db.collection('tables').doc(tableId).delete();
+          
+          // Remove related bookings
+          const bookingsSnapshot = await db.collection('bookings')
+            .where('tableId', '==', tableId)
+            .get();
+          
+          const batch = db.batch();
+          bookingsSnapshot.forEach((doc) => {
+            batch.delete(doc.ref);
+          });
+          await batch.commit();
+          
+          updateConnectionStatus('synced');
+        } catch (error) {
+          console.error('Error removing table:', error);
+          saveDataToLocalStorage();
+        }
       }
 
+      async function saveBookingToFirestore(bookingKey, booking) {
+        if (!db) {
+          saveDataToLocalStorage();
+          return;
+        }
+
+        try {
+          updateConnectionStatus('syncing');
+          await db.collection('bookings').doc(bookingKey).set({
+            ...booking,
+            createdAt: firebase.firestore.FieldValue.serverTimestamp()
+          });
+          updateConnectionStatus('synced');
+        } catch (error) {
+          console.error('Error saving booking:', error);
+          saveDataToLocalStorage();
+          throw error;
+        }
+      }
+
+      async function removeBookingFromFirestore(bookingKey) {
+        if (!db) {
+          saveDataToLocalStorage();
+          return;
+        }
+
+        try {
+          updateConnectionStatus('syncing');
+          await db.collection('bookings').doc(bookingKey).delete();
+          updateConnectionStatus('synced');
+        } catch (error) {
+          console.error('Error removing booking:', error);
+          saveDataToLocalStorage();
+        }
+      }
+
+      async function saveAdminPasswordToFirestore(password) {
+        if (!db) {
+          saveDataToLocalStorage();
+          return;
+        }
+
+        try {
+          updateConnectionStatus('syncing');
+          await db.collection('system').doc('admin').set({ password });
+          updateConnectionStatus('synced');
+        } catch (error) {
+          console.error('Error saving admin password:', error);
+          saveDataToLocalStorage();
+        }
+      }
+
+      async function loadDataFromFirestore() {
+        if (!db) return;
+
+        try {
+          // Load event configuration
+          const eventConfigDoc = await db.collection('system').doc('eventConfig').get();
+          if (eventConfigDoc.exists) {
+            localData.eventConfig = eventConfigDoc.data();
+          }
+
+          // Load tables
+          const tablesSnapshot = await db.collection('tables').orderBy('order').get();
+          localData.tables = [];
+          tablesSnapshot.forEach((doc) => {
+            localData.tables.push({ id: doc.id, ...doc.data() });
+          });
+
+          // Load bookings
+          const bookingsSnapshot = await db.collection('bookings').get();
+          localData.bookings = {};
+          bookingsSnapshot.forEach((doc) => {
+            localData.bookings[doc.id] = doc.data();
+          });
+
+          // Load admin settings
+          const adminDoc = await db.collection('system').doc('admin').get();
+          if (adminDoc.exists) {
+            const adminData = adminDoc.data();
+            if (adminData.password) {
+              localData.adminPassword = adminData.password;
+            }
+          }
+
+          updateUI();
+        } catch (error) {
+          console.error('Error loading data from Firestore:', error);
+          loadDataFromLocalStorage();
+        }
+      }
+
+      // Local storage fallback
+      function saveDataToLocalStorage() {
+        localStorage.setItem('bookingSystemData', JSON.stringify(localData));
+      }
+
+      function loadDataFromLocalStorage() {
+        const stored = localStorage.getItem('bookingSystemData');
+        if (stored) {
+          localData = { ...localData, ...JSON.parse(stored) };
+        }
+        updateUI();
+      }
+
+      function updateUI() {
+        updateEventUI();
+        renderTables();
+        renderBookingsOverview();
+        renderClientInterface();
+      }
+
+      function updateEventUI() {
+        if (localData.eventConfig.date) {
+          document.getElementById('eventDate').value = localData.eventConfig.date;
+        }
+        document.getElementById('startTime').value = localData.eventConfig.startTime;
+        document.getElementById('endTime').value = localData.eventConfig.endTime;
+        document.getElementById('slotDuration').value = localData.eventConfig.slotDuration;
+      }
+
+      // Firebase configuration management
+      function updateFirebaseConfig() {
+        const config = {
+          apiKey: document.getElementById('firebaseApiKey').value.trim(),
+          authDomain: document.getElementById('firebaseAuthDomain').value.trim(),
+          projectId: document.getElementById('firebaseProjectId').value.trim(),
+          storageBucket: document.getElementById('firebaseStorageBucket').value.trim(),
+          messagingSenderId: document.getElementById('firebaseMessagingSenderId').value.trim(),
+          appId: document.getElementById('firebaseAppId').value.trim()
+        };
+
+        // Validate required fields
+        if (!config.projectId || !config.apiKey) {
+          showFirebaseConfigStatus('Project ID and API Key are required', 'error');
+          return;
+        }
+
+        storeFirebaseConfig(config);
+        showFirebaseConfigStatus('Configuration saved. Reconnecting...', 'success');
+
+        // Cleanup existing listeners
+        unsubscribeListeners.forEach(unsubscribe => unsubscribe());
+        unsubscribeListeners = [];
+
+        // Reinitialize Firebase
+        setTimeout(() => {
+          initializeFirebase(config);
+        }, 1000);
+      }
+
+      function resetToDemo() {
+        localStorage.removeItem('firebaseConfig');
+        showFirebaseConfigStatus('Reset to demo mode. Reconnecting...', 'success');
+        
+        // Clear form
+        document.getElementById('firebaseApiKey').value = '';
+        document.getElementById('firebaseAuthDomain').value = '';
+        document.getElementById('firebaseProjectId').value = '';
+        document.getElementById('firebaseStorageBucket').value = '';
+        document.getElementById('firebaseMessagingSenderId').value = '';
+        document.getElementById('firebaseAppId').value = '';
+
+        // Cleanup existing listeners
+        unsubscribeListeners.forEach(unsubscribe => unsubscribe());
+        unsubscribeListeners = [];
+
+        // Reinitialize Firebase
+        setTimeout(() => {
+          initializeFirebase(DEFAULT_FIREBASE_CONFIG);
+        }, 1000);
+      }
+
+      function showFirebaseConfigStatus(message, type) {
+        const element = document.getElementById('firebaseConfigStatus');
+        element.textContent = message;
+        element.className = `status-message ${type}`;
+        element.style.display = 'block';
+
+        setTimeout(() => {
+          element.style.display = 'none';
+        }, 5000);
+      }
+
+      // Original functions with Firestore integration
       function showPasswordModal() {
         document.getElementById("overlay").style.display = "block";
         document.getElementById("passwordModal").style.display = "block";
@@ -1545,19 +1303,18 @@ Event Team</pre
       function checkPassword() {
         const enteredPassword = document.getElementById("adminPassword").value;
 
-        if (enteredPassword === adminPassword) {
+        if (enteredPassword === localData.adminPassword) {
           isAdminMode = true;
           closePasswordModal();
           switchToAdmin();
         } else {
-          document.getElementById("passwordError").textContent =
-            "Incorrect password";
+          document.getElementById("passwordError").textContent = "Incorrect password";
           document.getElementById("passwordError").style.display = "block";
           document.getElementById("adminPassword").value = "";
         }
       }
 
-      function changePassword() {
+      async function changePassword() {
         const currentPwd = document.getElementById("currentPassword").value;
         const newPwd = document.getElementById("newPassword").value;
         const confirmPwd = document.getElementById("confirmPassword").value;
@@ -1567,7 +1324,7 @@ Event Team</pre
           return;
         }
 
-        if (currentPwd !== adminPassword) {
+        if (currentPwd !== localData.adminPassword) {
           showPasswordChangeStatus("Current password is incorrect", "error");
           return;
         }
@@ -1578,15 +1335,12 @@ Event Team</pre
         }
 
         if (newPwd.length < 6) {
-          showPasswordChangeStatus(
-            "Password must be at least 6 characters",
-            "error"
-          );
+          showPasswordChangeStatus("Password must be at least 6 characters", "error");
           return;
         }
 
-        adminPassword = newPwd;
-        saveData();
+        localData.adminPassword = newPwd;
+        await saveAdminPasswordToFirestore(newPwd);
         showPasswordChangeStatus("Password changed successfully", "success");
 
         // Clear form
@@ -1609,11 +1363,19 @@ Event Team</pre
       function switchToAdmin() {
         document.getElementById("client-interface").style.display = "none";
         document.getElementById("admin-interface").style.display = "block";
-        loadFormData();
-        loadEmailConfigForm();
-        renderTables();
+        
+        // Load current Firebase config into form
+        const config = getStoredFirebaseConfig();
+        if (config) {
+          document.getElementById('firebaseApiKey').value = config.apiKey || '';
+          document.getElementById('firebaseAuthDomain').value = config.authDomain || '';
+          document.getElementById('firebaseProjectId').value = config.projectId || '';
+          document.getElementById('firebaseStorageBucket').value = config.storageBucket || '';
+          document.getElementById('firebaseMessagingSenderId').value = config.messagingSenderId || '';
+          document.getElementById('firebaseAppId').value = config.appId || '';
+        }
+        
         renderBookingsOverview();
-        updateStatistics();
       }
 
       function switchToClient() {
@@ -1625,17 +1387,11 @@ Event Team</pre
 
       function switchTab(tabName) {
         // Update nav tabs
-        document
-          .querySelectorAll(".nav-tab")
-          .forEach((tab) => tab.classList.remove("active"));
-        document
-          .querySelector(`[onclick="switchTab('${tabName}')"]`)
-          .classList.add("active");
+        document.querySelectorAll(".nav-tab").forEach((tab) => tab.classList.remove("active"));
+        document.querySelector(`[onclick="switchTab('${tabName}')"]`).classList.add("active");
 
         // Update tab content
-        document
-          .querySelectorAll(".tab-content")
-          .forEach((content) => content.classList.remove("active"));
+        document.querySelectorAll(".tab-content").forEach((content) => content.classList.remove("active"));
         document.getElementById(`${tabName}-tab`).classList.add("active");
 
         if (tabName === "bookings") {
@@ -1643,56 +1399,21 @@ Event Team</pre
         }
       }
 
-      function validateTimeSlots() {
+      async function generateTimeSlots() {
         const date = document.getElementById("eventDate").value;
         const startTime = document.getElementById("startTime").value;
         const endTime = document.getElementById("endTime").value;
-        const duration = parseInt(
-          document.getElementById("slotDuration").value
-        );
+        const duration = parseInt(document.getElementById("slotDuration").value);
 
-        if (!date || !startTime || !endTime || !duration) {
-          return { valid: false, message: "Please fill in all fields" };
-        }
-
-        const start = new Date(`${date}T${startTime}`);
-        const end = new Date(`${date}T${endTime}`);
-
-        if (start >= end) {
-          return { valid: false, message: "End time must be after start time" };
-        }
-
-        const durationMs = end - start;
-        const slotDurationMs = duration * 60000;
-
-        if (durationMs < slotDurationMs) {
-          return {
-            valid: false,
-            message: "Time range too short for slot duration",
-          };
-        }
-
-        return { valid: true };
-      }
-
-      function generateTimeSlots() {
-        const validation = validateTimeSlots();
-        if (!validation.valid) {
-          showStatus("eventStatus", validation.message, "error");
+        if (!date || !startTime || !endTime) {
+          showStatus("eventStatus", "Please fill in all fields", "error");
           return;
         }
 
-        const date = document.getElementById("eventDate").value;
-        const startTime = document.getElementById("startTime").value;
-        const endTime = document.getElementById("endTime").value;
-        const duration = parseInt(
-          document.getElementById("slotDuration").value
-        );
-
-        eventConfig.date = date;
-        eventConfig.startTime = startTime;
-        eventConfig.endTime = endTime;
-        eventConfig.slotDuration = duration;
+        localData.eventConfig.date = date;
+        localData.eventConfig.startTime = startTime;
+        localData.eventConfig.endTime = endTime;
+        localData.eventConfig.slotDuration = duration;
 
         // Generate time slots
         const slots = [];
@@ -1709,73 +1430,49 @@ Event Team</pre
               index: slotIndex++,
               start: current.toTimeString().slice(0, 5),
               end: slotEnd.toTimeString().slice(0, 5),
-              startTime: new Date(current),
-              endTime: new Date(slotEnd),
+              startTime: current.toISOString(),
+              endTime: slotEnd.toISOString(),
             });
           }
           current = new Date(slotEnd);
         }
 
-        eventConfig.timeSlots = slots;
-        saveData();
-        updateStatistics();
-        showStatus(
-          "eventStatus",
-          `Generated ${slots.length} time slots from ${startTime} to ${endTime}`,
-          "success"
-        );
-
-        // Update client interface
-        renderClientInterface();
+        localData.eventConfig.timeSlots = slots;
+        await saveEventConfigToFirestore();
+        
+        showStatus("eventStatus", `Generated ${slots.length} time slots from ${startTime} to ${endTime}`, "success");
       }
 
-      function validateTableInput() {
+      async function addTable() {
         const name = document.getElementById("tableName").value.trim();
         const speaker1 = document.getElementById("speaker1").value.trim();
         const speaker2 = document.getElementById("speaker2").value.trim();
 
         if (!name || !speaker1 || !speaker2) {
-          return { valid: false, message: "Please fill in all table fields" };
-        }
-
-        if (
-          tables.some(
-            (table) => table.name.toLowerCase() === name.toLowerCase()
-          )
-        ) {
-          return { valid: false, message: "Table name already exists" };
-        }
-
-        if (tables.length >= 20) {
-          return { valid: false, message: "Maximum of 20 tables allowed" };
-        }
-
-        return { valid: true };
-      }
-
-      function addTable() {
-        const validation = validateTableInput();
-        if (!validation.valid) {
-          alert(validation.message);
+          alert("Please fill in all table fields");
           return;
         }
 
-        const name = document.getElementById("tableName").value.trim();
-        const speaker1 = document.getElementById("speaker1").value.trim();
-        const speaker2 = document.getElementById("speaker2").value.trim();
+        if (localData.tables.length >= 20) {
+          alert("Maximum of 20 tables allowed");
+          return;
+        }
 
         const table = {
-          id: Date.now(), // Use timestamp for unique ID
           name: name,
           speaker1: speaker1,
           speaker2: speaker2,
+          order: localData.tables.length
         };
 
-        tables.push(table);
-        saveData();
-        renderTables();
-        updateStatistics();
-        renderClientInterface();
+        const tableId = await saveTableToFirestore(table);
+        
+        if (!db) {
+          // Fallback for offline mode
+          table.id = `table_${Date.now()}`;
+          localData.tables.push(table);
+          renderTables();
+        }
 
         // Clear form
         document.getElementById("tableName").value = "";
@@ -1785,143 +1482,102 @@ Event Team</pre
 
       function renderTables() {
         const grid = document.getElementById("tablesGrid");
-        grid.innerHTML = tables
-          .map(
-            (table, index) => `
+        grid.innerHTML = localData.tables.map((table, index) => `
           <div class="table-card">
             <h4>Table ${index + 1}: ${table.name}</h4>
-            <p><strong>Speakers:</strong> ${table.speaker1} & ${
-              table.speaker2
-            }</p>
-            <button onclick="removeTable(${
-              table.id
-            })" class="btn-danger" style="margin-top: 10px;">Remove</button>
+            <p><strong>Speakers:</strong> ${table.speaker1} & ${table.speaker2}</p>
+            <button onclick="removeTable('${table.id}')" class="btn-danger" style="margin-top: 10px;">Remove</button>
           </div>
-        `
-          )
-          .join("");
+        `).join("");
       }
 
-      function removeTable(tableId) {
-        if (
-          confirm(
-            "Are you sure you want to remove this table? All bookings for this table will be lost."
-          )
-        ) {
-          tables = tables.filter((table) => table.id !== tableId);
-
-          // Remove related bookings
-          Object.keys(bookings).forEach((key) => {
-            if (key.startsWith(`${tableId}-`)) {
-              delete bookings[key];
-            }
-          });
-
-          saveData();
-          renderTables();
-          updateStatistics();
-          renderClientInterface();
+      async function removeTable(tableId) {
+        if (confirm("Are you sure you want to remove this table and all its bookings?")) {
+          await removeTableFromFirestore(tableId);
+          
+          if (!db) {
+            // Fallback for offline mode
+            localData.tables = localData.tables.filter((table) => table.id !== tableId);
+            // Remove related bookings
+            Object.keys(localData.bookings).forEach((key) => {
+              if (localData.bookings[key].tableId === tableId) {
+                delete localData.bookings[key];
+              }
+            });
+            renderTables();
+            saveDataToLocalStorage();
+          }
         }
       }
 
       function renderClientInterface() {
         // Update event info
         const eventInfo = document.getElementById("eventInfo");
-        if (eventConfig.date && eventConfig.timeSlots.length > 0) {
-          const eventDate = new Date(eventConfig.date).toLocaleDateString(
-            "en-US",
-            {
-              weekday: "long",
-              year: "numeric",
-              month: "long",
-              day: "numeric",
-            }
-          );
+        if (localData.eventConfig.date && localData.eventConfig.timeSlots.length > 0) {
+          const eventDate = new Date(localData.eventConfig.date).toLocaleDateString("en-US", {
+            weekday: "long",
+            year: "numeric",
+            month: "long",
+            day: "numeric",
+          });
           eventInfo.innerHTML = `
             <strong>${eventDate}</strong><br>
-            ${eventConfig.startTime} - ${eventConfig.endTime} | ${eventConfig.slotDuration} minutes per session
+            ${localData.eventConfig.startTime} - ${localData.eventConfig.endTime} | ${localData.eventConfig.slotDuration} minutes per session
           `;
         } else {
-          eventInfo.innerHTML = `
-            <div class="no-event-message">
-              Event configuration not available yet. Please contact the administrator.
-            </div>
-          `;
+          eventInfo.innerHTML = "Event not configured yet";
         }
 
         const container = document.getElementById("clientBookingGrid");
 
-        if (tables.length === 0 || eventConfig.timeSlots.length === 0) {
-          container.innerHTML = `
-            <div class="no-event-message">
-              No tables available for booking at this time.
-            </div>
-          `;
+        if (localData.tables.length === 0 || localData.eventConfig.timeSlots.length === 0) {
+          container.innerHTML = "<p>No tables available for booking at this time.</p>";
           return;
         }
 
-        container.innerHTML = tables
-          .map(
-            (table) => `
+        container.innerHTML = localData.tables.map((table, tableIndex) => `
           <div class="client-table-card">
             <div class="table-header">
               <div class="table-title">${table.name}</div>
-              <div class="speakers">with ${table.speaker1} & ${
-              table.speaker2
-            }</div>
+              <div class="speakers">with ${table.speaker1} & ${table.speaker2}</div>
             </div>
             <div class="time-slots-container">
-              ${eventConfig.timeSlots
-                .map((slot) => {
-                  const bookingKey = `${table.id}-${slot.index}`;
-                  const isBooked = bookings[bookingKey];
-                  return `
-                  <div class="time-slot-item ${
-                    isBooked ? "booked" : "available"
-                  }">
+              ${localData.eventConfig.timeSlots.map((slot) => {
+                const bookingKey = `${table.id}-${slot.index}`;
+                const isBooked = localData.bookings[bookingKey];
+                return `
+                  <div class="time-slot-item ${isBooked ? "booked" : "available"}">
                     <div class="time-info">${slot.start} - ${slot.end}</div>
-                    <button class="slot-btn ${
-                      isBooked ? "booked" : "available"
-                    }" 
-                            ${
-                              !isBooked
-                                ? `onclick="openBookingForm(${table.id}, ${slot.index})"`
-                                : ""
-                            }
+                    <button class="slot-btn ${isBooked ? "booked" : "available"}" 
+                            ${!isBooked ? `onclick="openBookingForm('${table.id}', ${slot.index})"` : ""}
                             ${isBooked ? "disabled" : ""}>
                       ${isBooked ? "Booked" : "Book"}
                     </button>
                   </div>
                 `;
-                })
-                .join("")}
+              }).join("")}
             </div>
           </div>
-        `
-          )
-          .join("");
+        `).join("");
       }
 
       function openBookingForm(tableId, slotIndex) {
-        const table = tables.find((t) => t.id === tableId);
-        const slot = eventConfig.timeSlots.find((s) => s.index === slotIndex);
+        const table = localData.tables.find((t) => t.id === tableId);
+        const slot = localData.eventConfig.timeSlots.find((s) => s.index === slotIndex);
 
         if (!table || !slot) {
-          alert("Error: Table or time slot not found");
+          alert("Error: Table or slot not found");
           return;
         }
 
         currentBookingSelection = { tableId, slotIndex };
 
-        const eventDate = new Date(eventConfig.date).toLocaleDateString(
-          "en-US",
-          {
-            weekday: "long",
-            year: "numeric",
-            month: "long",
-            day: "numeric",
-          }
-        );
+        const eventDate = new Date(localData.eventConfig.date).toLocaleDateString("en-US", {
+          weekday: "long",
+          year: "numeric",
+          month: "long",
+          day: "numeric",
+        });
 
         document.getElementById("selectedSlotInfo").innerHTML = `
           <strong>${table.name}</strong><br>
@@ -1936,7 +1592,6 @@ Event Team</pre
         document.getElementById("userEmail").value = "";
         document.getElementById("userPhone").value = "";
         document.getElementById("bookingStatus").style.display = "none";
-        document.getElementById("userName").focus();
       }
 
       function closeBookingForm() {
@@ -1945,52 +1600,31 @@ Event Team</pre
         currentBookingSelection = null;
       }
 
-      function validateBookingForm() {
-        const name = document.getElementById("userName").value.trim();
-        const email = document.getElementById("userEmail").value.trim();
-
-        if (!name || !email) {
-          return { valid: false, message: "Please fill in name and email" };
-        }
-
-        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        if (!emailRegex.test(email)) {
-          return {
-            valid: false,
-            message: "Please enter a valid email address",
-          };
-        }
-
-        if (!currentBookingSelection) {
-          return { valid: false, message: "No slot selected" };
-        }
-
-        const { tableId, slotIndex } = currentBookingSelection;
-        const bookingKey = `${tableId}-${slotIndex}`;
-
-        if (bookings[bookingKey]) {
-          return { valid: false, message: "This slot is already booked" };
-        }
-
-        return { valid: true };
-      }
-
-      function confirmBooking() {
-        const validation = validateBookingForm();
-        if (!validation.valid) {
-          showStatus("bookingStatus", validation.message, "error");
-          return;
-        }
-
+      async function confirmBooking() {
         const name = document.getElementById("userName").value.trim();
         const email = document.getElementById("userEmail").value.trim();
         const phone = document.getElementById("userPhone").value.trim();
 
+        if (!name || !email) {
+          showStatus("bookingStatus", "Please fill in name and email", "error");
+          return;
+        }
+
+        if (!currentBookingSelection) {
+          showStatus("bookingStatus", "No slot selected", "error");
+          return;
+        }
+
         const { tableId, slotIndex } = currentBookingSelection;
         const bookingKey = `${tableId}-${slotIndex}`;
 
-        const table = tables.find((t) => t.id === tableId);
-        const slot = eventConfig.timeSlots.find((s) => s.index === slotIndex);
+        if (localData.bookings[bookingKey]) {
+          showStatus("bookingStatus", "This slot is already booked", "error");
+          return;
+        }
+
+        const table = localData.tables.find((t) => t.id === tableId);
+        const slot = localData.eventConfig.timeSlots.find((s) => s.index === slotIndex);
 
         const booking = {
           name: name,
@@ -2002,126 +1636,73 @@ Event Team</pre
           speaker1: table.speaker1,
           speaker2: table.speaker2,
           timeSlot: `${slot.start} - ${slot.end}`,
-          date: eventConfig.date,
+          date: localData.eventConfig.date,
           timestamp: new Date().toISOString(),
         };
 
-        // Disable the confirm button to prevent double-booking
-        const confirmBtn = document.getElementById("confirmBookingBtn");
+        // Disable the confirm button to prevent double booking
+        const confirmBtn = document.getElementById('confirmBookingBtn');
         confirmBtn.disabled = true;
-        confirmBtn.textContent = "Processing...";
+        confirmBtn.textContent = 'Processing...';
 
-        // Check if email is configured and working
-        if (!EMAILJS_CONFIG.enabled || typeof emailjs === "undefined") {
-          showStatus(
-            "bookingStatus",
-            "Email not configured. Booking will be saved without email confirmation.",
-            "warning"
-          );
-          setTimeout(() => completeBooking(booking, bookingKey, false), 1500);
-          return;
+        try {
+          // Show loading state
+          showStatus("bookingStatus", "Saving booking...", "success");
+
+          // Save to Firestore first
+          await saveBookingToFirestore(bookingKey, booking);
+          
+          // Update local data for immediate UI update
+          localData.bookings[bookingKey] = booking;
+          currentBookingConfirmation = booking;
+
+          // Send email using EmailJS
+          const eventDate = new Date(booking.date).toLocaleDateString("en-US", {
+            weekday: "long",
+            year: "numeric",
+            month: "long",
+            day: "numeric",
+          });
+
+          showStatus("bookingStatus", "Sending confirmation email...", "success");
+
+          const emailParams = {
+            user_name: booking.name,
+            user_email: booking.email,
+            table_name: booking.tableName,
+            speakers: `${booking.speaker1} & ${booking.speaker2}`,
+            event_date: eventDate,
+            time_slot: booking.timeSlot,
+            to_email: booking.email,
+          };
+
+          try {
+            await emailjs.send(
+              EMAILJS_CONFIG.serviceId,
+              EMAILJS_CONFIG.templateId,
+              emailParams,
+              EMAILJS_CONFIG.publicKey
+            );
+            console.log("Email sent successfully");
+          } catch (emailError) {
+            console.log("Email sending failed:", emailError);
+            showStatus("bookingStatus", "Booking saved, but email confirmation failed to send", "warning");
+          }
+
+          closeBookingForm();
+          showConfirmationModal();
+          
+        } catch (error) {
+          console.error('Booking failed:', error);
+          showStatus("bookingStatus", "Booking failed. Please try again.", "error");
+        } finally {
+          // Re-enable the confirm button
+          confirmBtn.disabled = false;
+          confirmBtn.textContent = 'Confirm Booking';
         }
-
-        // Re-initialize EmailJS to ensure it's working
-        const initialized = initializeEmailJS();
-        if (!initialized) {
-          showStatus(
-            "bookingStatus",
-            "Email service not available. Booking will be saved without email confirmation.",
-            "warning"
-          );
-          setTimeout(() => completeBooking(booking, bookingKey, false), 1500);
-          return;
-        }
-
-        // Show loading state
-        showStatus("bookingStatus", "Sending confirmation email...", "success");
-
-        // Send email using EmailJS
-        const eventDate = new Date(booking.date).toLocaleDateString("en-US", {
-          weekday: "long",
-          year: "numeric",
-          month: "long",
-          day: "numeric",
-        });
-
-        const emailParams = {
-          user_name: booking.name,
-          user_email: booking.email,
-          table_name: booking.tableName,
-          speakers: `${booking.speaker1} & ${booking.speaker2}`,
-          event_date: eventDate,
-          time_slot: booking.timeSlot,
-          to_email: booking.email,
-          // Additional common template variables
-          to_name: booking.name,
-          from_name: "Event Team",
-          message: `Your booking for ${booking.tableName} on ${eventDate} at ${booking.timeSlot} has been confirmed.`,
-        };
-
-        console.log(
-          "Sending booking confirmation email with params:",
-          emailParams
-        );
-        console.log("Using EmailJS config:", {
-          serviceId: EMAILJS_CONFIG.serviceId,
-          templateId: EMAILJS_CONFIG.templateId,
-          publicKey: EMAILJS_CONFIG.publicKey ? "SET" : "NOT SET",
-        });
-
-        emailjs
-          .send(
-            EMAILJS_CONFIG.serviceId,
-            EMAILJS_CONFIG.templateId,
-            emailParams,
-            EMAILJS_CONFIG.publicKey
-          )
-          .then(
-            (response) => {
-              console.log(
-                "Booking confirmation email sent successfully:",
-                response
-              );
-              completeBooking(booking, bookingKey, true);
-            },
-            (error) => {
-              console.error("Booking confirmation email failed:", error);
-
-              let errorMessage =
-                "Booking saved, but email confirmation failed to send";
-              if (error.text) {
-                errorMessage += `: ${error.text}`;
-              }
-              errorMessage += ". Please check admin email configuration.";
-
-              showStatus("bookingStatus", errorMessage, "warning");
-              setTimeout(
-                () => completeBooking(booking, bookingKey, false),
-                2000
-              );
-            }
-          );
       }
 
-      function completeBooking(booking, bookingKey, emailSent = false) {
-        // Save booking
-        bookings[bookingKey] = booking;
-        bookings[bookingKey].emailSent = emailSent;
-        currentBookingConfirmation = booking;
-        saveData();
-
-        // Reset form
-        const confirmBtn = document.getElementById("confirmBookingBtn");
-        confirmBtn.disabled = false;
-        confirmBtn.textContent = "Confirm Booking";
-
-        closeBookingForm();
-        showConfirmationModal(emailSent);
-        renderClientInterface();
-        updateStatistics();
-      }
-
-      function showConfirmationModal(emailSent = false) {
+      function showConfirmationModal() {
         const booking = currentBookingConfirmation;
         const eventDate = new Date(booking.date).toLocaleDateString("en-US", {
           weekday: "long",
@@ -2130,25 +1711,14 @@ Event Team</pre
           day: "numeric",
         });
 
-        const emailStatus = emailSent
-          ? '<div style="color: #27ae60; margin-bottom: 10px;"><strong>✓ Confirmation email sent successfully!</strong></div>'
-          : '<div style="color: #f39c12; margin-bottom: 10px;"><strong>⚠ Email not sent (check admin configuration)</strong></div>';
-
         document.getElementById("confirmationDetails").innerHTML = `
-          ${emailStatus}
           <div class="confirmation-details">
             <strong>Booking Details:</strong><br>
             <strong>Name:</strong> ${booking.name}<br>
             <strong>Email:</strong> ${booking.email}<br>
-            ${
-              booking.phone
-                ? `<strong>Phone:</strong> ${booking.phone}<br>`
-                : ""
-            }
+            ${booking.phone ? `<strong>Phone:</strong> ${booking.phone}<br>` : ""}
             <strong>Table:</strong> ${booking.tableName}<br>
-            <strong>Speakers:</strong> ${booking.speaker1} & ${
-          booking.speaker2
-        }<br>
+            <strong>Speakers:</strong> ${booking.speaker1} & ${booking.speaker2}<br>
             <strong>Date:</strong> ${eventDate}<br>
             <strong>Time:</strong> ${booking.timeSlot}
           </div>
@@ -2167,12 +1737,8 @@ Event Team</pre
       function addToCalendar() {
         const booking = currentBookingConfirmation;
         const eventDate = new Date(booking.date);
-        const [startHour, startMinute] = booking.timeSlot
-          .split(" - ")[0]
-          .split(":");
-        const [endHour, endMinute] = booking.timeSlot
-          .split(" - ")[1]
-          .split(":");
+        const [startHour, startMinute] = booking.timeSlot.split(" - ")[0].split(":");
+        const [endHour, endMinute] = booking.timeSlot.split(" - ")[1].split(":");
 
         const startTime = new Date(eventDate);
         startTime.setHours(parseInt(startHour), parseInt(startMinute));
@@ -2188,17 +1754,14 @@ Event Team</pre
           location: "Event Venue",
         };
 
-        const formatDate = (date) =>
-          date.toISOString().replace(/[-:]/g, "").split(".")[0] + "Z";
-
         const icsContent = `BEGIN:VCALENDAR
 VERSION:2.0
 PRODID:-//Your Company//Event//EN
 BEGIN:VEVENT
 UID:${Date.now()}@yourcompany.com
-DTSTAMP:${formatDate(new Date())}
-DTSTART:${formatDate(startTime)}
-DTEND:${formatDate(endTime)}
+DTSTAMP:${new Date().toISOString().replace(/[-:]/g, "").split(".")[0]}Z
+DTSTART:${startTime.toISOString().replace(/[-:]/g, "").split(".")[0]}Z
+DTEND:${endTime.toISOString().replace(/[-:]/g, "").split(".")[0]}Z
 SUMMARY:${event.title}
 DESCRIPTION:${event.description}
 LOCATION:${event.location}
@@ -2243,7 +1806,7 @@ END:VCALENDAR`;
             Event Team
           </div>
           <p style="font-size: 0.9rem; color: #666; margin-top: 10px;">
-            <em>Note: This email would be sent automatically to ${booking.email}</em>
+            <em>Note: This is a preview. The actual email was sent to ${booking.email}</em>
           </p>
         `;
 
@@ -2253,19 +1816,12 @@ END:VCALENDAR`;
 
       function renderBookingsOverview() {
         const container = document.getElementById("bookingsOverview");
-        const bookingsList = Object.values(bookings);
+        const bookingsList = Object.values(localData.bookings);
 
         if (bookingsList.length === 0) {
           container.innerHTML = "<p>No bookings yet.</p>";
           return;
         }
-
-        // Sort bookings by date and time
-        bookingsList.sort((a, b) => {
-          const dateA = new Date(`${a.date}T${a.timeSlot.split(" - ")[0]}`);
-          const dateB = new Date(`${b.date}T${b.timeSlot.split(" - ")[0]}`);
-          return dateA - dateB;
-        });
 
         const tableHTML = `
           <table class="bookings-table">
@@ -2278,39 +1834,30 @@ END:VCALENDAR`;
                 <th>Date</th>
                 <th>Time</th>
                 <th>Speakers</th>
-                <th>Email Status</th>
                 <th>Actions</th>
               </tr>
             </thead>
             <tbody>
-              ${bookingsList
-                .map(
-                  (booking) => `
-                <tr>
-                  <td>${booking.name}</td>
-                  <td>${booking.email}</td>
-                  <td>${booking.phone || "N/A"}</td>
-                  <td>${booking.tableName}</td>
-                  <td>${new Date(booking.date).toLocaleDateString()}</td>
-                  <td>${booking.timeSlot}</td>
-                  <td>${booking.speaker1} & ${booking.speaker2}</td>
-                  <td>${
-                    booking.emailSent
-                      ? '<span style="color: #27ae60;">✓ Sent</span>'
-                      : '<span style="color: #f39c12;">⚠ Not sent</span>'
-                  }</td>
-                  <td>
-                    <button onclick="cancelBooking('${booking.tableId}-${
-                    booking.slotIndex
-                  }')" 
-                            class="btn-danger" style="padding: 5px 10px; font-size: 12px;">
-                      Cancel
-                    </button>
-                  </td>
-                </tr>
-              `
-                )
-                .join("")}
+              ${bookingsList.map((booking) => {
+                const bookingKey = `${booking.tableId}-${booking.slotIndex}`;
+                return `
+                  <tr>
+                    <td>${booking.name}</td>
+                    <td>${booking.email}</td>
+                    <td>${booking.phone || "N/A"}</td>
+                    <td>${booking.tableName}</td>
+                    <td>${new Date(booking.date).toLocaleDateString()}</td>
+                    <td>${booking.timeSlot}</td>
+                    <td>${booking.speaker1} & ${booking.speaker2}</td>
+                    <td>
+                      <button onclick="cancelBooking('${bookingKey}')" 
+                              class="btn-danger" style="padding: 5px 10px; font-size: 12px;">
+                        Cancel
+                      </button>
+                    </td>
+                  </tr>
+                `;
+              }).join("")}
             </tbody>
           </table>
         `;
@@ -2318,35 +1865,32 @@ END:VCALENDAR`;
         container.innerHTML = tableHTML;
       }
 
-      function cancelBooking(bookingKey) {
+      async function cancelBooking(bookingKey) {
         if (confirm("Are you sure you want to cancel this booking?")) {
-          delete bookings[bookingKey];
-          saveData();
-          renderBookingsOverview();
-          renderClientInterface();
-          updateStatistics();
+          await removeBookingFromFirestore(bookingKey);
+          
+          if (!db) {
+            // Fallback for offline mode
+            delete localData.bookings[bookingKey];
+            renderBookingsOverview();
+            renderClientInterface();
+            saveDataToLocalStorage();
+          }
         }
       }
 
       function exportToCSV() {
-        const bookingsList = Object.values(bookings);
+        const bookingsList = Object.values(localData.bookings);
         if (bookingsList.length === 0) {
           showStatus("exportStatus", "No bookings to export", "error");
           return;
         }
 
         const headers = [
-          "Name",
-          "Email",
-          "Phone",
-          "Table",
-          "Date",
-          "Time",
-          "Speaker 1",
-          "Speaker 2",
-          "Booking Time",
+          "Name", "Email", "Phone", "Table", "Date", "Time", 
+          "Speaker 1", "Speaker 2", "Booking Time"
         ];
-
+        
         const csvContent = [
           headers.join(","),
           ...bookingsList.map((booking) =>
@@ -2360,9 +1904,7 @@ END:VCALENDAR`;
               booking.speaker1,
               booking.speaker2,
               new Date(booking.timestamp).toLocaleString(),
-            ]
-              .map((field) => `"${field}"`)
-              .join(",")
+            ].map((field) => `"${field}"`).join(",")
           ),
         ].join("\n");
 
@@ -2371,7 +1913,7 @@ END:VCALENDAR`;
       }
 
       function exportToExcel() {
-        const bookingsList = Object.values(bookings);
+        const bookingsList = Object.values(localData.bookings);
         if (bookingsList.length === 0) {
           showStatus("exportStatus", "No bookings to export", "error");
           return;
@@ -2381,6 +1923,7 @@ END:VCALENDAR`;
           "Conversation Table Booking Report",
           `Generated on: ${new Date().toLocaleString()}`,
           `Total Bookings: ${bookingsList.length}`,
+          `Connection Status: ${isOnline ? 'Online' : 'Offline'}`,
           "",
           "Name,Email,Phone,Table,Date,Time,Speaker 1,Speaker 2,Booking Time",
           ...bookingsList.map((booking) =>
@@ -2394,22 +1937,12 @@ END:VCALENDAR`;
               booking.speaker1,
               booking.speaker2,
               new Date(booking.timestamp).toLocaleString(),
-            ]
-              .map((field) => `"${field}"`)
-              .join(",")
+            ].map((field) => `"${field}"`).join(",")
           ),
         ].join("\n");
 
-        downloadFile(
-          excelContent,
-          "conversation-bookings-report.csv",
-          "text/csv"
-        );
-        showStatus(
-          "exportStatus",
-          "Excel report exported successfully",
-          "success"
-        );
+        downloadFile(excelContent, "conversation-bookings-report.csv", "text/csv");
+        showStatus("exportStatus", "Excel report exported successfully", "success");
       }
 
       function downloadFile(content, filename, mimeType) {
@@ -2433,37 +1966,54 @@ END:VCALENDAR`;
         }, 5000);
       }
 
+      // Initialize EmailJS
+      (function() {
+        if (typeof emailjs !== 'undefined') {
+          emailjs.init(EMAILJS_CONFIG.publicKey);
+        }
+      })();
+
       // Initialize application
-      window.addEventListener("load", function () {
-        loadData();
-        loadFormData();
-        renderClientInterface();
-        updateStatistics();
+      window.addEventListener("load", async function () {
+        // Set default date to today
+        document.getElementById("eventDate").value = new Date().toISOString().split("T")[0];
+
+        // Initialize Firebase
+        await initializeFirebase();
+        
+        // Hide loading overlay
+        document.getElementById('loadingOverlay').style.display = 'none';
+
+        // Generate default time slots if none exist
+        if (localData.eventConfig.timeSlots.length === 0) {
+          await generateTimeSlots();
+        }
 
         // Close modals when clicking overlay
-        document
-          .getElementById("overlay")
-          .addEventListener("click", function (e) {
-            if (e.target === this) {
-              closeBookingForm();
-              closePasswordModal();
-              closeConfirmationModal();
-            }
-          });
+        document.getElementById("overlay").addEventListener("click", function () {
+          closeBookingForm();
+          closePasswordModal();
+          closeConfirmationModal();
+        });
 
-        // Auto-save on form changes
-        ["eventDate", "startTime", "endTime", "slotDuration"].forEach((id) => {
-          document.getElementById(id).addEventListener("change", () => {
-            setTimeout(saveData, 100);
-          });
+        // Handle online/offline events
+        window.addEventListener('online', () => {
+          if (isFirebaseInitialized) {
+            updateConnectionStatus('connected');
+            isOnline = true;
+          }
+        });
+
+        window.addEventListener('offline', () => {
+          updateConnectionStatus('disconnected');
+          isOnline = false;
         });
       });
 
-      // Auto-save periodically
-      setInterval(saveData, 30000); // Save every 30 seconds
-
-      // Save data before page unload
-      window.addEventListener("beforeunload", saveData);
+      // Cleanup listeners before page unload
+      window.addEventListener('beforeunload', () => {
+        unsubscribeListeners.forEach(unsubscribe => unsubscribe());
+      });
     </script>
   </body>
 </html>
