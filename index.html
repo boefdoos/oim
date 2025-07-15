@@ -680,7 +680,7 @@
               <ol>
                 <li>Go to <a href="https://www.emailjs.com" target="_blank">EmailJS.com</a> and create a free account</li>
                 <li>Create an email service (Gmail, Outlook, etc.)</li>
-                <li>Create an email template with these variables: {{user_name}}, {{user_email}}, {{table_name}}, {{speakers}}, {{event_date}}, {{time_slot}}</li>
+                <li>Create an email template with these variables: {{user_name}}, {{user_email}}, {{artist_name}}, {{table_name}}, {{speakers}}, {{event_date}}, {{time_slot}}</li>
                 <li>Get your Service ID from the Email Services page</li>
                 <li>Get your Template ID from the Email Templates page</li>
                 <li>Get your Public Key from Account Settings → API Keys</li>
@@ -811,6 +811,13 @@
             >
               Export to Excel
             </button>
+            <button
+              class="btn-success"
+              onclick="exportToPDF()"
+              style="margin-left: 10px"
+            >
+              Export to PDF
+            </button>
             <div
               id="exportStatus"
               class="status-message"
@@ -922,17 +929,17 @@
         <form onsubmit="confirmBooking(); return false;">
           <h3>Book Your Conversation</h3>
           <div class="form-group">
-            <label for="userName">Your Name:</label>
+            <label for="userName">Your Name: *</label>
             <input type="text" id="userName" required />
           </div>
           <div class="form-group">
-            <label for="userEmail">Email:</label>
+            <label for="userEmail">Email: *</label>
             <input type="email" id="userEmail" required onblur="checkEmailBookingLimit()" />
             <div id="emailBookingStatus" class="status-message" style="display: none; margin-top: 5px; text-align: left; padding: 5px;"></div>
           </div>
           <div class="form-group">
-            <label for="userPhone">Phone (optional):</label>
-            <input type="tel" id="userPhone" />
+            <label for="userArtistName">Artist Name/Band: *</label>
+            <input type="text" id="userArtistName" required />
           </div>
           <div class="form-group">
             <label>Selected Slot:</label>
@@ -976,6 +983,9 @@
       type="text/javascript"
       src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"
     ></script>
+    
+    <!-- jsPDF SDK -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 
     <script>
       // Firebase and Database Configuration
@@ -1019,7 +1029,7 @@
       };
 
       // Constants
-      const MAX_BOOKINGS_PER_EMAIL = 2;
+      const MAX_BOOKINGS_PER_EMAIL = 3;
       let currentBookingConfirmation = null;
       let currentBookingSelection = null;
       let isAdminMode = false;
@@ -1803,6 +1813,7 @@
         const testParams = {
           user_name: 'Test User',
           user_email: testEmail,
+          artist_name: 'Test Artist',
           table_name: 'Test Table',
           speakers: 'Speaker 1 & Speaker 2',
           event_date: 'Test Date',
@@ -1974,8 +1985,7 @@
           if (db) {
             const tableId = await saveTableToFirestore(table);
             table.id = tableId;
-            localData.tables.push(table);
-            renderTables();
+            // Don't add to localData.tables here - the realtime listener will handle it
           } else {
             table.id = `table_${Date.now()}`;
             localData.tables.push(table);
@@ -2123,7 +2133,7 @@
         document.getElementById("bookingForm").style.display = "block";
         document.getElementById("userName").value = "";
         document.getElementById("userEmail").value = "";
-        document.getElementById("userPhone").value = "";
+        document.getElementById("userArtistName").value = "";
         document.getElementById("bookingStatus").style.display = "none";
         document.getElementById("emailBookingStatus").style.display = "none";
         
@@ -2145,10 +2155,10 @@
         
         const name = document.getElementById("userName").value.trim();
         const email = document.getElementById("userEmail").value.trim();
-        const phone = document.getElementById("userPhone").value.trim();
+        const artistName = document.getElementById("userArtistName").value.trim();
 
-        if (!name || !email) {
-          showStatus("bookingStatus", "Please fill in name and email", "error");
+        if (!name || !email || !artistName) {
+          showStatus("bookingStatus", "Please fill in all required fields", "error");
           return false;
         }
 
@@ -2193,7 +2203,7 @@
         const booking = {
           name: name,
           email: email,
-          phone: phone,
+          artistName: artistName,
           tableId: tableId,
           slotIndex: slotIndex,
           tableName: table.name,
@@ -2226,6 +2236,7 @@
           const emailParams = {
             user_name: booking.name,
             user_email: booking.email,
+            artist_name: booking.artistName,
             table_name: booking.tableName,
             speakers: `${booking.speaker1} & ${booking.speaker2}`,
             event_date: eventDate,
@@ -2274,7 +2285,7 @@
             <strong>Booking Details:</strong><br>
             <strong>Name:</strong> ${booking.name}<br>
             <strong>Email:</strong> ${booking.email}<br>
-            ${booking.phone ? `<strong>Phone:</strong> ${booking.phone}<br>` : ""}
+            <strong>Artist/Band:</strong> ${booking.artistName}<br>
             <strong>Table:</strong> ${booking.tableName}<br>
             <strong>Speakers:</strong> ${booking.speaker1} & ${booking.speaker2}<br>
             <strong>Date:</strong> ${eventDate}<br>
@@ -2414,7 +2425,7 @@ END:VCALENDAR`;
               <tr>
                 <th>Name</th>
                 <th>Email</th>
-                <th>Phone</th>
+                <th>Artist/Band</th>
                 <th>Table</th>
                 <th>Date</th>
                 <th>Time</th>
@@ -2433,7 +2444,7 @@ END:VCALENDAR`;
                   <tr style="${isAtLimit ? 'background-color: #fff3cd;' : ''}">
                     <td>${booking.name}</td>
                     <td>${booking.email}</td>
-                    <td>${booking.phone || "N/A"}</td>
+                    <td>${booking.artistName || "N/A"}</td>
                     <td>${booking.tableName}</td>
                     <td>${new Date(booking.date).toLocaleDateString()}</td>
                     <td>${booking.timeSlot}</td>
@@ -2476,7 +2487,7 @@ END:VCALENDAR`;
         }
 
         const headers = [
-          "Name", "Email", "Phone", "Table", "Date", "Time", 
+          "Name", "Email", "Artist/Band", "Table", "Date", "Time", 
           "Speaker 1", "Speaker 2", "Booking Time"
         ];
         
@@ -2486,7 +2497,7 @@ END:VCALENDAR`;
             [
               booking.name,
               booking.email,
-              booking.phone || "",
+              booking.artistName || "",
               booking.tableName,
               booking.date,
               booking.timeSlot,
@@ -2499,6 +2510,130 @@ END:VCALENDAR`;
 
         downloadFile(csvContent, "conversation-bookings.csv", "text/csv");
         showStatus("exportStatus", "CSV exported successfully", "success");
+      }
+
+      function exportToPDF() {
+        const bookingsList = Object.values(localData.bookings);
+        
+        if (typeof jsPDF === 'undefined') {
+          showStatus("exportStatus", "PDF library not loaded", "error");
+          return;
+        }
+
+        try {
+          const { jsPDF } = window.jspdf;
+          const doc = new jsPDF('p', 'mm', 'a4');
+          
+          // Title
+          doc.setFontSize(20);
+          doc.setFont('helvetica', 'bold');
+          doc.text('Conversation Table Booking Schedule', 105, 20, { align: 'center' });
+          
+          // Event information
+          let eventDate = "Not configured";
+          if (localData.eventConfig.date) {
+            eventDate = new Date(localData.eventConfig.date).toLocaleDateString("en-US", {
+              weekday: "long",
+              year: "numeric",
+              month: "long",
+              day: "numeric",
+            });
+          }
+          
+          doc.setFontSize(12);
+          doc.setFont('helvetica', 'normal');
+          doc.text(`Event Date: ${eventDate}`, 105, 30, { align: 'center' });
+          doc.text(`Time: ${localData.eventConfig.startTime} - ${localData.eventConfig.endTime}`, 105, 36, { align: 'center' });
+          doc.text(`Generated: ${new Date().toLocaleString()}`, 105, 42, { align: 'center' });
+          
+          let yPosition = 55;
+          const pageHeight = doc.internal.pageSize.height;
+          const marginBottom = 20;
+          
+          // Process each table
+          localData.tables.forEach((table, tableIndex) => {
+            // Check if we need a new page
+            if (yPosition > pageHeight - 80) {
+              doc.addPage();
+              yPosition = 20;
+            }
+            
+            // Table header
+            doc.setFontSize(14);
+            doc.setFont('helvetica', 'bold');
+            doc.text(`Table ${tableIndex + 1}: ${table.name}`, 20, yPosition);
+            yPosition += 6;
+            
+            doc.setFontSize(10);
+            doc.setFont('helvetica', 'normal');
+            doc.text(`with ${table.speaker1} & ${table.speaker2}`, 20, yPosition);
+            yPosition += 8;
+            
+            // Time slots
+            doc.setFontSize(9);
+            localData.eventConfig.timeSlots.forEach((slot) => {
+              const bookingKey = `${table.id}-${slot.index}`;
+              const booking = localData.bookings[bookingKey];
+              
+              if (yPosition > pageHeight - marginBottom) {
+                doc.addPage();
+                yPosition = 20;
+              }
+              
+              // Time slot info
+              doc.setFont('helvetica', 'normal');
+              doc.text(`${slot.start} - ${slot.end}`, 25, yPosition);
+              
+              if (booking) {
+                // Booked - show booking details
+                doc.setFont('helvetica', 'bold');
+                doc.text(`BOOKED: ${booking.name} (${booking.artistName})`, 55, yPosition);
+                doc.setFont('helvetica', 'normal');
+              } else {
+                // Available
+                doc.setFont('helvetica', 'italic');
+                doc.text('Available', 55, yPosition);
+                doc.setFont('helvetica', 'normal');
+              }
+              
+              yPosition += 5;
+            });
+            
+            yPosition += 10; // Space between tables
+          });
+          
+          // Summary at the end
+          if (yPosition > pageHeight - 60) {
+            doc.addPage();
+            yPosition = 20;
+          }
+          
+          doc.setFontSize(12);
+          doc.setFont('helvetica', 'bold');
+          doc.text('Summary', 20, yPosition);
+          yPosition += 8;
+          
+          doc.setFontSize(10);
+          doc.setFont('helvetica', 'normal');
+          doc.text(`Total Tables: ${localData.tables.length}`, 20, yPosition);
+          yPosition += 5;
+          doc.text(`Total Bookings: ${bookingsList.length}`, 20, yPosition);
+          yPosition += 5;
+          doc.text(`Total Time Slots: ${localData.tables.length * localData.eventConfig.timeSlots.length}`, 20, yPosition);
+          yPosition += 5;
+          doc.text(`Available Slots: ${(localData.tables.length * localData.eventConfig.timeSlots.length) - bookingsList.length}`, 20, yPosition);
+          
+          // Generate filename
+          const dateStr = localData.eventConfig.date || new Date().toISOString().split('T')[0];
+          const filename = `conversation-table-schedule-${dateStr}.pdf`;
+          
+          doc.save(filename);
+          showStatus("exportStatus", "PDF exported successfully", "success");
+          
+        } catch (error) {
+          console.error('PDF export failed:', error);
+          showStatus("exportStatus", "PDF export failed: " + error.message, "error");
+        }
       }
 
       function exportToExcel() {
@@ -2514,12 +2649,12 @@ END:VCALENDAR`;
           `Total Bookings: ${bookingsList.length}`,
           `Connection Status: ${isOnline ? 'Online' : 'Offline'}`,
           "",
-          "Name,Email,Phone,Table,Date,Time,Speaker 1,Speaker 2,Booking Time",
+          "Name,Email,Artist/Band,Table,Date,Time,Speaker 1,Speaker 2,Booking Time",
           ...bookingsList.map((booking) =>
             [
               booking.name,
               booking.email,
-              booking.phone || "",
+              booking.artistName || "",
               booking.tableName,
               booking.date,
               booking.timeSlot,
