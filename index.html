@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Ostend Is Music 2025 Expertenhub</title>
+    <title>Conversation Table Booking</title>
     <style>
       * {
         margin: 0;
@@ -732,7 +732,7 @@
     <div class="container">
       <!-- CLIENT INTERFACE -->
       <div id="client-interface" class="client-interface">
-        <h1>Ostend Is Music 2025 Expertenhub</h1>
+        <h1>Conversation Table Booking</h1>
         <div class="event-info" id="eventInfo">Loading event information...</div>
         <div class="client-booking-grid" id="clientBookingGrid">
           Loading booking slots...
@@ -946,10 +946,10 @@
             </button>
             <button
               class="btn-success"
-              onclick="exportToImage()"
+              onclick="exportToPDF()"
               style="margin-left: 10px"
             >
-              Export to A4 JPGs
+              Export to PDF
             </button>
             <div
               id="exportStatus"
@@ -1122,6 +1122,8 @@
     
     <!-- html2canvas SDK -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <!-- jsPDF SDK -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 
     <script>
       // Firebase and Database Configuration
@@ -2648,7 +2650,7 @@ END:VCALENDAR`;
         showStatus("exportStatus", "CSV exported successfully", "success");
       }
 
-      async function exportToImage() {
+      async function exportToPDF() {
         const bookingsList = Object.values(localData.bookings);
         
         if (typeof html2canvas === 'undefined') {
@@ -2656,8 +2658,13 @@ END:VCALENDAR`;
           return;
         }
 
+        if (typeof jsPDF === 'undefined') {
+          showStatus("exportStatus", "PDF library not loaded", "error");
+          return;
+        }
+
         try {
-          showStatus("exportStatus", "Generating multi-page images...", "success");
+          showStatus("exportStatus", "Generating PDF with multiple pages...", "success");
           
           // Generate event date string
           let eventDate = "Not configured";
@@ -2698,6 +2705,10 @@ END:VCALENDAR`;
             pages.push([]);
           }
 
+          // Create PDF document
+          const { jsPDF } = window.jspdf;
+          const pdf = new jsPDF('p', 'mm', 'a4');
+          
           const exportContainer = document.getElementById('exportContainer');
           
           // Generate each page
@@ -2793,31 +2804,37 @@ END:VCALENDAR`;
             exportContainer.style.left = '-9999px';
             exportContainer.style.zIndex = 'auto';
             
-            // Convert to JPG and download
+            // Convert canvas to image data
             const imgData = canvas.toDataURL('image/jpeg', 0.9);
-            const link = document.createElement('a');
-            const dateStr = localData.eventConfig.date || new Date().toISOString().split('T')[0];
             
-            if (totalPages === 1) {
-              link.download = `conversation-table-schedule-${dateStr}.jpg`;
-            } else {
-              link.download = `conversation-table-schedule-${dateStr}-page-${pageIndex + 1}.jpg`;
+            // Add page to PDF (first page is already created)
+            if (pageIndex > 0) {
+              pdf.addPage();
             }
             
-            link.href = imgData;
-            link.click();
+            // Add image to PDF page
+            const imgWidth = 210; // A4 width in mm
+            const imgHeight = (canvas.height * imgWidth) / canvas.width;
             
-            // Small delay between downloads to prevent browser issues
+            pdf.addImage(imgData, 'JPEG', 0, 0, imgWidth, imgHeight);
+            
+            // Small delay between pages to prevent browser issues
             if (pageIndex < pages.length - 1) {
-              await new Promise(resolve => setTimeout(resolve, 500));
+              await new Promise(resolve => setTimeout(resolve, 100));
             }
           }
           
-          showStatus("exportStatus", `${pages.length} page(s) exported successfully`, "success");
+          // Save the PDF
+          const dateStr = localData.eventConfig.date || new Date().toISOString().split('T')[0];
+          const filename = `conversation-table-schedule-${dateStr}.pdf`;
+          
+          pdf.save(filename);
+          
+          showStatus("exportStatus", `Multi-page PDF exported successfully (${pages.length} pages)`, "success");
           
         } catch (error) {
-          console.error('Image export failed:', error);
-          showStatus("exportStatus", "Image export failed: " + error.message, "error");
+          console.error('PDF export failed:', error);
+          showStatus("exportStatus", "PDF export failed: " + error.message, "error");
         }
       }
 
