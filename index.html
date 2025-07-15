@@ -825,115 +825,128 @@
 
       <!-- LOGIN MODAL -->
       <div class="modal" id="loginModal">
-        <h3>Admin Login</h3>
-        <div class="form-group">
-          <label for="adminEmail">Email:</label>
-          <input
-            type="email"
-            id="adminEmail"
-            placeholder="Enter admin email"
-            style="width: 100%; margin-bottom: 15px"
-          />
-        </div>
-        <div class="form-group">
-          <label for="adminPassword">Password:</label>
-          <input
-            type="password"
-            id="adminPassword"
-            placeholder="Enter password"
-            onkeypress="if(event.key==='Enter') loginAdmin()"
-            style="width: 100%; margin-bottom: 15px"
-          />
-        </div>
-        <div style="text-align: center">
-          <button onclick="loginAdmin()" style="margin-right: 10px">
-            Login
-          </button>
-          <button onclick="closeLoginModal()" class="btn-secondary">
-            Cancel
-          </button>
-        </div>
-        <div
-          id="loginError"
-          class="status-message error"
-          style="display: none"
-        ></div>
+        <form onsubmit="loginAdmin(); return false;">
+          <h3>Admin Login</h3>
+          <div class="form-group">
+            <label for="adminEmail">Email:</label>
+            <input
+              type="email"
+              id="adminEmail"
+              placeholder="Enter admin email"
+              style="width: 100%; margin-bottom: 15px"
+              required
+            />
+          </div>
+          <div class="form-group">
+            <label for="adminPassword">Password:</label>
+            <input
+              type="password"
+              id="adminPassword"
+              placeholder="Enter password"
+              onkeypress="if(event.key==='Enter') loginAdmin()"
+              style="width: 100%; margin-bottom: 15px"
+              required
+            />
+          </div>
+          <div style="text-align: center">
+            <button type="submit" style="margin-right: 10px">
+              Login
+            </button>
+            <button type="button" onclick="closeLoginModal()" class="btn-secondary">
+              Cancel
+            </button>
+          </div>
+          <div
+            id="loginError"
+            class="status-message error"
+            style="display: none"
+          ></div>
+        </form>
       </div>
 
       <!-- PASSWORD CHANGE MODAL -->
       <div class="modal" id="passwordChangeModal">
-        <h3>Change Password</h3>
-        <div class="form-group">
-          <label for="currentPassword">Current Password:</label>
-          <input
-            type="password"
-            id="currentPassword"
-            placeholder="Enter current password"
-            style="width: 100%; margin-bottom: 15px"
-          />
-        </div>
-        <div class="form-group">
-          <label for="newPassword">New Password:</label>
-          <input
-            type="password"
-            id="newPassword"
-            placeholder="Enter new password (min 6 chars)"
-            style="width: 100%; margin-bottom: 15px"
-          />
-        </div>
-        <div class="form-group">
-          <label for="confirmPassword">Confirm Password:</label>
-          <input
-            type="password"
-            id="confirmPassword"
-            placeholder="Confirm new password"
-            style="width: 100%; margin-bottom: 15px"
-          />
-        </div>
-        <div style="text-align: center">
-          <button onclick="updatePassword()" style="margin-right: 10px">
-            Update Password
-          </button>
-          <button onclick="closePasswordChangeModal()" class="btn-secondary">
-            Cancel
-          </button>
-        </div>
-        <div
-          id="passwordChangeStatus"
-          class="status-message"
-          style="display: none"
-        ></div>
+        <form onsubmit="updatePassword(); return false;">
+          <h3>Change Password</h3>
+          <div class="form-group">
+            <label for="currentPassword">Current Password:</label>
+            <input
+              type="password"
+              id="currentPassword"
+              placeholder="Enter current password"
+              style="width: 100%; margin-bottom: 15px"
+              required
+            />
+          </div>
+          <div class="form-group">
+            <label for="newPassword">New Password:</label>
+            <input
+              type="password"
+              id="newPassword"
+              placeholder="Enter new password (min 6 chars)"
+              style="width: 100%; margin-bottom: 15px"
+              minlength="6"
+              required
+            />
+          </div>
+          <div class="form-group">
+            <label for="confirmPassword">Confirm Password:</label>
+            <input
+              type="password"
+              id="confirmPassword"
+              placeholder="Confirm new password"
+              style="width: 100%; margin-bottom: 15px"
+              minlength="6"
+              required
+            />
+          </div>
+          <div style="text-align: center">
+            <button type="submit" style="margin-right: 10px">
+              Update Password
+            </button>
+            <button type="button" onclick="closePasswordChangeModal()" class="btn-secondary">
+              Cancel
+            </button>
+          </div>
+          <div
+            id="passwordChangeStatus"
+            class="status-message"
+            style="display: none"
+          ></div>
+        </form>
       </div>
 
       <!-- BOOKING FORM -->
       <div class="modal" id="bookingForm">
         <button class="close-btn" onclick="closeBookingForm()">&times;</button>
-        <h3>Book Your Conversation</h3>
-        <div class="form-group">
-          <label for="userName">Your Name:</label>
-          <input type="text" id="userName" required />
-        </div>
-        <div class="form-group">
-          <label for="userEmail">Email:</label>
-          <input type="email" id="userEmail" required onblur="checkEmailBookingLimit()" />
-          <div id="emailBookingStatus" class="status-message" style="display: none; margin-top: 5px; text-align: left; padding: 5px;"></div>
-        </div>
-        <div class="form-group">
-          <label for="userPhone">Phone (optional):</label>
-          <input type="tel" id="userPhone" />
-        </div>
-        <div class="form-group">
-          <label>Selected Slot:</label>
-          <div id="selectedSlotInfo" class="confirmation-details"></div>
-        </div>
-        <div class="booking-actions">
-          <button onclick="confirmBooking()" id="confirmBookingBtn">Confirm Booking</button>
-        </div>
-        <div
-          id="bookingStatus"
-          class="status-message"
-          style="display: none"
-        ></div>
+        <form onsubmit="confirmBooking(); return false;">
+          <h3>Book Your Conversation</h3>
+          <div class="form-group">
+            <label for="userName">Your Name:</label>
+            <input type="text" id="userName" required />
+          </div>
+          <div class="form-group">
+            <label for="userEmail">Email:</label>
+            <input type="email" id="userEmail" required onblur="checkEmailBookingLimit()" />
+            <div id="emailBookingStatus" class="status-message" style="display: none; margin-top: 5px; text-align: left; padding: 5px;"></div>
+          </div>
+          <div class="form-group">
+            <label for="userPhone">Phone (optional):</label>
+            <input type="tel" id="userPhone" />
+          </div>
+          <div class="form-group">
+            <label>Selected Slot:</label>
+            <div id="selectedSlotInfo" class="confirmation-details"></div>
+          </div>
+          <div class="booking-actions">
+            <button type="submit" id="confirmBookingBtn">Confirm Booking</button>
+          </div>
+          <div
+            id="bookingStatus"
+            class="status-message"
+            style="display: none"
+          ></div>
+        </form>
       </div>
 
       <!-- CONFIRMATION MODAL -->
@@ -1022,6 +1035,74 @@
         return Object.values(localData.bookings).filter(
           booking => booking.email.toLowerCase().trim() === normalizedEmail
         );
+      }
+
+      // Check email booking limit and display status
+      function checkEmailBookingLimit() {
+        const email = document.getElementById("userEmail").value.trim();
+        const statusElement = document.getElementById("emailBookingStatus");
+        
+        if (!email) {
+          statusElement.style.display = "none";
+          return;
+        }
+
+        // Email validation
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(email)) {
+          statusElement.textContent = "Please enter a valid email address";
+          statusElement.className = "status-message error";
+          statusElement.style.display = "block";
+          return;
+        }
+
+        const currentBookingCount = countBookingsByEmail(email);
+        const remainingBookings = MAX_BOOKINGS_PER_EMAIL - currentBookingCount;
+
+        if (remainingBookings <= 0) {
+          const existingBookings = getBookingsByEmail(email);
+          const bookingDetails = existingBookings.map(booking => 
+            `${booking.tableName} (${booking.timeSlot})`
+          ).join(', ');
+          
+          statusElement.textContent = `Maximum bookings reached (${MAX_BOOKINGS_PER_EMAIL}/${MAX_BOOKINGS_PER_EMAIL}). Current: ${bookingDetails}`;
+          statusElement.className = "status-message error";
+          statusElement.style.display = "block";
+          
+          // Disable the confirm button
+          const confirmBtn = document.getElementById('confirmBookingBtn');
+          if (confirmBtn) {
+            confirmBtn.disabled = true;
+            confirmBtn.textContent = 'Maximum Bookings Reached';
+          }
+        } else if (currentBookingCount > 0) {
+          const existingBookings = getBookingsByEmail(email);
+          const bookingDetails = existingBookings.map(booking => 
+            `${booking.tableName} (${booking.timeSlot})`
+          ).join(', ');
+          
+          statusElement.textContent = `${currentBookingCount}/${MAX_BOOKINGS_PER_EMAIL} bookings used. ${remainingBookings} remaining. Current: ${bookingDetails}`;
+          statusElement.className = "status-message warning";
+          statusElement.style.display = "block";
+          
+          // Enable the confirm button
+          const confirmBtn = document.getElementById('confirmBookingBtn');
+          if (confirmBtn) {
+            confirmBtn.disabled = false;
+            confirmBtn.textContent = 'Confirm Booking';
+          }
+        } else {
+          statusElement.textContent = `${remainingBookings}/${MAX_BOOKINGS_PER_EMAIL} bookings available`;
+          statusElement.className = "status-message success";
+          statusElement.style.display = "block";
+          
+          // Enable the confirm button
+          const confirmBtn = document.getElementById('confirmBookingBtn');
+          if (confirmBtn) {
+            confirmBtn.disabled = false;
+            confirmBtn.textContent = 'Confirm Booking';
+          }
+        }
       }
 
       // Constants
@@ -1217,17 +1298,20 @@
       }
 
       async function loginAdmin() {
+        // Prevent form submission
+        event?.preventDefault();
+        
         const email = document.getElementById("adminEmail").value.trim();
         const password = document.getElementById("adminPassword").value;
 
         if (!email || !password) {
           showLoginError("Please enter email and password");
-          return;
+          return false;
         }
 
         if (!auth) {
           showLoginError("Authentication not available - check Firebase configuration");
-          return;
+          return false;
         }
 
         try {
@@ -1257,6 +1341,7 @@
           }
           showLoginError(errorMessage);
         }
+        return false;
       }
 
       function showLoginError(message) {
@@ -1350,28 +1435,31 @@
       }
 
       async function updatePassword() {
+        // Prevent form submission
+        event?.preventDefault();
+        
         const currentPassword = document.getElementById("currentPassword").value;
         const newPassword = document.getElementById("newPassword").value;
         const confirmPassword = document.getElementById("confirmPassword").value;
 
         if (!currentPassword || !newPassword || !confirmPassword) {
           showPasswordChangeStatus("Please fill in all fields", "error");
-          return;
+          return false;
         }
 
         if (newPassword !== confirmPassword) {
           showPasswordChangeStatus("New passwords do not match", "error");
-          return;
+          return false;
         }
 
         if (newPassword.length < 6) {
           showPasswordChangeStatus("Password must be at least 6 characters", "error");
-          return;
+          return false;
         }
 
         if (!auth || !currentUser) {
           showPasswordChangeStatus("Not authenticated", "error");
-          return;
+          return false;
         }
 
         try {
@@ -1412,6 +1500,7 @@
           }
           showPasswordChangeStatus(errorMessage, "error");
         }
+        return false;
       }
 
       function showUserManagementStatus(message, type) {
@@ -2219,20 +2308,23 @@
       }
 
       async function confirmBooking() {
+        // Prevent form submission
+        event?.preventDefault();
+        
         const name = document.getElementById("userName").value.trim();
         const email = document.getElementById("userEmail").value.trim();
         const phone = document.getElementById("userPhone").value.trim();
 
         if (!name || !email) {
           showStatus("bookingStatus", "Please fill in name and email", "error");
-          return;
+          return false;
         }
 
         // Email validation
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         if (!emailRegex.test(email)) {
           showStatus("bookingStatus", "Please enter a valid email address", "error");
-          return;
+          return false;
         }
 
         // Check booking limit per email
@@ -2247,12 +2339,12 @@
             `This email has already reached the maximum of ${MAX_BOOKINGS_PER_EMAIL} bookings. Current bookings: ${bookingDetails}`, 
             "error"
           );
-          return;
+          return false;
         }
 
         if (!currentBookingSelection) {
           showStatus("bookingStatus", "No slot selected", "error");
-          return;
+          return false;
         }
 
         const { tableId, slotIndex } = currentBookingSelection;
@@ -2260,7 +2352,7 @@
 
         if (localData.bookings[bookingKey]) {
           showStatus("bookingStatus", "This slot is already booked", "error");
-          return;
+          return false;
         }
 
         const table = localData.tables.find((t) => t.id === tableId);
@@ -2333,6 +2425,7 @@
           confirmBtn.disabled = false;
           confirmBtn.textContent = 'Confirm Booking';
         }
+        return false;
       }
 
       function showConfirmationModal() {
