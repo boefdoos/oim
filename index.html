@@ -580,6 +580,135 @@
         color: #856404;
         margin-bottom: 10px;
       }
+
+      .export-container {
+        position: fixed;
+        top: -9999px;
+        left: -9999px;
+        width: 800px;
+        background: white;
+        padding: 30px;
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+        line-height: 1.4;
+      }
+
+      .export-header {
+        text-align: center;
+        margin-bottom: 30px;
+        border-bottom: 2px solid #2c3e50;
+        padding-bottom: 20px;
+      }
+
+      .export-title {
+        font-size: 24px;
+        font-weight: bold;
+        color: #2c3e50;
+        margin-bottom: 10px;
+      }
+
+      .export-subtitle {
+        font-size: 14px;
+        color: #666;
+        margin-bottom: 5px;
+      }
+
+      .export-table {
+        margin-bottom: 25px;
+        border: 1px solid #ddd;
+        border-radius: 6px;
+        overflow: hidden;
+      }
+
+      .export-table-header {
+        background: #f8f9fa;
+        padding: 12px 15px;
+        border-bottom: 1px solid #ddd;
+      }
+
+      .export-table-name {
+        font-size: 16px;
+        font-weight: bold;
+        color: #2c3e50;
+        margin-bottom: 4px;
+      }
+
+      .export-table-speakers {
+        font-size: 12px;
+        color: #666;
+      }
+
+      .export-slots {
+        padding: 10px;
+      }
+
+      .export-slot {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 8px 10px;
+        border-bottom: 1px solid #f0f0f0;
+        font-size: 12px;
+      }
+
+      .export-slot:last-child {
+        border-bottom: none;
+      }
+
+      .export-slot.booked {
+        background: #fff3cd;
+        border-left: 4px solid #ffc107;
+      }
+
+      .export-slot.available {
+        background: #d4edda;
+        border-left: 4px solid #28a745;
+      }
+
+      .export-time {
+        font-weight: bold;
+        color: #2c3e50;
+        min-width: 80px;
+      }
+
+      .export-booking-info {
+        flex: 1;
+        text-align: center;
+        font-weight: bold;
+      }
+
+      .export-booking-info.booked {
+        color: #856404;
+      }
+
+      .export-booking-info.available {
+        color: #155724;
+        font-style: italic;
+      }
+
+      .export-summary {
+        margin-top: 30px;
+        padding: 20px;
+        background: #f8f9fa;
+        border-radius: 6px;
+        border: 1px solid #e9ecef;
+      }
+
+      .export-summary h4 {
+        color: #2c3e50;
+        margin-bottom: 10px;
+        font-size: 16px;
+      }
+
+      .export-summary-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 10px;
+        font-size: 12px;
+      }
+
+      .export-summary-item {
+        padding: 5px 0;
+      }
     </style>
   </head>
   <body>
@@ -813,10 +942,10 @@
             </button>
             <button
               class="btn-success"
-              onclick="exportToPDF()"
+              onclick="exportToImage()"
               style="margin-left: 10px"
             >
-              Export to PDF
+              Export to JPG
             </button>
             <div
               id="exportStatus"
@@ -973,6 +1102,9 @@
       </div>
     </div>
 
+    <!-- Hidden container for export -->
+    <div id="exportContainer" class="export-container"></div>
+
     <!-- Firebase SDK -->
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
@@ -984,8 +1116,8 @@
       src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"
     ></script>
     
-    <!-- jsPDF SDK -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <!-- html2canvas SDK -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 
     <script>
       // Firebase and Database Configuration
@@ -2512,24 +2644,18 @@ END:VCALENDAR`;
         showStatus("exportStatus", "CSV exported successfully", "success");
       }
 
-      function exportToPDF() {
+      async function exportToImage() {
         const bookingsList = Object.values(localData.bookings);
         
-        if (typeof jsPDF === 'undefined') {
-          showStatus("exportStatus", "PDF library not loaded", "error");
+        if (typeof html2canvas === 'undefined') {
+          showStatus("exportStatus", "Image export library not loaded", "error");
           return;
         }
 
         try {
-          const { jsPDF } = window.jspdf;
-          const doc = new jsPDF('p', 'mm', 'a4');
+          showStatus("exportStatus", "Generating image...", "success");
           
-          // Title
-          doc.setFontSize(20);
-          doc.setFont('helvetica', 'bold');
-          doc.text('Conversation Table Booking Schedule', 105, 20, { align: 'center' });
-          
-          // Event information
+          // Generate event date string
           let eventDate = "Not configured";
           if (localData.eventConfig.date) {
             eventDate = new Date(localData.eventConfig.date).toLocaleDateString("en-US", {
@@ -2539,100 +2665,96 @@ END:VCALENDAR`;
               day: "numeric",
             });
           }
+
+          // Create HTML content for export
+          const exportHtml = `
+            <div class="export-header">
+              <div class="export-title">Conversation Table Booking Schedule</div>
+              <div class="export-subtitle">Event Date: ${eventDate}</div>
+              <div class="export-subtitle">Time: ${localData.eventConfig.startTime} - ${localData.eventConfig.endTime}</div>
+              <div class="export-subtitle">Generated: ${new Date().toLocaleString()}</div>
+            </div>
+            
+            ${localData.tables.map((table, tableIndex) => `
+              <div class="export-table">
+                <div class="export-table-header">
+                  <div class="export-table-name">Table ${tableIndex + 1}: ${table.name}</div>
+                  <div class="export-table-speakers">with ${table.speaker1} & ${table.speaker2}</div>
+                </div>
+                <div class="export-slots">
+                  ${localData.eventConfig.timeSlots.map((slot) => {
+                    const bookingKey = `${table.id}-${slot.index}`;
+                    const booking = localData.bookings[bookingKey];
+                    
+                    if (booking) {
+                      return `
+                        <div class="export-slot booked">
+                          <div class="export-time">${slot.start} - ${slot.end}</div>
+                          <div class="export-booking-info booked">BOOKED: ${booking.name} (${booking.artistName})</div>
+                        </div>
+                      `;
+                    } else {
+                      return `
+                        <div class="export-slot available">
+                          <div class="export-time">${slot.start} - ${slot.end}</div>
+                          <div class="export-booking-info available">Available</div>
+                        </div>
+                      `;
+                    }
+                  }).join('')}
+                </div>
+              </div>
+            `).join('')}
+            
+            <div class="export-summary">
+              <h4>Summary</h4>
+              <div class="export-summary-grid">
+                <div class="export-summary-item"><strong>Total Tables:</strong> ${localData.tables.length}</div>
+                <div class="export-summary-item"><strong>Total Bookings:</strong> ${bookingsList.length}</div>
+                <div class="export-summary-item"><strong>Total Time Slots:</strong> ${localData.tables.length * localData.eventConfig.timeSlots.length}</div>
+                <div class="export-summary-item"><strong>Available Slots:</strong> ${(localData.tables.length * localData.eventConfig.timeSlots.length) - bookingsList.length}</div>
+              </div>
+            </div>
+          `;
+
+          // Insert content into hidden container
+          const exportContainer = document.getElementById('exportContainer');
+          exportContainer.innerHTML = exportHtml;
           
-          doc.setFontSize(12);
-          doc.setFont('helvetica', 'normal');
-          doc.text(`Event Date: ${eventDate}`, 105, 30, { align: 'center' });
-          doc.text(`Time: ${localData.eventConfig.startTime} - ${localData.eventConfig.endTime}`, 105, 36, { align: 'center' });
-          doc.text(`Generated: ${new Date().toLocaleString()}`, 105, 42, { align: 'center' });
+          // Temporarily position the container for screenshot
+          exportContainer.style.position = 'absolute';
+          exportContainer.style.top = '0';
+          exportContainer.style.left = '0';
+          exportContainer.style.zIndex = '-1';
           
-          let yPosition = 55;
-          const pageHeight = doc.internal.pageSize.height;
-          const marginBottom = 20;
-          
-          // Process each table
-          localData.tables.forEach((table, tableIndex) => {
-            // Check if we need a new page
-            if (yPosition > pageHeight - 80) {
-              doc.addPage();
-              yPosition = 20;
-            }
-            
-            // Table header
-            doc.setFontSize(14);
-            doc.setFont('helvetica', 'bold');
-            doc.text(`Table ${tableIndex + 1}: ${table.name}`, 20, yPosition);
-            yPosition += 6;
-            
-            doc.setFontSize(10);
-            doc.setFont('helvetica', 'normal');
-            doc.text(`with ${table.speaker1} & ${table.speaker2}`, 20, yPosition);
-            yPosition += 8;
-            
-            // Time slots
-            doc.setFontSize(9);
-            localData.eventConfig.timeSlots.forEach((slot) => {
-              const bookingKey = `${table.id}-${slot.index}`;
-              const booking = localData.bookings[bookingKey];
-              
-              if (yPosition > pageHeight - marginBottom) {
-                doc.addPage();
-                yPosition = 20;
-              }
-              
-              // Time slot info
-              doc.setFont('helvetica', 'normal');
-              doc.text(`${slot.start} - ${slot.end}`, 25, yPosition);
-              
-              if (booking) {
-                // Booked - show booking details
-                doc.setFont('helvetica', 'bold');
-                doc.text(`BOOKED: ${booking.name} (${booking.artistName})`, 55, yPosition);
-                doc.setFont('helvetica', 'normal');
-              } else {
-                // Available
-                doc.setFont('helvetica', 'italic');
-                doc.text('Available', 55, yPosition);
-                doc.setFont('helvetica', 'normal');
-              }
-              
-              yPosition += 5;
-            });
-            
-            yPosition += 10; // Space between tables
+          // Generate image using html2canvas
+          const canvas = await html2canvas(exportContainer, {
+            backgroundColor: '#ffffff',
+            scale: 2, // Higher quality
+            useCORS: true,
+            logging: false,
+            width: 800,
+            height: exportContainer.scrollHeight
           });
           
-          // Summary at the end
-          if (yPosition > pageHeight - 60) {
-            doc.addPage();
-            yPosition = 20;
-          }
+          // Hide container again
+          exportContainer.style.position = 'fixed';
+          exportContainer.style.top = '-9999px';
+          exportContainer.style.left = '-9999px';
+          exportContainer.style.zIndex = 'auto';
           
-          doc.setFontSize(12);
-          doc.setFont('helvetica', 'bold');
-          doc.text('Summary', 20, yPosition);
-          yPosition += 8;
+          // Convert to JPG and download
+          const imgData = canvas.toDataURL('image/jpeg', 0.9);
+          const link = document.createElement('a');
+          link.download = `conversation-table-schedule-${localData.eventConfig.date || new Date().toISOString().split('T')[0]}.jpg`;
+          link.href = imgData;
+          link.click();
           
-          doc.setFontSize(10);
-          doc.setFont('helvetica', 'normal');
-          doc.text(`Total Tables: ${localData.tables.length}`, 20, yPosition);
-          yPosition += 5;
-          doc.text(`Total Bookings: ${bookingsList.length}`, 20, yPosition);
-          yPosition += 5;
-          doc.text(`Total Time Slots: ${localData.tables.length * localData.eventConfig.timeSlots.length}`, 20, yPosition);
-          yPosition += 5;
-          doc.text(`Available Slots: ${(localData.tables.length * localData.eventConfig.timeSlots.length) - bookingsList.length}`, 20, yPosition);
-          
-          // Generate filename
-          const dateStr = localData.eventConfig.date || new Date().toISOString().split('T')[0];
-          const filename = `conversation-table-schedule-${dateStr}.pdf`;
-          
-          doc.save(filename);
-          showStatus("exportStatus", "PDF exported successfully", "success");
+          showStatus("exportStatus", "Image exported successfully", "success");
           
         } catch (error) {
-          console.error('PDF export failed:', error);
-          showStatus("exportStatus", "PDF export failed: " + error.message, "error");
+          console.error('Image export failed:', error);
+          showStatus("exportStatus", "Image export failed: " + error.message, "error");
         }
       }
 
