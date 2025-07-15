@@ -915,7 +915,8 @@
         </div>
         <div class="form-group">
           <label for="userEmail">Email:</label>
-          <input type="email" id="userEmail" required />
+          <input type="email" id="userEmail" required onblur="checkEmailBookingLimit()" />
+          <div id="emailBookingStatus" class="status-message" style="display: none; margin-top: 5px; text-align: left; padding: 5px;"></div>
         </div>
         <div class="form-group">
           <label for="userPhone">Phone (optional):</label>
@@ -1004,7 +1005,43 @@
         bookings: {}
       };
 
-      let currentBookingSelection = null;
+      // Constants
+      const MAX_BOOKINGS_PER_EMAIL = 2;
+
+      // Helper function to count bookings by email
+      function countBookingsByEmail(email) {
+        const normalizedEmail = email.toLowerCase().trim();
+        return Object.values(localData.bookings).filter(
+          booking => booking.email.toLowerCase().trim() === normalizedEmail
+        ).length;
+      }
+
+      // Helper function to get bookings by email
+      function getBookingsByEmail(email) {
+        const normalizedEmail = email.toLowerCase().trim();
+        return Object.values(localData.bookings).filter(
+          booking => booking.email.toLowerCase().trim() === normalizedEmail
+        );
+      }
+
+      // Constants
+      const MAX_BOOKINGS_PER_EMAIL = 2;
+
+      // Helper function to count bookings by email
+      function countBookingsByEmail(email) {
+        const normalizedEmail = email.toLowerCase().trim();
+        return Object.values(localData.bookings).filter(
+          booking => booking.email.toLowerCase().trim() === normalizedEmail
+        ).length;
+      }
+
+      // Helper function to get bookings by email
+      function getBookingsByEmail(email) {
+        const normalizedEmail = email.toLowerCase().trim();
+        return Object.values(localData.bookings).filter(
+          booking => booking.email.toLowerCase().trim() === normalizedEmail
+        );
+      }
       let currentBookingConfirmation = null;
       let isAdminMode = false;
 
@@ -1946,7 +1983,8 @@
           });
           eventInfo.innerHTML = `
             <strong>${eventDate}</strong><br>
-            ${localData.eventConfig.startTime} - ${localData.eventConfig.endTime} | ${localData.eventConfig.slotDuration} minutes per session
+            ${localData.eventConfig.startTime} - ${localData.eventConfig.endTime} | ${localData.eventConfig.slotDuration} minutes per session<br>
+            <small style="color: #856404; font-weight: 500;">📝 Maximum ${MAX_BOOKINGS_PER_EMAIL} bookings per email address</small>
           `;
         } else {
           eventInfo.innerHTML = "Event not configured yet";
@@ -1985,6 +2023,74 @@
         `).join("");
       }
 
+      // Check email booking limit and display status
+      function checkEmailBookingLimit() {
+        const email = document.getElementById("userEmail").value.trim();
+        const statusElement = document.getElementById("emailBookingStatus");
+        
+        if (!email) {
+          statusElement.style.display = "none";
+          return;
+        }
+
+        // Email validation
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(email)) {
+          statusElement.textContent = "Please enter a valid email address";
+          statusElement.className = "status-message error";
+          statusElement.style.display = "block";
+          return;
+        }
+
+        const currentBookingCount = countBookingsByEmail(email);
+        const remainingBookings = MAX_BOOKINGS_PER_EMAIL - currentBookingCount;
+
+        if (remainingBookings <= 0) {
+          const existingBookings = getBookingsByEmail(email);
+          const bookingDetails = existingBookings.map(booking => 
+            `${booking.tableName} (${booking.timeSlot})`
+          ).join(', ');
+          
+          statusElement.textContent = `Maximum bookings reached (${MAX_BOOKINGS_PER_EMAIL}/${MAX_BOOKINGS_PER_EMAIL}). Current: ${bookingDetails}`;
+          statusElement.className = "status-message error";
+          statusElement.style.display = "block";
+          
+          // Disable the confirm button
+          const confirmBtn = document.getElementById('confirmBookingBtn');
+          if (confirmBtn) {
+            confirmBtn.disabled = true;
+            confirmBtn.textContent = 'Maximum Bookings Reached';
+          }
+        } else if (currentBookingCount > 0) {
+          const existingBookings = getBookingsByEmail(email);
+          const bookingDetails = existingBookings.map(booking => 
+            `${booking.tableName} (${booking.timeSlot})`
+          ).join(', ');
+          
+          statusElement.textContent = `${currentBookingCount}/${MAX_BOOKINGS_PER_EMAIL} bookings used. ${remainingBookings} remaining. Current: ${bookingDetails}`;
+          statusElement.className = "status-message warning";
+          statusElement.style.display = "block";
+          
+          // Enable the confirm button
+          const confirmBtn = document.getElementById('confirmBookingBtn');
+          if (confirmBtn) {
+            confirmBtn.disabled = false;
+            confirmBtn.textContent = 'Confirm Booking';
+          }
+        } else {
+          statusElement.textContent = `${remainingBookings}/${MAX_BOOKINGS_PER_EMAIL} bookings available`;
+          statusElement.className = "status-message success";
+          statusElement.style.display = "block";
+          
+          // Enable the confirm button
+          const confirmBtn = document.getElementById('confirmBookingBtn');
+          if (confirmBtn) {
+            confirmBtn.disabled = false;
+            confirmBtn.textContent = 'Confirm Booking';
+          }
+        }
+      }
+
       function openBookingForm(tableId, slotIndex) {
         const table = localData.tables.find((t) => t.id === tableId);
         const slot = localData.eventConfig.timeSlots.find((s) => s.index === slotIndex);
@@ -2016,6 +2122,12 @@
         document.getElementById("userEmail").value = "";
         document.getElementById("userPhone").value = "";
         document.getElementById("bookingStatus").style.display = "none";
+        document.getElementById("emailBookingStatus").style.display = "none";
+        
+        // Reset confirm button
+        const confirmBtn = document.getElementById('confirmBookingBtn');
+        confirmBtn.disabled = false;
+        confirmBtn.textContent = 'Confirm Booking';
       }
 
       function closeBookingForm() {
@@ -2038,6 +2150,21 @@
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         if (!emailRegex.test(email)) {
           showStatus("bookingStatus", "Please enter a valid email address", "error");
+          return;
+        }
+
+        // Check booking limit per email
+        const currentBookingCount = countBookingsByEmail(email);
+        if (currentBookingCount >= MAX_BOOKINGS_PER_EMAIL) {
+          const existingBookings = getBookingsByEmail(email);
+          const bookingDetails = existingBookings.map(booking => 
+            `${booking.tableName} (${booking.timeSlot} on ${new Date(booking.date).toLocaleDateString()})`
+          ).join(', ');
+          
+          showStatus("bookingStatus", 
+            `This email has already reached the maximum of ${MAX_BOOKINGS_PER_EMAIL} bookings. Current bookings: ${bookingDetails}`, 
+            "error"
+          );
           return;
         }
 
@@ -2247,6 +2374,33 @@ END:VCALENDAR`;
           return;
         }
 
+        // Calculate email statistics
+        const emailStats = {};
+        bookingsList.forEach(booking => {
+          const email = booking.email.toLowerCase();
+          if (!emailStats[email]) {
+            emailStats[email] = { count: 0, bookings: [] };
+          }
+          emailStats[email].count++;
+          emailStats[email].bookings.push(booking);
+        });
+
+        // Create summary statistics
+        const totalEmails = Object.keys(emailStats).length;
+        const maxBookingsEmails = Object.values(emailStats).filter(stat => stat.count >= MAX_BOOKINGS_PER_EMAIL).length;
+        
+        const summaryHTML = `
+          <div style="background: #f8f9fa; padding: 15px; border-radius: 4px; margin-bottom: 20px; border: 1px solid #e9ecef;">
+            <h4 style="margin-bottom: 10px; color: #2c3e50;">Booking Summary</h4>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px;">
+              <div><strong>Total Bookings:</strong> ${bookingsList.length}</div>
+              <div><strong>Unique Emails:</strong> ${totalEmails}</div>
+              <div><strong>At Max Limit (${MAX_BOOKINGS_PER_EMAIL}):</strong> ${maxBookingsEmails}</div>
+              <div><strong>Avg per Email:</strong> ${(bookingsList.length / totalEmails).toFixed(1)}</div>
+            </div>
+          </div>
+        `;
+
         const tableHTML = `
           <table class="bookings-table">
             <thead>
@@ -2258,14 +2412,18 @@ END:VCALENDAR`;
                 <th>Date</th>
                 <th>Time</th>
                 <th>Speakers</th>
+                <th>Email Count</th>
                 <th>Actions</th>
               </tr>
             </thead>
             <tbody>
               ${bookingsList.map((booking) => {
                 const bookingKey = `${booking.tableId}-${booking.slotIndex}`;
+                const emailCount = emailStats[booking.email.toLowerCase()].count;
+                const isAtLimit = emailCount >= MAX_BOOKINGS_PER_EMAIL;
+                
                 return `
-                  <tr>
+                  <tr style="${isAtLimit ? 'background-color: #fff3cd;' : ''}">
                     <td>${booking.name}</td>
                     <td>${booking.email}</td>
                     <td>${booking.phone || "N/A"}</td>
@@ -2273,6 +2431,7 @@ END:VCALENDAR`;
                     <td>${new Date(booking.date).toLocaleDateString()}</td>
                     <td>${booking.timeSlot}</td>
                     <td>${booking.speaker1} & ${booking.speaker2}</td>
+                    <td style="text-align: center; ${isAtLimit ? 'font-weight: bold; color: #856404;' : ''}">${emailCount}/${MAX_BOOKINGS_PER_EMAIL}</td>
                     <td>
                       <button onclick="cancelBooking('${bookingKey}')" 
                               class="btn-danger" style="padding: 5px 10px; font-size: 12px;">
@@ -2286,7 +2445,7 @@ END:VCALENDAR`;
           </table>
         `;
 
-        container.innerHTML = tableHTML;
+        container.innerHTML = summaryHTML + tableHTML;
       }
 
       async function cancelBooking(bookingKey) {
