@@ -1020,6 +1020,9 @@
 
       // Constants
       const MAX_BOOKINGS_PER_EMAIL = 2;
+      let currentBookingConfirmation = null;
+      let currentBookingSelection = null;
+      let isAdminMode = false;
 
       // Helper function to count bookings by email
       function countBookingsByEmail(email) {
@@ -1104,27 +1107,6 @@
           }
         }
       }
-
-      // Constants
-      const MAX_BOOKINGS_PER_EMAIL = 2;
-
-      // Helper function to count bookings by email
-      function countBookingsByEmail(email) {
-        const normalizedEmail = email.toLowerCase().trim();
-        return Object.values(localData.bookings).filter(
-          booking => booking.email.toLowerCase().trim() === normalizedEmail
-        ).length;
-      }
-
-      // Helper function to get bookings by email
-      function getBookingsByEmail(email) {
-        const normalizedEmail = email.toLowerCase().trim();
-        return Object.values(localData.bookings).filter(
-          booking => booking.email.toLowerCase().trim() === normalizedEmail
-        );
-      }
-      let currentBookingConfirmation = null;
-      let isAdminMode = false;
 
       // Initialize Firebase
       async function initializeFirebase(config = null) {
@@ -1758,6 +1740,17 @@
         }
       }
 
+      function showFirebaseConfigStatus(message, type) {
+        const element = document.getElementById('firebaseConfigStatus');
+        element.textContent = message;
+        element.className = `status-message ${type}`;
+        element.style.display = 'block';
+
+        setTimeout(() => {
+          element.style.display = 'none';
+        }, 5000);
+      }
+
       // EmailJS configuration management
       function getStoredEmailConfig() {
         const stored = localStorage.getItem('emailConfig');
@@ -1854,99 +1847,6 @@
 
       function showEmailConfigStatus(message, type) {
         const element = document.getElementById('emailConfigStatus');
-        element.textContent = message;
-        element.className = `status-message ${type}`;
-        element.style.display = 'block';
-
-        setTimeout(() => {
-          element.style.display = 'none';
-        }, 5000);
-      }
-
-      // Firebase configuration management
-      function updateFirebaseConfig() {
-        const config = {
-          apiKey: document.getElementById('firebaseApiKey').value.trim(),
-          authDomain: document.getElementById('firebaseAuthDomain').value.trim(),
-          projectId: document.getElementById('firebaseProjectId').value.trim(),
-          storageBucket: document.getElementById('firebaseStorageBucket').value.trim(),
-          messagingSenderId: document.getElementById('firebaseMessagingSenderId').value.trim(),
-          appId: document.getElementById('firebaseAppId').value.trim()
-        };
-
-        if (!config.projectId || !config.apiKey) {
-          showFirebaseConfigStatus('Project ID and API Key are required', 'error');
-          return;
-        }
-
-        storeFirebaseConfig(config);
-        showFirebaseConfigStatus('Configuration saved. Reconnecting...', 'success');
-
-        unsubscribeListeners.forEach(unsubscribe => unsubscribe());
-        unsubscribeListeners = [];
-
-        setTimeout(() => {
-          initializeFirebase(config);
-        }, 1000);
-      }
-
-      async function testFirebaseConnection() {
-        if (!db) {
-          showFirebaseConfigStatus('Firebase not initialized', 'error');
-          return;
-        }
-
-        try {
-          showFirebaseConfigStatus('Testing connection...', 'success');
-          await db.collection('system').doc('test').get();
-          showFirebaseConfigStatus('Firebase connection successful!', 'success');
-        } catch (error) {
-          console.error('Firebase test failed:', error);
-          showFirebaseConfigStatus('Firebase connection failed: ' + error.message, 'error');
-        }
-      }
-
-      function resetToDemo() {
-        localStorage.removeItem('firebaseConfig');
-        showFirebaseConfigStatus('Configuration reset to default.', 'success');
-        
-        if (DEFAULT_FIREBASE_CONFIG) {
-          document.getElementById('firebaseApiKey').value = DEFAULT_FIREBASE_CONFIG.apiKey || '';
-          document.getElementById('firebaseAuthDomain').value = DEFAULT_FIREBASE_CONFIG.authDomain || '';
-          document.getElementById('firebaseProjectId').value = DEFAULT_FIREBASE_CONFIG.projectId || '';
-          document.getElementById('firebaseStorageBucket').value = DEFAULT_FIREBASE_CONFIG.storageBucket || '';
-          document.getElementById('firebaseMessagingSenderId').value = DEFAULT_FIREBASE_CONFIG.messagingSenderId || '';
-          document.getElementById('firebaseAppId').value = DEFAULT_FIREBASE_CONFIG.appId || '';
-          
-          unsubscribeListeners.forEach(unsubscribe => unsubscribe());
-          unsubscribeListeners = [];
-          
-          setTimeout(() => {
-            initializeFirebase(DEFAULT_FIREBASE_CONFIG);
-          }, 1000);
-        } else {
-          document.getElementById('firebaseApiKey').value = '';
-          document.getElementById('firebaseAuthDomain').value = '';
-          document.getElementById('firebaseProjectId').value = '';
-          document.getElementById('firebaseStorageBucket').value = '';
-          document.getElementById('firebaseMessagingSenderId').value = '';
-          document.getElementById('firebaseAppId').value = '';
-
-          unsubscribeListeners.forEach(unsubscribe => unsubscribe());
-          unsubscribeListeners = [];
-          
-          isFirebaseInitialized = false;
-          isOnline = false;
-          db = null;
-          auth = null;
-          updateConnectionStatus('disconnected');
-          
-          loadDataFromLocalStorage();
-        }
-      }
-
-      function showFirebaseConfigStatus(message, type) {
-        const element = document.getElementById('firebaseConfigStatus');
         element.textContent = message;
         element.className = `status-message ${type}`;
         element.style.display = 'block';
@@ -2192,74 +2092,6 @@
             </div>
           </div>
         `).join("");
-      }
-
-      // Check email booking limit and display status
-      function checkEmailBookingLimit() {
-        const email = document.getElementById("userEmail").value.trim();
-        const statusElement = document.getElementById("emailBookingStatus");
-        
-        if (!email) {
-          statusElement.style.display = "none";
-          return;
-        }
-
-        // Email validation
-        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        if (!emailRegex.test(email)) {
-          statusElement.textContent = "Please enter a valid email address";
-          statusElement.className = "status-message error";
-          statusElement.style.display = "block";
-          return;
-        }
-
-        const currentBookingCount = countBookingsByEmail(email);
-        const remainingBookings = MAX_BOOKINGS_PER_EMAIL - currentBookingCount;
-
-        if (remainingBookings <= 0) {
-          const existingBookings = getBookingsByEmail(email);
-          const bookingDetails = existingBookings.map(booking => 
-            `${booking.tableName} (${booking.timeSlot})`
-          ).join(', ');
-          
-          statusElement.textContent = `Maximum bookings reached (${MAX_BOOKINGS_PER_EMAIL}/${MAX_BOOKINGS_PER_EMAIL}). Current: ${bookingDetails}`;
-          statusElement.className = "status-message error";
-          statusElement.style.display = "block";
-          
-          // Disable the confirm button
-          const confirmBtn = document.getElementById('confirmBookingBtn');
-          if (confirmBtn) {
-            confirmBtn.disabled = true;
-            confirmBtn.textContent = 'Maximum Bookings Reached';
-          }
-        } else if (currentBookingCount > 0) {
-          const existingBookings = getBookingsByEmail(email);
-          const bookingDetails = existingBookings.map(booking => 
-            `${booking.tableName} (${booking.timeSlot})`
-          ).join(', ');
-          
-          statusElement.textContent = `${currentBookingCount}/${MAX_BOOKINGS_PER_EMAIL} bookings used. ${remainingBookings} remaining. Current: ${bookingDetails}`;
-          statusElement.className = "status-message warning";
-          statusElement.style.display = "block";
-          
-          // Enable the confirm button
-          const confirmBtn = document.getElementById('confirmBookingBtn');
-          if (confirmBtn) {
-            confirmBtn.disabled = false;
-            confirmBtn.textContent = 'Confirm Booking';
-          }
-        } else {
-          statusElement.textContent = `${remainingBookings}/${MAX_BOOKINGS_PER_EMAIL} bookings available`;
-          statusElement.className = "status-message success";
-          statusElement.style.display = "block";
-          
-          // Enable the confirm button
-          const confirmBtn = document.getElementById('confirmBookingBtn');
-          if (confirmBtn) {
-            confirmBtn.disabled = false;
-            confirmBtn.textContent = 'Confirm Booking';
-          }
-        }
       }
 
       function openBookingForm(tableId, slotIndex) {
