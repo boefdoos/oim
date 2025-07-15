@@ -1774,6 +1774,88 @@
         }, 5000);
       }
 
+      // Firebase configuration management
+      function updateFirebaseConfig() {
+        const config = {
+          apiKey: document.getElementById('firebaseApiKey').value.trim(),
+          authDomain: document.getElementById('firebaseAuthDomain').value.trim(),
+          projectId: document.getElementById('firebaseProjectId').value.trim(),
+          storageBucket: document.getElementById('firebaseStorageBucket').value.trim(),
+          messagingSenderId: document.getElementById('firebaseMessagingSenderId').value.trim(),
+          appId: document.getElementById('firebaseAppId').value.trim()
+        };
+
+        if (!config.projectId || !config.apiKey) {
+          showFirebaseConfigStatus('Project ID and API Key are required', 'error');
+          return;
+        }
+
+        storeFirebaseConfig(config);
+        showFirebaseConfigStatus('Configuration saved. Reconnecting...', 'success');
+
+        unsubscribeListeners.forEach(unsubscribe => unsubscribe());
+        unsubscribeListeners = [];
+
+        setTimeout(() => {
+          initializeFirebase(config);
+        }, 1000);
+      }
+
+      async function testFirebaseConnection() {
+        if (!db) {
+          showFirebaseConfigStatus('Firebase not initialized', 'error');
+          return;
+        }
+
+        try {
+          showFirebaseConfigStatus('Testing connection...', 'success');
+          await db.collection('system').doc('test').get();
+          showFirebaseConfigStatus('Firebase connection successful!', 'success');
+        } catch (error) {
+          console.error('Firebase test failed:', error);
+          showFirebaseConfigStatus('Firebase connection failed: ' + error.message, 'error');
+        }
+      }
+
+      function resetToDemo() {
+        localStorage.removeItem('firebaseConfig');
+        showFirebaseConfigStatus('Configuration reset to default.', 'success');
+        
+        if (DEFAULT_FIREBASE_CONFIG) {
+          document.getElementById('firebaseApiKey').value = DEFAULT_FIREBASE_CONFIG.apiKey || '';
+          document.getElementById('firebaseAuthDomain').value = DEFAULT_FIREBASE_CONFIG.authDomain || '';
+          document.getElementById('firebaseProjectId').value = DEFAULT_FIREBASE_CONFIG.projectId || '';
+          document.getElementById('firebaseStorageBucket').value = DEFAULT_FIREBASE_CONFIG.storageBucket || '';
+          document.getElementById('firebaseMessagingSenderId').value = DEFAULT_FIREBASE_CONFIG.messagingSenderId || '';
+          document.getElementById('firebaseAppId').value = DEFAULT_FIREBASE_CONFIG.appId || '';
+          
+          unsubscribeListeners.forEach(unsubscribe => unsubscribe());
+          unsubscribeListeners = [];
+          
+          setTimeout(() => {
+            initializeFirebase(DEFAULT_FIREBASE_CONFIG);
+          }, 1000);
+        } else {
+          document.getElementById('firebaseApiKey').value = '';
+          document.getElementById('firebaseAuthDomain').value = '';
+          document.getElementById('firebaseProjectId').value = '';
+          document.getElementById('firebaseStorageBucket').value = '';
+          document.getElementById('firebaseMessagingSenderId').value = '';
+          document.getElementById('firebaseAppId').value = '';
+
+          unsubscribeListeners.forEach(unsubscribe => unsubscribe());
+          unsubscribeListeners = [];
+          
+          isFirebaseInitialized = false;
+          isOnline = false;
+          db = null;
+          auth = null;
+          updateConnectionStatus('disconnected');
+          
+          loadDataFromLocalStorage();
+        }
+      }
+
       function showFirebaseConfigStatus(message, type) {
         const element = document.getElementById('firebaseConfigStatus');
         element.textContent = message;
