@@ -585,11 +585,13 @@
         position: fixed;
         top: -9999px;
         left: -9999px;
-        width: 800px;
+        width: 210mm; /* A4 width */
+        max-width: 794px; /* A4 width in pixels at 96 DPI */
         background: white;
-        padding: 30px;
+        padding: 20mm;
         font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
         line-height: 1.4;
+        box-sizing: border-box;
       }
 
       .export-header {
@@ -613,10 +615,11 @@
       }
 
       .export-table {
-        margin-bottom: 25px;
+        margin-bottom: 20px;
         border: 1px solid #ddd;
         border-radius: 6px;
         overflow: hidden;
+        break-inside: avoid;
       }
 
       .export-table-header {
@@ -686,11 +689,12 @@
       }
 
       .export-summary {
-        margin-top: 30px;
-        padding: 20px;
+        margin-top: 20px;
+        padding: 15px;
         background: #f8f9fa;
         border-radius: 6px;
         border: 1px solid #e9ecef;
+        page-break-inside: avoid;
       }
 
       .export-summary h4 {
@@ -945,7 +949,7 @@
               onclick="exportToImage()"
               style="margin-left: 10px"
             >
-              Export to JPG
+              Export to A4 JPGs
             </button>
             <div
               id="exportStatus"
@@ -2653,7 +2657,7 @@ END:VCALENDAR`;
         }
 
         try {
-          showStatus("exportStatus", "Generating image...", "success");
+          showStatus("exportStatus", "Generating multi-page images...", "success");
           
           // Generate event date string
           let eventDate = "Not configured";
@@ -2666,91 +2670,150 @@ END:VCALENDAR`;
             });
           }
 
-          // Create HTML content for export
-          const exportHtml = `
-            <div class="export-header">
-              <div class="export-title">Conversation Table Booking Schedule</div>
-              <div class="export-subtitle">Event Date: ${eventDate}</div>
-              <div class="export-subtitle">Time: ${localData.eventConfig.startTime} - ${localData.eventConfig.endTime}</div>
-              <div class="export-subtitle">Generated: ${new Date().toLocaleString()}</div>
-            </div>
-            
-            ${localData.tables.map((table, tableIndex) => `
-              <div class="export-table">
-                <div class="export-table-header">
-                  <div class="export-table-name">Table ${tableIndex + 1}: ${table.name}</div>
-                  <div class="export-table-speakers">with ${table.speaker1} & ${table.speaker2}</div>
-                </div>
-                <div class="export-slots">
-                  ${localData.eventConfig.timeSlots.map((slot) => {
-                    const bookingKey = `${table.id}-${slot.index}`;
-                    const booking = localData.bookings[bookingKey];
-                    
-                    if (booking) {
-                      return `
-                        <div class="export-slot booked">
-                          <div class="export-time">${slot.start} - ${slot.end}</div>
-                          <div class="export-booking-info booked">BOOKED: ${booking.name} (${booking.artistName})</div>
-                        </div>
-                      `;
-                    } else {
-                      return `
-                        <div class="export-slot available">
-                          <div class="export-time">${slot.start} - ${slot.end}</div>
-                          <div class="export-booking-info available">Available</div>
-                        </div>
-                      `;
-                    }
-                  }).join('')}
-                </div>
-              </div>
-            `).join('')}
-            
-            <div class="export-summary">
-              <h4>Summary</h4>
-              <div class="export-summary-grid">
-                <div class="export-summary-item"><strong>Total Tables:</strong> ${localData.tables.length}</div>
-                <div class="export-summary-item"><strong>Total Bookings:</strong> ${bookingsList.length}</div>
-                <div class="export-summary-item"><strong>Total Time Slots:</strong> ${localData.tables.length * localData.eventConfig.timeSlots.length}</div>
-                <div class="export-summary-item"><strong>Available Slots:</strong> ${(localData.tables.length * localData.eventConfig.timeSlots.length) - bookingsList.length}</div>
-              </div>
-            </div>
-          `;
+          // Calculate A4 dimensions (in pixels at 96 DPI)
+          const A4_WIDTH = 794;
+          const A4_HEIGHT = 1123;
+          
+          // Estimate how many tables fit per page (accounting for header and margins)
+          const HEADER_HEIGHT = 120; // Approximate header height
+          const TABLE_HEIGHT = 50 + (localData.eventConfig.timeSlots.length * 35); // Approximate table height
+          const SUMMARY_HEIGHT = 150; // Approximate summary height
+          const MARGIN = 40;
+          
+          const availableHeight = A4_HEIGHT - HEADER_HEIGHT - MARGIN;
+          const tablesPerPage = Math.floor(availableHeight / TABLE_HEIGHT);
+          
+          // Split tables into pages
+          const pages = [];
+          for (let i = 0; i < localData.tables.length; i += tablesPerPage) {
+            pages.push(localData.tables.slice(i, i + tablesPerPage));
+          }
+          
+          // Add summary to last page or create separate page if needed
+          const lastPageTables = pages[pages.length - 1] || [];
+          const lastPageHeight = HEADER_HEIGHT + (lastPageTables.length * TABLE_HEIGHT) + SUMMARY_HEIGHT;
+          
+          if (lastPageHeight > A4_HEIGHT) {
+            // Create separate page for summary
+            pages.push([]);
+          }
 
-          // Insert content into hidden container
           const exportContainer = document.getElementById('exportContainer');
-          exportContainer.innerHTML = exportHtml;
           
-          // Temporarily position the container for screenshot
-          exportContainer.style.position = 'absolute';
-          exportContainer.style.top = '0';
-          exportContainer.style.left = '0';
-          exportContainer.style.zIndex = '-1';
+          // Generate each page
+          for (let pageIndex = 0; pageIndex < pages.length; pageIndex++) {
+            const currentPageTables = pages[pageIndex];
+            const isLastPage = pageIndex === pages.length - 1;
+            const totalPages = pages.length;
+            
+            // Create header for each page
+            const headerHtml = `
+              <div class="export-header">
+                <div class="export-title">Conversation Table Booking Schedule</div>
+                <div class="export-subtitle">Event Date: ${eventDate}</div>
+                <div class="export-subtitle">Time: ${localData.eventConfig.startTime} - ${localData.eventConfig.endTime}</div>
+                <div class="export-subtitle">Generated: ${new Date().toLocaleString()}</div>
+                <div class="export-subtitle">Page ${pageIndex + 1} of ${totalPages}</div>
+              </div>
+            `;
+            
+            // Create tables for current page
+            const tablesHtml = currentPageTables.map((table, tableIndex) => {
+              const originalIndex = localData.tables.indexOf(table);
+              return `
+                <div class="export-table">
+                  <div class="export-table-header">
+                    <div class="export-table-name">Table ${originalIndex + 1}: ${table.name}</div>
+                    <div class="export-table-speakers">with ${table.speaker1} & ${table.speaker2}</div>
+                  </div>
+                  <div class="export-slots">
+                    ${localData.eventConfig.timeSlots.map((slot) => {
+                      const bookingKey = `${table.id}-${slot.index}`;
+                      const booking = localData.bookings[bookingKey];
+                      
+                      if (booking) {
+                        return `
+                          <div class="export-slot booked">
+                            <div class="export-time">${slot.start} - ${slot.end}</div>
+                            <div class="export-booking-info booked">BOOKED: ${booking.name} (${booking.artistName})</div>
+                          </div>
+                        `;
+                      } else {
+                        return `
+                          <div class="export-slot available">
+                            <div class="export-time">${slot.start} - ${slot.end}</div>
+                            <div class="export-booking-info available">Available</div>
+                          </div>
+                        `;
+                      }
+                    }).join('')}
+                  </div>
+                </div>
+              `;
+            }).join('');
+            
+            // Add summary only to last page
+            const summaryHtml = isLastPage ? `
+              <div class="export-summary">
+                <h4>Summary</h4>
+                <div class="export-summary-grid">
+                  <div class="export-summary-item"><strong>Total Tables:</strong> ${localData.tables.length}</div>
+                  <div class="export-summary-item"><strong>Total Bookings:</strong> ${bookingsList.length}</div>
+                  <div class="export-summary-item"><strong>Total Time Slots:</strong> ${localData.tables.length * localData.eventConfig.timeSlots.length}</div>
+                  <div class="export-summary-item"><strong>Available Slots:</strong> ${(localData.tables.length * localData.eventConfig.timeSlots.length) - bookingsList.length}</div>
+                </div>
+              </div>
+            ` : '';
+
+            // Combine all HTML for current page
+            const pageHtml = headerHtml + tablesHtml + summaryHtml;
+            
+            // Insert content into hidden container
+            exportContainer.innerHTML = pageHtml;
+            
+            // Temporarily position the container for screenshot
+            exportContainer.style.position = 'absolute';
+            exportContainer.style.top = '0';
+            exportContainer.style.left = '0';
+            exportContainer.style.zIndex = '-1';
+            
+            // Generate image using html2canvas
+            const canvas = await html2canvas(exportContainer, {
+              backgroundColor: '#ffffff',
+              scale: 2, // Higher quality
+              useCORS: true,
+              logging: false,
+              width: A4_WIDTH,
+              height: Math.min(A4_HEIGHT, exportContainer.scrollHeight)
+            });
+            
+            // Hide container again
+            exportContainer.style.position = 'fixed';
+            exportContainer.style.top = '-9999px';
+            exportContainer.style.left = '-9999px';
+            exportContainer.style.zIndex = 'auto';
+            
+            // Convert to JPG and download
+            const imgData = canvas.toDataURL('image/jpeg', 0.9);
+            const link = document.createElement('a');
+            const dateStr = localData.eventConfig.date || new Date().toISOString().split('T')[0];
+            
+            if (totalPages === 1) {
+              link.download = `conversation-table-schedule-${dateStr}.jpg`;
+            } else {
+              link.download = `conversation-table-schedule-${dateStr}-page-${pageIndex + 1}.jpg`;
+            }
+            
+            link.href = imgData;
+            link.click();
+            
+            // Small delay between downloads to prevent browser issues
+            if (pageIndex < pages.length - 1) {
+              await new Promise(resolve => setTimeout(resolve, 500));
+            }
+          }
           
-          // Generate image using html2canvas
-          const canvas = await html2canvas(exportContainer, {
-            backgroundColor: '#ffffff',
-            scale: 2, // Higher quality
-            useCORS: true,
-            logging: false,
-            width: 800,
-            height: exportContainer.scrollHeight
-          });
-          
-          // Hide container again
-          exportContainer.style.position = 'fixed';
-          exportContainer.style.top = '-9999px';
-          exportContainer.style.left = '-9999px';
-          exportContainer.style.zIndex = 'auto';
-          
-          // Convert to JPG and download
-          const imgData = canvas.toDataURL('image/jpeg', 0.9);
-          const link = document.createElement('a');
-          link.download = `conversation-table-schedule-${localData.eventConfig.date || new Date().toISOString().split('T')[0]}.jpg`;
-          link.href = imgData;
-          link.click();
-          
-          showStatus("exportStatus", "Image exported successfully", "success");
+          showStatus("exportStatus", `${pages.length} page(s) exported successfully`, "success");
           
         } catch (error) {
           console.error('Image export failed:', error);
