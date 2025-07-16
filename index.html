@@ -946,13 +946,13 @@
             >
               Exporteren naar Excel
             </button>
-            <button
-              class="btn-success"
-              onclick="exportToPDF()"
-              style="margin-left: 10px"
-            >
-              Exporteren naar PDF
-            </button>
+<button
+  class="btn-success"
+  onclick="exportToJPG()"
+  style="margin-left: 10px"
+>
+  Exporteren naar JPG
+</button>
             <div
               id="exportStatus"
               class="status-message"
@@ -1122,10 +1122,8 @@
       src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"
     ></script>
     
-    <!-- html2canvas SDK -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
-    <!-- jsPDF SDK -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<!-- html2canvas SDK -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 
     <script>
       // Firebase and Database Configuration
@@ -2665,193 +2663,186 @@ END:VCALENDAR`;
         showStatus("exportStatus", "CSV succesvol geëxporteerd", "success");
       }
 
-      async function exportToPDF() {
-        const bookingsList = Object.values(localData.bookings);
-        
-        if (typeof html2canvas === 'undefined') {
-          showStatus("exportStatus", "Afbeelding export bibliotheek niet geladen", "error");
-          return;
-        }
+async function exportToJPG() {
+  const bookingsList = Object.values(localData.bookings);
+  
+  if (typeof html2canvas === 'undefined') {
+    showStatus("exportStatus", "Afbeelding export bibliotheek niet geladen", "error");
+    return;
+  }
 
-        if (typeof jsPDF === 'undefined') {
-          showStatus("exportStatus", "PDF bibliotheek niet geladen", "error");
-          return;
-        }
+  try {
+    showStatus("exportStatus", "JPG pagina's genereren voor afdrukken...", "success");
+    
+    // Generate event date string
+    let eventDate = "Niet geconfigureerd";
+    if (localData.eventConfig.date) {
+      eventDate = new Date(localData.eventConfig.date).toLocaleDateString("nl-NL", {
+        weekday: "long",
+        year: "numeric",
+        month: "long",
+        day: "numeric",
+      });
+    }
 
-        try {
-          showStatus("exportStatus", "PDF genereren met meerdere pagina's...", "success");
-          
-          // Generate event date string
-          let eventDate = "Niet geconfigureerd";
-          if (localData.eventConfig.date) {
-            eventDate = new Date(localData.eventConfig.date).toLocaleDateString("nl-NL", {
-              weekday: "long",
-              year: "numeric",
-              month: "long",
-              day: "numeric",
-            });
-          }
+    // Calculate A4 dimensions (in pixels at 300 DPI for print quality)
+    const A4_WIDTH = 2480; // A4 width at 300 DPI
+    const A4_HEIGHT = 3508; // A4 height at 300 DPI
+    
+    // Estimate how many tables fit per page
+    const HEADER_HEIGHT = 300;
+    const TABLE_HEIGHT = 150 + (localData.eventConfig.timeSlots.length * 80);
+    const SUMMARY_HEIGHT = 400;
+    const MARGIN = 100;
+    
+    const availableHeight = A4_HEIGHT - HEADER_HEIGHT - MARGIN;
+    const tablesPerPage = Math.max(1, Math.floor(availableHeight / TABLE_HEIGHT));
+    
+    // Split tables into pages
+    const pages = [];
+    for (let i = 0; i < localData.tables.length; i += tablesPerPage) {
+      pages.push(localData.tables.slice(i, i + tablesPerPage));
+    }
+    
+    // Add summary to last page or create separate page if needed
+    const lastPageTables = pages[pages.length - 1] || [];
+    const lastPageHeight = HEADER_HEIGHT + (lastPageTables.length * TABLE_HEIGHT) + SUMMARY_HEIGHT;
+    
+    if (lastPageHeight > A4_HEIGHT) {
+      pages.push([]); // Create separate page for summary
+    }
 
-          // Calculate A4 dimensions (in pixels at 96 DPI)
-          const A4_WIDTH = 794;
-          const A4_HEIGHT = 1123;
-          
-          // Estimate how many tables fit per page (accounting for header and margins)
-          const HEADER_HEIGHT = 120; // Approximate header height
-          const TABLE_HEIGHT = 50 + (localData.eventConfig.timeSlots.length * 35); // Approximate table height
-          const SUMMARY_HEIGHT = 150; // Approximate summary height
-          const MARGIN = 40;
-          
-          const availableHeight = A4_HEIGHT - HEADER_HEIGHT - MARGIN;
-          const tablesPerPage = Math.floor(availableHeight / TABLE_HEIGHT);
-          
-          // Split tables into pages
-          const pages = [];
-          for (let i = 0; i < localData.tables.length; i += tablesPerPage) {
-            pages.push(localData.tables.slice(i, i + tablesPerPage));
-          }
-          
-          // Add summary to last page or create separate page if needed
-          const lastPageTables = pages[pages.length - 1] || [];
-          const lastPageHeight = HEADER_HEIGHT + (lastPageTables.length * TABLE_HEIGHT) + SUMMARY_HEIGHT;
-          
-          if (lastPageHeight > A4_HEIGHT) {
-            // Create separate page for summary
-            pages.push([]);
-          }
+    const exportContainer = document.getElementById('exportContainer');
+    const dateStr = localData.eventConfig.date || new Date().toISOString().split('T')[0];
+    
+    // Generate each page as JPG
+    for (let pageIndex = 0; pageIndex < pages.length; pageIndex++) {
+      const currentPageTables = pages[pageIndex];
+      const isLastPage = pageIndex === pages.length - 1;
+      const totalPages = pages.length;
+      
+      showStatus("exportStatus", `Pagina ${pageIndex + 1} van ${totalPages} genereren...`, "success");
+      
+      // Create header for each page
+      const headerHtml = `
+        <div class="export-header">
+          <div class="export-title">Gesprekstafel Boekingsschema</div>
+          <div class="export-subtitle">Evenement Datum: ${eventDate}</div>
+          <div class="export-subtitle">Tijd: ${localData.eventConfig.startTime} - ${localData.eventConfig.endTime}</div>
+          <div class="export-subtitle">Gegenereerd: ${new Date().toLocaleString()}</div>
+          <div class="export-subtitle">Pagina ${pageIndex + 1} van ${totalPages}</div>
+        </div>
+      `;
+      
+      // Create tables for current page
+      const tablesHtml = currentPageTables.map((table, tableIndex) => {
+        const originalIndex = localData.tables.indexOf(table);
+        return `
+          <div class="export-table">
+            <div class="export-table-header">
+              <div class="export-table-name">Tafel ${originalIndex + 1}: ${table.name}</div>
+              <div class="export-table-speakers">met ${table.speaker1} & ${table.speaker2}</div>
+            </div>
+            <div class="export-slots">
+              ${localData.eventConfig.timeSlots.map((slot) => {
+                const bookingKey = `${table.id}-${slot.index}`;
+                const booking = localData.bookings[bookingKey];
+                
+                if (booking) {
+                  return `
+                    <div class="export-slot booked">
+                      <div class="export-time">${slot.start} - ${slot.end}</div>
+                      <div class="export-booking-info booked">GEBOEKT: ${booking.name} (${booking.artistName})</div>
+                    </div>
+                  `;
+                } else {
+                  return `
+                    <div class="export-slot available">
+                      <div class="export-time">${slot.start} - ${slot.end}</div>
+                      <div class="export-booking-info available">Beschikbaar</div>
+                    </div>
+                  `;
+                }
+              }).join('')}
+            </div>
+          </div>
+        `;
+      }).join('');
+      
+      // Add summary only to last page
+      const summaryHtml = isLastPage ? `
+        <div class="export-summary">
+          <h4>Samenvatting</h4>
+          <div class="export-summary-grid">
+            <div class="export-summary-item"><strong>Totale Tafels:</strong> ${localData.tables.length}</div>
+            <div class="export-summary-item"><strong>Totale Boekingen:</strong> ${bookingsList.length}</div>
+            <div class="export-summary-item"><strong>Totale Tijdslots:</strong> ${localData.tables.length * localData.eventConfig.timeSlots.length}</div>
+            <div class="export-summary-item"><strong>Beschikbare Slots:</strong> ${(localData.tables.length * localData.eventConfig.timeSlots.length) - bookingsList.length}</div>
+          </div>
+        </div>
+      ` : '';
 
-          // Create PDF document
-          const { jsPDF } = window.jspdf;
-          const pdf = new jsPDF('p', 'mm', 'a4');
-          
-          const exportContainer = document.getElementById('exportContainer');
-          
-          // Generate each page
-          for (let pageIndex = 0; pageIndex < pages.length; pageIndex++) {
-            const currentPageTables = pages[pageIndex];
-            const isLastPage = pageIndex === pages.length - 1;
-            const totalPages = pages.length;
-            
-            // Create header for each page
-            const headerHtml = `
-              <div class="export-header">
-                <div class="export-title">Gesprekstafel Boekingsschema</div>
-                <div class="export-subtitle">Evenement Datum: ${eventDate}</div>
-                <div class="export-subtitle">Tijd: ${localData.eventConfig.startTime} - ${localData.eventConfig.endTime}</div>
-                <div class="export-subtitle">Gegenereerd: ${new Date().toLocaleString()}</div>
-                <div class="export-subtitle">Pagina ${pageIndex + 1} van ${totalPages}</div>
-              </div>
-            `;
-            
-            // Create tables for current page
-            const tablesHtml = currentPageTables.map((table, tableIndex) => {
-              const originalIndex = localData.tables.indexOf(table);
-              return `
-                <div class="export-table">
-                  <div class="export-table-header">
-                    <div class="export-table-name">Tafel ${originalIndex + 1}: ${table.name}</div>
-                    <div class="export-table-speakers">met ${table.speaker1} & ${table.speaker2}</div>
-                  </div>
-                  <div class="export-slots">
-                    ${localData.eventConfig.timeSlots.map((slot) => {
-                      const bookingKey = `${table.id}-${slot.index}`;
-                      const booking = localData.bookings[bookingKey];
-                      
-                      if (booking) {
-                        return `
-                          <div class="export-slot booked">
-                            <div class="export-time">${slot.start} - ${slot.end}</div>
-                            <div class="export-booking-info booked">GEBOEKT: ${booking.name} (${booking.artistName})</div>
-                          </div>
-                        `;
-                      } else {
-                        return `
-                          <div class="export-slot available">
-                            <div class="export-time">${slot.start} - ${slot.end}</div>
-                            <div class="export-booking-info available">Beschikbaar</div>
-                          </div>
-                        `;
-                      }
-                    }).join('')}
-                  </div>
-                </div>
-              `;
-            }).join('');
-            
-            // Add summary only to last page
-            const summaryHtml = isLastPage ? `
-              <div class="export-summary">
-                <h4>Samenvatting</h4>
-                <div class="export-summary-grid">
-                  <div class="export-summary-item"><strong>Totale Tafels:</strong> ${localData.tables.length}</div>
-                  <div class="export-summary-item"><strong>Totale Boekingen:</strong> ${bookingsList.length}</div>
-                  <div class="export-summary-item"><strong>Totale Tijdslots:</strong> ${localData.tables.length * localData.eventConfig.timeSlots.length}</div>
-                  <div class="export-summary-item"><strong>Beschikbare Slots:</strong> ${(localData.tables.length * localData.eventConfig.timeSlots.length) - bookingsList.length}</div>
-                </div>
-              </div>
-            ` : '';
-
-            // Combine all HTML for current page
-            const pageHtml = headerHtml + tablesHtml + summaryHtml;
-            
-            // Insert content into hidden container
-            exportContainer.innerHTML = pageHtml;
-            
-            // Temporarily position the container for screenshot
-            exportContainer.style.position = 'absolute';
-            exportContainer.style.top = '0';
-            exportContainer.style.left = '0';
-            exportContainer.style.zIndex = '-1';
-            
-            // Generate image using html2canvas
-            const canvas = await html2canvas(exportContainer, {
-              backgroundColor: '#ffffff',
-              scale: 2, // Higher quality
-              useCORS: true,
-              logging: false,
-              width: A4_WIDTH,
-              height: Math.min(A4_HEIGHT, exportContainer.scrollHeight)
-            });
-            
-            // Hide container again
-            exportContainer.style.position = 'fixed';
-            exportContainer.style.top = '-9999px';
-            exportContainer.style.left = '-9999px';
-            exportContainer.style.zIndex = 'auto';
-            
-            // Convert canvas to image data
-            const imgData = canvas.toDataURL('image/jpeg', 0.9);
-            
-            // Add page to PDF (first page is already created)
-            if (pageIndex > 0) {
-              pdf.addPage();
-            }
-            
-            // Add image to PDF page
-            const imgWidth = 210; // A4 width in mm
-            const imgHeight = (canvas.height * imgWidth) / canvas.width;
-            
-            pdf.addImage(imgData, 'JPEG', 0, 0, imgWidth, imgHeight);
-            
-            // Small delay between pages to prevent browser issues
-            if (pageIndex < pages.length - 1) {
-              await new Promise(resolve => setTimeout(resolve, 100));
-            }
-          }
-          
-          // Save the PDF
-          const dateStr = localData.eventConfig.date || new Date().toISOString().split('T')[0];
-          const filename = `gesprekstafel-schema-${dateStr}.pdf`;
-          
-          pdf.save(filename);
-          
-          showStatus("exportStatus", `Multi-pagina PDF succesvol geëxporteerd (${pages.length} pagina's)`, "success");
-          
-        } catch (error) {
-          console.error('PDF export mislukt:', error);
-          showStatus("exportStatus", "PDF export mislukt: " + error.message, "error");
-        }
-      }
+      // Combine all HTML for current page
+      const pageHtml = headerHtml + tablesHtml + summaryHtml;
+      
+      // Insert content into hidden container
+      exportContainer.innerHTML = pageHtml;
+      
+      // Set container to A4 size for export
+      exportContainer.style.position = 'absolute';
+      exportContainer.style.top = '0';
+      exportContainer.style.left = '0';
+      exportContainer.style.width = '210mm';
+      exportContainer.style.height = 'auto';
+      exportContainer.style.minHeight = '297mm';
+      exportContainer.style.zIndex = '-1';
+      exportContainer.style.backgroundColor = '#ffffff';
+      exportContainer.style.padding = '20mm';
+      exportContainer.style.boxSizing = 'border-box';
+      
+      // Wait for content to render
+      await new Promise(resolve => setTimeout(resolve, 100));
+      
+      // Generate high-quality image
+      const canvas = await html2canvas(exportContainer, {
+        backgroundColor: '#ffffff',
+        scale: 2,
+        useCORS: true,
+        logging: false,
+        width: A4_WIDTH,
+        height: A4_HEIGHT,
+        scrollX: 0,
+        scrollY: 0
+      });
+      
+      // Convert to JPG and download
+      const imgData = canvas.toDataURL('image/jpeg', 0.95);
+      const link = document.createElement('a');
+      link.download = `gesprekstafel-schema-${dateStr}-pagina-${pageIndex + 1}.jpg`;
+      link.href = imgData;
+      link.click();
+      
+      // Small delay between downloads
+      await new Promise(resolve => setTimeout(resolve, 500));
+    }
+    
+    // Reset container
+    exportContainer.style.position = 'fixed';
+    exportContainer.style.top = '-9999px';
+    exportContainer.style.left = '-9999px';
+    exportContainer.style.width = '210mm';
+    exportContainer.style.height = 'auto';
+    exportContainer.style.minHeight = 'auto';
+    exportContainer.style.zIndex = 'auto';
+    exportContainer.innerHTML = '';
+    
+    showStatus("exportStatus", `${pages.length} JPG pagina's succesvol geëxporteerd (klaar voor afdrukken)`, "success");
+    
+  } catch (error) {
+    console.error('JPG export mislukt:', error);
+    showStatus("exportStatus", "JPG export mislukt: " + error.message, "error");
+  }
+}
 
       function exportToExcel() {
         const bookingsList = Object.values(localData.bookings);
