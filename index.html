@@ -1099,9 +1099,6 @@
         <div id="confirmationDetails"></div>
         <div class="booking-actions">
           <button onclick="addToCalendar()">Add to Calendar</button>
-          <button onclick="showEmailPreview()" class="btn-secondary">
-            View Email Confirmation
-          </button>
         </div>
         <div id="emailPreview" class="email-preview hidden"></div>
       </div>
@@ -2455,7 +2452,7 @@
         endTime.setHours(parseInt(endHour), parseInt(endMinute));
 
         const event = {
-          title: `Conversation Table: ${booking.tableName}`,
+          title: `: ${booking.tableName}`,
           start: startTime,
           end: endTime,
           description: `Conversation with ${booking.speaker1} & ${booking.speaker2}`,
@@ -2721,7 +2718,7 @@ END:VCALENDAR`;
             // Create header for each page
             const headerHtml = `
               <div class="export-header">
-                <div class="export-title">Conversation Table Booking Schedule</div>
+                <div class="export-title"> Booking Schedule</div>
                 <div class="export-subtitle">Event Date: ${eventDate}</div>
                 <div class="export-subtitle">Time: ${localData.eventConfig.startTime} - ${localData.eventConfig.endTime}</div>
                 <div class="export-subtitle">Generated: ${new Date().toLocaleString()}</div>
@@ -2847,7 +2844,7 @@ END:VCALENDAR`;
         }
 
         const excelContent = [
-          "Conversation Table Booking Report",
+          " Booking Report",
           `Generated on: ${new Date().toLocaleString()}`,
           `Total Bookings: ${bookingsList.length}`,
           `Connection Status: ${isOnline ? 'Online' : 'Offline'}`,
