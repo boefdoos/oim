@@ -582,138 +582,143 @@
         margin-bottom: 10px;
       }
 
-      .export-container {
-        position: fixed;
-        top: -9999px;
-        left: -9999px;
-        width: 210mm; /* A4 width */
-        max-width: 794px; /* A4 width in pixels at 96 DPI */
-        background: white;
-        padding: 20mm;
-        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-        line-height: 1.4;
-        box-sizing: border-box;
-      }
+.export-container {
+  position: fixed;
+  top: -9999px;
+  left: -9999px;
+  width: 210mm;
+  max-width: 210mm;
+  min-height: 297mm;
+  background: white;
+  padding: 15mm;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  line-height: 1.4;
+  box-sizing: border-box;
+  font-size: 14px;
+}
 
-      .export-header {
-        text-align: center;
-        margin-bottom: 30px;
-        border-bottom: 2px solid #2c3e50;
-        padding-bottom: 20px;
-      }
+.export-header {
+  text-align: center;
+  margin-bottom: 25px;
+  border-bottom: 3px solid #2c3e50;
+  padding-bottom: 15px;
+}
 
-      .export-title {
-        font-size: 24px;
-        font-weight: bold;
-        color: #2c3e50;
-        margin-bottom: 10px;
-      }
+.export-title {
+  font-size: 28px;
+  font-weight: bold;
+  color: #2c3e50;
+  margin-bottom: 8px;
+}
 
-      .export-subtitle {
-        font-size: 14px;
-        color: #666;
-        margin-bottom: 5px;
-      }
+.export-subtitle {
+  font-size: 16px;
+  color: #666;
+  margin-bottom: 4px;
+}
 
-      .export-table {
-        margin-bottom: 20px;
-        border: 1px solid #ddd;
-        border-radius: 6px;
-        overflow: hidden;
-        break-inside: avoid;
-      }
+.export-table {
+  margin-bottom: 25px;
+  border: 2px solid #ddd;
+  border-radius: 8px;
+  overflow: hidden;
+  break-inside: avoid;
+}
 
-      .export-table-header {
-        background: #f8f9fa;
-        padding: 12px 15px;
-        border-bottom: 1px solid #ddd;
-      }
+.export-table-header {
+  background: #f8f9fa;
+  padding: 15px 20px;
+  border-bottom: 2px solid #ddd;
+}
 
-      .export-table-name {
-        font-size: 16px;
-        font-weight: bold;
-        color: #2c3e50;
-        margin-bottom: 4px;
-      }
+.export-table-name {
+  font-size: 20px;
+  font-weight: bold;
+  color: #2c3e50;
+  margin-bottom: 6px;
+}
 
-      .export-table-speakers {
-        font-size: 12px;
-        color: #666;
-      }
+.export-table-speakers {
+  font-size: 16px;
+  color: #666;
+}
 
-      .export-slots {
-        padding: 10px;
-      }
+.export-slots {
+  padding: 0;
+}
 
-      .export-slot {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        padding: 8px 10px;
-        border-bottom: 1px solid #f0f0f0;
-        font-size: 12px;
-      }
+.export-slot {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 20px;
+  border-bottom: 1px solid #f0f0f0;
+  font-size: 16px;
+  min-height: 50px;
+}
 
-      .export-slot:last-child {
-        border-bottom: none;
-      }
+.export-slot:last-child {
+  border-bottom: none;
+}
 
-      .export-slot.booked {
-        background: #fff3cd;
-        border-left: 4px solid #ffc107;
-      }
+.export-slot.booked {
+  background: #fff3cd;
+  border-left: 6px solid #ffc107;
+}
 
-      .export-slot.available {
-        background: #d4edda;
-        border-left: 4px solid #28a745;
-      }
+.export-slot.available {
+  background: #d4edda;
+  border-left: 6px solid #28a745;
+}
 
-      .export-time {
-        font-weight: bold;
-        color: #2c3e50;
-        min-width: 80px;
-      }
+.export-time {
+  font-weight: bold;
+  color: #2c3e50;
+  min-width: 120px;
+  font-size: 16px;
+}
 
-      .export-booking-info {
-        flex: 1;
-        text-align: center;
-        font-weight: bold;
-      }
+.export-booking-info {
+  flex: 1;
+  text-align: center;
+  font-weight: bold;
+  font-size: 16px;
+}
 
-      .export-booking-info.booked {
-        color: #856404;
-      }
+.export-booking-info.booked {
+  color: #856404;
+}
 
-      .export-booking-info.available {
-        color: #155724;
-        font-style: italic;
-      }
+.export-booking-info.available {
+  color: #155724;
+  font-style: italic;
+}
 
-      .export-summary {
-        margin-top: 20px;
-        padding: 15px;
-        background: #f8f9fa;
-        border-radius: 6px;
-        border: 1px solid #e9ecef;
-        page-break-inside: avoid;
-      }
+.export-summary {
+  margin-top: 25px;
+  padding: 20px;
+  background: #f8f9fa;
+  border-radius: 8px;
+  border: 2px solid #e9ecef;
+  page-break-inside: avoid;
+}
 
-      .export-summary h4 {
-        color: #2c3e50;
-        margin-bottom: 10px;
-        font-size: 16px;
-      }
+.export-summary h4 {
+  color: #2c3e50;
+  margin-bottom: 15px;
+  font-size: 20px;
+}
 
-      .export-summary-grid {
-        display: grid;
-        grid-template-columns: repeat(2, 1fr);
-        gap: 10px;
-        font-size: 12px;
-      }
+.export-summary-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 15px;
+  font-size: 16px;
+}
 
-      .export-summary-item {
-        padding: 5px 0;
-      }
+.export-summary-item {
+  padding: 8px 0;
+}
     </style>
   </head>
   <body>
@@ -2685,18 +2690,22 @@ async function exportToJPG() {
       });
     }
 
-    // Calculate A4 dimensions (in pixels at 300 DPI for print quality)
-    const A4_WIDTH = 2480; // A4 width at 300 DPI
-    const A4_HEIGHT = 3508; // A4 height at 300 DPI
+    // Better A4 page calculations
+    const slotsPerTable = localData.eventConfig.timeSlots.length;
+    const headerSpace = 120; // Header space in mm
+    const summarySpace = 80; // Summary space in mm
+    const tableHeaderSpace = 25; // Per table header space in mm
+    const slotSpace = 18; // Per slot space in mm (increased for better scaling)
+    const marginSpace = 30; // Total margins in mm
     
-    // Estimate how many tables fit per page
-    const HEADER_HEIGHT = 300;
-    const TABLE_HEIGHT = 150 + (localData.eventConfig.timeSlots.length * 80);
-    const SUMMARY_HEIGHT = 400;
-    const MARGIN = 100;
+    // Calculate space per table
+    const spacePerTable = tableHeaderSpace + (slotsPerTable * slotSpace) + 10; // 10mm margin between tables
     
-    const availableHeight = A4_HEIGHT - HEADER_HEIGHT - MARGIN;
-    const tablesPerPage = Math.max(1, Math.floor(availableHeight / TABLE_HEIGHT));
+    // Available space for tables (297mm A4 height - margins - header)
+    const availableSpace = 297 - marginSpace - headerSpace;
+    
+    // Calculate tables per page (ensure at least 1 table per page)
+    const tablesPerPage = Math.max(1, Math.floor(availableSpace / spacePerTable));
     
     // Split tables into pages
     const pages = [];
@@ -2704,11 +2713,11 @@ async function exportToJPG() {
       pages.push(localData.tables.slice(i, i + tablesPerPage));
     }
     
-    // Add summary to last page or create separate page if needed
+    // Check if summary fits on last page
     const lastPageTables = pages[pages.length - 1] || [];
-    const lastPageHeight = HEADER_HEIGHT + (lastPageTables.length * TABLE_HEIGHT) + SUMMARY_HEIGHT;
+    const lastPageContentSpace = headerSpace + (lastPageTables.length * spacePerTable) + summarySpace;
     
-    if (lastPageHeight > A4_HEIGHT) {
+    if (lastPageContentSpace > (297 - marginSpace)) {
       pages.push([]); // Create separate page for summary
     }
 
@@ -2788,42 +2797,46 @@ async function exportToJPG() {
       // Insert content into hidden container
       exportContainer.innerHTML = pageHtml;
       
-      // Set container to A4 size for export
+      // Position container for proper A4 rendering
       exportContainer.style.position = 'absolute';
       exportContainer.style.top = '0';
       exportContainer.style.left = '0';
       exportContainer.style.width = '210mm';
-      exportContainer.style.height = 'auto';
-      exportContainer.style.minHeight = '297mm';
+      exportContainer.style.height = '297mm';
       exportContainer.style.zIndex = '-1';
       exportContainer.style.backgroundColor = '#ffffff';
-      exportContainer.style.padding = '20mm';
+      exportContainer.style.padding = '15mm';
       exportContainer.style.boxSizing = 'border-box';
+      exportContainer.style.overflow = 'hidden';
       
       // Wait for content to render
-      await new Promise(resolve => setTimeout(resolve, 100));
+      await new Promise(resolve => setTimeout(resolve, 200));
       
-      // Generate high-quality image
+      // Generate high-quality image with proper A4 dimensions
       const canvas = await html2canvas(exportContainer, {
         backgroundColor: '#ffffff',
-        scale: 2,
+        scale: 3, // Higher scale for better quality
         useCORS: true,
         logging: false,
-        width: A4_WIDTH,
-        height: A4_HEIGHT,
+        width: Math.round(210 * 3.78), // 210mm to pixels at 96 DPI * scale
+        height: Math.round(297 * 3.78), // 297mm to pixels at 96 DPI * scale
         scrollX: 0,
-        scrollY: 0
+        scrollY: 0,
+        allowTaint: true,
+        foreignObjectRendering: true
       });
       
-      // Convert to JPG and download
+      // Convert to high-quality JPG and download
       const imgData = canvas.toDataURL('image/jpeg', 0.95);
       const link = document.createElement('a');
       link.download = `gesprekstafel-schema-${dateStr}-pagina-${pageIndex + 1}.jpg`;
       link.href = imgData;
+      document.body.appendChild(link);
       link.click();
+      document.body.removeChild(link);
       
-      // Small delay between downloads
-      await new Promise(resolve => setTimeout(resolve, 500));
+      // Delay between downloads
+      await new Promise(resolve => setTimeout(resolve, 1000));
     }
     
     // Reset container
@@ -2832,11 +2845,11 @@ async function exportToJPG() {
     exportContainer.style.left = '-9999px';
     exportContainer.style.width = '210mm';
     exportContainer.style.height = 'auto';
-    exportContainer.style.minHeight = 'auto';
     exportContainer.style.zIndex = 'auto';
+    exportContainer.style.overflow = 'visible';
     exportContainer.innerHTML = '';
     
-    showStatus("exportStatus", `${pages.length} JPG pagina's succesvol geëxporteerd (klaar voor afdrukken)`, "success");
+    showStatus("exportStatus", `${pages.length} JPG pagina's succesvol geëxporteerd (A4 formaat, klaar voor afdrukken)`, "success");
     
   } catch (error) {
     console.error('JPG export mislukt:', error);
