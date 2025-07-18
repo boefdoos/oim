@@ -2360,7 +2360,7 @@
         container.innerHTML = localData.tables.map((table, tableIndex) => `
           <div class="client-table-card">
             <div class="table-header">
-              <div class="table-title">${table.name}</div>
+<div class="table-title">Tafel ${tableIndex + 1}: ${table.name}</div>
               <div class="speakers">met ${table.speaker1} & ${table.speaker2}</div>
             </div>
             <div class="time-slots-container">
