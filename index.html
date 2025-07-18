@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Ostend Is Music 2025 Expertenhub</title>
+    <title>Gesprekstafel Boekingssysteem</title>
     <style>
       * {
         margin: 0;
@@ -32,14 +32,13 @@
 
       h1 {
         text-align: center;
-        margin-bottom: 20px;
+        margin-bottom: 40px;
         color: #2c3e50;
         font-size: 1.8rem;
         font-weight: 500;
       }
 
       h2 {
-        text-align: center;
         margin-bottom: 20px;
         color: #34495e;
         font-size: 1.3rem;
@@ -582,298 +581,295 @@
         margin-bottom: 10px;
       }
 
-.export-container {
-  position: fixed;
-  top: -9999px;
-  left: -9999px;
-  width: 210mm;
-  max-width: 210mm;
-  min-height: 297mm;
-  background: white;
-  padding: 15mm;
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-  line-height: 1.4;
-  box-sizing: border-box;
-  font-size: 14px;
-}
+      .export-container {
+        position: fixed;
+        top: -9999px;
+        left: -9999px;
+        width: 210mm;
+        max-width: 210mm;
+        min-height: 297mm;
+        background: white;
+        padding: 15mm;
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+        line-height: 1.4;
+        box-sizing: border-box;
+        font-size: 14px;
+      }
 
-.export-header {
-  text-align: center;
-  margin-bottom: 25px;
-  border-bottom: 3px solid #2c3e50;
-  padding-bottom: 15px;
-}
+      .export-header {
+        text-align: center;
+        margin-bottom: 25px;
+        border-bottom: 3px solid #2c3e50;
+        padding-bottom: 15px;
+      }
 
-.export-title {
-  font-size: 28px;
-  font-weight: bold;
-  color: #2c3e50;
-  margin-bottom: 8px;
-}
+      .export-title {
+        font-size: 28px;
+        font-weight: bold;
+        color: #2c3e50;
+        margin-bottom: 8px;
+      }
 
-.export-subtitle {
-  font-size: 16px;
-  color: #666;
-  margin-bottom: 4px;
-}
+      .export-subtitle {
+        font-size: 16px;
+        color: #666;
+        margin-bottom: 4px;
+      }
 
-.export-table {
-  margin-bottom: 25px;
-  border: 2px solid #ddd;
-  border-radius: 8px;
-  overflow: hidden;
-  break-inside: avoid;
-}
+      .export-table {
+        margin-bottom: 25px;
+        border: 2px solid #ddd;
+        border-radius: 8px;
+        overflow: hidden;
+        break-inside: avoid;
+      }
 
-.export-table-header {
-  background: #f8f9fa;
-  padding: 15px 20px;
-  border-bottom: 2px solid #ddd;
-}
+      .export-table-header {
+        background: #f8f9fa;
+        padding: 15px 20px;
+        border-bottom: 2px solid #ddd;
+      }
 
-.export-table-name {
-  font-size: 20px;
-  font-weight: bold;
-  color: #2c3e50;
-  margin-bottom: 6px;
-}
+      .export-table-name {
+        font-size: 20px;
+        font-weight: bold;
+        color: #2c3e50;
+        margin-bottom: 6px;
+      }
 
-.export-table-speakers {
-  font-size: 16px;
-  color: #666;
-}
+      .export-table-speakers {
+        font-size: 16px;
+        color: #666;
+      }
 
-.export-slots {
-  padding: 0;
-}
+      .export-slots {
+        padding: 0;
+      }
 
-.export-slot {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 12px 20px;
-  border-bottom: 1px solid #f0f0f0;
-  font-size: 16px;
-  min-height: 50px;
-}
+      .export-slot {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 12px 20px;
+        border-bottom: 1px solid #f0f0f0;
+        font-size: 16px;
+        min-height: 50px;
+      }
 
-.export-slot:last-child {
-  border-bottom: none;
-}
+      .export-slot:last-child {
+        border-bottom: none;
+      }
 
-.export-slot.booked {
-  background: #fff3cd;
-  border-left: 6px solid #ffc107;
-}
+      .export-slot.booked {
+        background: #fff3cd;
+        border-left: 6px solid #ffc107;
+      }
 
-.export-slot.available {
-  background: #d4edda;
-  border-left: 6px solid #28a745;
-}
+      .export-slot.available {
+        background: #d4edda;
+        border-left: 6px solid #28a745;
+      }
 
-.export-time {
-  font-weight: bold;
-  color: #2c3e50;
-  min-width: 120px;
-  font-size: 16px;
-}
+      .export-time {
+        font-weight: bold;
+        color: #2c3e50;
+        min-width: 120px;
+        font-size: 16px;
+      }
 
-.export-booking-info {
-  flex: 1;
-  text-align: center;
-  font-weight: bold;
-  font-size: 16px;
-}
+      .export-booking-info {
+        flex: 1;
+        text-align: center;
+        font-weight: bold;
+        font-size: 16px;
+      }
 
-.export-booking-info.booked {
-  color: #856404;
-}
+      .export-booking-info.booked {
+        color: #856404;
+      }
 
-.export-booking-info.available {
-  color: #155724;
-  font-style: italic;
-}
+      .export-booking-info.available {
+        color: #155724;
+        font-style: italic;
+      }
 
-.export-summary {
-  margin-top: 25px;
-  padding: 20px;
-  background: #f8f9fa;
-  border-radius: 8px;
-  border: 2px solid #e9ecef;
-  page-break-inside: avoid;
-}
+      .export-summary {
+        margin-top: 25px;
+        padding: 20px;
+        background: #f8f9fa;
+        border-radius: 8px;
+        border: 2px solid #e9ecef;
+        page-break-inside: avoid;
+      }
 
-.export-summary h4 {
-  color: #2c3e50;
-  margin-bottom: 15px;
-  font-size: 20px;
-}
+      .export-summary h4 {
+        color: #2c3e50;
+        margin-bottom: 15px;
+        font-size: 20px;
+      }
 
-.export-summary-grid {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 15px;
-  font-size: 16px;
-}
+      .export-summary-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 15px;
+        font-size: 16px;
+      }
 
-.export-summary-item {
-  padding: 8px 0;
-}
       .export-summary-item {
-  padding: 8px 0;
-}
+        padding: 8px 0;
+      }
 
-/* 4K Signage Export Styles */
-.signage-container {
-  position: fixed;
-  top: -9999px;
-  left: -9999px;
-  width: 3840px;
-  height: 2160px;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  padding: 60px;
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-  box-sizing: border-box;
-  color: white;
-  overflow: hidden;
-}
+      /* 4K Signage Export Styles */
+      .signage-container {
+        position: fixed;
+        top: -9999px;
+        left: -9999px;
+        width: 3840px;
+        height: 2160px;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        padding: 60px;
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+        box-sizing: border-box;
+        color: white;
+        overflow: hidden;
+      }
 
-.signage-header {
-  text-align: center;
-  margin-bottom: 40px;
-  border-bottom: 4px solid rgba(255, 255, 255, 0.3);
-  padding-bottom: 30px;
-}
+      .signage-header {
+        text-align: center;
+        margin-bottom: 40px;
+        border-bottom: 4px solid rgba(255, 255, 255, 0.3);
+        padding-bottom: 30px;
+      }
 
-.signage-title {
-  font-size: 72px;
-  font-weight: bold;
-  margin-bottom: 15px;
-  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
-}
+      .signage-title {
+        font-size: 72px;
+        font-weight: bold;
+        margin-bottom: 15px;
+        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+      }
 
-.signage-subtitle {
-  font-size: 36px;
-  margin-bottom: 8px;
-  opacity: 0.9;
-}
+      .signage-subtitle {
+        font-size: 36px;
+        margin-bottom: 8px;
+        opacity: 0.9;
+      }
 
-.signage-tables-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(480px, 1fr));
-  gap: 30px;
-  margin-bottom: 40px;
-}
+      .signage-tables-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(480px, 1fr));
+        gap: 30px;
+        margin-bottom: 40px;
+      }
 
-.signage-table {
-  background: rgba(255, 255, 255, 0.95);
-  border-radius: 16px;
-  overflow: hidden;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
-  color: #333;
-}
+      .signage-table {
+        background: rgba(255, 255, 255, 0.95);
+        border-radius: 16px;
+        overflow: hidden;
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+        color: #333;
+      }
 
-.signage-table-header {
-  background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
-  padding: 20px;
-  color: white;
-  text-align: center;
-}
+      .signage-table-header {
+        background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+        padding: 20px;
+        color: white;
+        text-align: center;
+      }
 
-.signage-table-name {
-  font-size: 28px;
-  font-weight: bold;
-  margin-bottom: 8px;
-}
+      .signage-table-name {
+        font-size: 28px;
+        font-weight: bold;
+        margin-bottom: 8px;
+      }
 
-.signage-table-speakers {
-  font-size: 20px;
-  opacity: 0.9;
-}
+      .signage-table-speakers {
+        font-size: 20px;
+        opacity: 0.9;
+      }
 
-.signage-slots {
-  padding: 15px;
-  max-height: 600px;
-  overflow-y: auto;
-}
+      .signage-slots {
+        padding: 15px;
+        max-height: 600px;
+        overflow-y: auto;
+      }
 
-.signage-slot {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 12px 16px;
-  margin-bottom: 8px;
-  border-radius: 8px;
-  font-size: 18px;
-  min-height: 50px;
-}
+      .signage-slot {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 12px 16px;
+        margin-bottom: 8px;
+        border-radius: 8px;
+        font-size: 18px;
+        min-height: 50px;
+      }
 
-.signage-slot.available {
-  background: #d4edda;
-  border-left: 6px solid #28a745;
-}
+      .signage-slot.available {
+        background: #d4edda;
+        border-left: 6px solid #28a745;
+      }
 
-.signage-slot.booked {
-  background: #fff3cd;
-  border-left: 6px solid #ffc107;
-}
+      .signage-slot.booked {
+        background: #fff3cd;
+        border-left: 6px solid #ffc107;
+      }
 
-.signage-time {
-  font-weight: bold;
-  font-size: 20px;
-  min-width: 140px;
-}
+      .signage-time {
+        font-weight: bold;
+        font-size: 20px;
+        min-width: 140px;
+      }
 
-.signage-booking-info {
-  flex: 1;
-  text-align: center;
-  font-weight: bold;
-  font-size: 18px;
-}
+      .signage-booking-info {
+        flex: 1;
+        text-align: center;
+        font-weight: bold;
+        font-size: 18px;
+      }
 
-.signage-booking-info.booked {
-  color: #856404;
-}
+      .signage-booking-info.booked {
+        color: #856404;
+      }
 
-.signage-booking-info.available {
-  color: #155724;
-  font-style: italic;
-}
+      .signage-booking-info.available {
+        color: #155724;
+        font-style: italic;
+      }
 
-.signage-footer {
-  position: absolute;
-  bottom: 60px;
-  left: 60px;
-  right: 60px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  background: rgba(255, 255, 255, 0.1);
-  padding: 20px 30px;
-  border-radius: 12px;
-  backdrop-filter: blur(10px);
-}
+      .signage-footer {
+        position: absolute;
+        bottom: 60px;
+        left: 60px;
+        right: 60px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        background: rgba(255, 255, 255, 0.1);
+        padding: 20px 30px;
+        border-radius: 12px;
+        backdrop-filter: blur(10px);
+      }
 
-.signage-stats {
-  display: flex;
-  gap: 40px;
-  font-size: 24px;
-}
+      .signage-stats {
+        display: flex;
+        gap: 40px;
+        font-size: 24px;
+      }
 
-.signage-stat {
-  text-align: center;
-}
+      .signage-stat {
+        text-align: center;
+      }
 
-.signage-stat-number {
-  font-size: 32px;
-  font-weight: bold;
-  display: block;
-}
+      .signage-stat-number {
+        font-size: 32px;
+        font-weight: bold;
+        display: block;
+      }
 
-.signage-generated {
-  font-size: 20px;
-  opacity: 0.8;
-}
+      .signage-generated {
+        font-size: 20px;
+        opacity: 0.8;
+      }
     </style>
   </head>
   <body>
@@ -893,8 +889,7 @@
     <div class="container">
       <!-- CLIENT INTERFACE -->
       <div id="client-interface" class="client-interface">
-        <h1>Ostend Is Music Sectordag 2025</h1>
-        <h2>Expertenhub: boek je gesprekstafel(s)!</h2>
+        <h1>Gesprekstafel Boekingssysteem</h1>
         <div class="event-info" id="eventInfo">Evenement informatie wordt geladen...</div>
         <div class="client-booking-grid" id="clientBookingGrid">
           Beschikbare tijdslots worden geladen...
@@ -921,6 +916,45 @@
               Terug naar Boekingen
             </button>
           </div>
+        </div>
+
+        <!-- FIREBASE CONFIGURATION SECTION -->
+        <div class="firebase-config-section">
+          <h3>Firebase Configuratie</h3>
+          <p style="margin-bottom: 15px; font-size: 0.9rem; color: #0c5aa6;">
+            <strong>✅ Firebase is al geconfigureerd!</strong> Uw "ostend-is-music" project is klaar voor realtime synchronisatie.<br>
+            U kunt de configuratie hieronder bijwerken indien nodig, of de huidige setup blijven gebruiken.
+          </p>
+          
+          <details style="margin-bottom: 15px; padding: 10px; background: #f8f9fa; border-radius: 4px; border: 1px solid #e1e8ed;">
+            <summary style="cursor: pointer; font-weight: 500; color: #2c3e50;">Hoe Firebase Configuratie te verkrijgen</summary>
+            <div style="margin-top: 10px; font-size: 0.85rem; line-height: 1.4;">
+              <ol>
+                <li>Ga naar <a href="https://console.firebase.google.com" target="_blank">Firebase Console</a></li>
+                <li>Maak een nieuw project aan of selecteer een bestaand project</li>
+                <li>Ga naar Project Instellingen (tandwiel icoon) → Algemeen tabblad</li>
+                <li>Scroll naar beneden naar "Uw apps" sectie</li>
+                <li>Voeg een web app toe of selecteer een bestaande web app</li>
+                <li>Kopieer de configuratiewaarden uit het Firebase SDK snippet</li>
+                <li><strong>Vergeet niet Firestore Database en Authentication in te schakelen!</strong></li>
+              </ol>
+            </div>
+          </details>
+          
+          <div class="config-form">
+            <input type="text" id="firebaseApiKey" placeholder="Firebase API Sleutel" />
+            <input type="text" id="firebaseAuthDomain" placeholder="Auth Domein (project-id.firebaseapp.com)" />
+            <input type="text" id="firebaseProjectId" placeholder="Project ID" />
+            <input type="text" id="firebaseStorageBucket" placeholder="Storage Bucket" />
+            <input type="text" id="firebaseMessagingSenderId" placeholder="Messaging Sender ID" />
+            <input type="text" id="firebaseAppId" placeholder="App ID" />
+          </div>
+          <div class="config-actions">
+            <button onclick="updateFirebaseConfig()" class="btn-success">Configuratie Bijwerken</button>
+            <button onclick="testFirebaseConnection()" class="btn-secondary">Verbinding Testen</button>
+            <button onclick="resetToDemo()" class="btn-secondary">Config Wissen (Offline Modus)</button>
+          </div>
+          <div id="firebaseConfigStatus" class="status-message" style="display: none"></div>
         </div>
 
         <!-- EMAILJS CONFIGURATION SECTION -->
@@ -1067,20 +1101,20 @@
             >
               Exporteren naar Excel
             </button>
-<button
-  class="btn-success"
-  onclick="exportToJPG()"
-  style="margin-left: 10px"
->
-  Exporteren naar JPG (Printbaar)
-</button>
-<button
-  class="btn-success"
-  onclick="exportTo4KSignage()"
-  style="margin-left: 10px"
->
-  Exporteren naar 4K Signage (TV)
-</button>
+            <button
+              class="btn-success"
+              onclick="exportToJPG()"
+              style="margin-left: 10px"
+            >
+              Exporteren naar JPG (Printbaar)
+            </button>
+            <button
+              class="btn-success"
+              onclick="exportTo4KSignage()"
+              style="margin-left: 10px"
+            >
+              Exporteren naar 4K Signage (TV)
+            </button>
             <div
               id="exportStatus"
               class="status-message"
@@ -1250,8 +1284,8 @@
       src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"
     ></script>
     
-<!-- html2canvas SDK -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <!-- html2canvas SDK -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 
     <script>
       // Firebase and Database Configuration
@@ -2344,7 +2378,7 @@
           eventInfo.innerHTML = `
             <strong>${eventDate}</strong><br>
             ${localData.eventConfig.startTime} - ${localData.eventConfig.endTime} | ${localData.eventConfig.slotDuration} minuten per sessie<br>
-            <small style="color: #856404; font-weight: 500;">📝 Maximaal ${MAX_BOOKINGS_PER_EMAIL} boekingen per artiest/band</small>
+            <small style="color: #856404; font-weight: 500;">📝 Maximaal ${MAX_BOOKINGS_PER_EMAIL} boekingen per e-mailadres</small>
           `;
         } else {
           eventInfo.innerHTML = "Evenement nog niet geconfigureerd";
@@ -2360,7 +2394,7 @@
         container.innerHTML = localData.tables.map((table, tableIndex) => `
           <div class="client-table-card">
             <div class="table-header">
-<div class="table-title">Tafel ${tableIndex + 1}: ${table.name}</div>
+              <div class="table-title">Tafel ${tableIndex + 1}: ${table.name}</div>
               <div class="speakers">met ${table.speaker1} & ${table.speaker2}</div>
             </div>
             <div class="time-slots-container">
@@ -2791,358 +2825,359 @@ END:VCALENDAR`;
         showStatus("exportStatus", "CSV succesvol geëxporteerd", "success");
       }
 
-async function exportToJPG() {
-  const bookingsList = Object.values(localData.bookings);
-  
-  if (typeof html2canvas === 'undefined') {
-    showStatus("exportStatus", "Afbeelding export bibliotheek niet geladen", "error");
-    return;
-  }
+      async function exportToJPG() {
+        const bookingsList = Object.values(localData.bookings);
+        
+        if (typeof html2canvas === 'undefined') {
+          showStatus("exportStatus", "Afbeelding export bibliotheek niet geladen", "error");
+          return;
+        }
 
-  try {
-    showStatus("exportStatus", "JPG pagina's genereren voor afdrukken...", "success");
-    
-    // Generate event date string
-    let eventDate = "Niet geconfigureerd";
-    if (localData.eventConfig.date) {
-      eventDate = new Date(localData.eventConfig.date).toLocaleDateString("nl-NL", {
-        weekday: "long",
-        year: "numeric",
-        month: "long",
-        day: "numeric",
-      });
-    }
+        try {
+          showStatus("exportStatus", "JPG pagina's genereren voor afdrukken...", "success");
+          
+          // Generate event date string
+          let eventDate = "Niet geconfigureerd";
+          if (localData.eventConfig.date) {
+            eventDate = new Date(localData.eventConfig.date).toLocaleDateString("nl-NL", {
+              weekday: "long",
+              year: "numeric",
+              month: "long",
+              day: "numeric",
+            });
+          }
 
-    // Better A4 page calculations
-    const slotsPerTable = localData.eventConfig.timeSlots.length;
-    const headerSpace = 120; // Header space in mm
-    const summarySpace = 80; // Summary space in mm
-    const tableHeaderSpace = 25; // Per table header space in mm
-    const slotSpace = 18; // Per slot space in mm (increased for better scaling)
-    const marginSpace = 30; // Total margins in mm
-    
-    // Calculate space per table
-    const spacePerTable = tableHeaderSpace + (slotsPerTable * slotSpace) + 10; // 10mm margin between tables
-    
-    // Available space for tables (297mm A4 height - margins - header)
-    const availableSpace = 297 - marginSpace - headerSpace;
-    
-    // Calculate tables per page (ensure at least 1 table per page)
-    const tablesPerPage = Math.max(1, Math.floor(availableSpace / spacePerTable));
-    
-    // Split tables into pages
-    const pages = [];
-    for (let i = 0; i < localData.tables.length; i += tablesPerPage) {
-      pages.push(localData.tables.slice(i, i + tablesPerPage));
-    }
-    
-    // Check if summary fits on last page
-    const lastPageTables = pages[pages.length - 1] || [];
-    const lastPageContentSpace = headerSpace + (lastPageTables.length * spacePerTable) + summarySpace;
-    
-    if (lastPageContentSpace > (297 - marginSpace)) {
-      pages.push([]); // Create separate page for summary
-    }
+          // Better A4 page calculations
+          const slotsPerTable = localData.eventConfig.timeSlots.length;
+          const headerSpace = 120; // Header space in mm
+          const summarySpace = 80; // Summary space in mm
+          const tableHeaderSpace = 25; // Per table header space in mm
+          const slotSpace = 18; // Per slot space in mm (increased for better scaling)
+          const marginSpace = 30; // Total margins in mm
+          
+          // Calculate space per table
+          const spacePerTable = tableHeaderSpace + (slotsPerTable * slotSpace) + 10; // 10mm margin between tables
+          
+          // Available space for tables (297mm A4 height - margins - header)
+          const availableSpace = 297 - marginSpace - headerSpace;
+          
+          // Calculate tables per page (ensure at least 1 table per page)
+          const tablesPerPage = Math.max(1, Math.floor(availableSpace / spacePerTable));
+          
+          // Split tables into pages
+          const pages = [];
+          for (let i = 0; i < localData.tables.length; i += tablesPerPage) {
+            pages.push(localData.tables.slice(i, i + tablesPerPage));
+          }
+          
+          // Check if summary fits on last page
+          const lastPageTables = pages[pages.length - 1] || [];
+          const lastPageContentSpace = headerSpace + (lastPageTables.length * spacePerTable) + summarySpace;
+          
+          if (lastPageContentSpace > (297 - marginSpace)) {
+            pages.push([]); // Create separate page for summary
+          }
 
-    const exportContainer = document.getElementById('exportContainer');
-    const dateStr = localData.eventConfig.date || new Date().toISOString().split('T')[0];
-    
-    // Generate each page as JPG
-    for (let pageIndex = 0; pageIndex < pages.length; pageIndex++) {
-      const currentPageTables = pages[pageIndex];
-      const isLastPage = pageIndex === pages.length - 1;
-      const totalPages = pages.length;
-      
-      showStatus("exportStatus", `Pagina ${pageIndex + 1} van ${totalPages} genereren...`, "success");
-      
-      // Create header for each page
-      const headerHtml = `
-        <div class="export-header">
-          <div class="export-title">Gesprekstafel Boekingsschema</div>
-          <div class="export-subtitle">Evenement Datum: ${eventDate}</div>
-          <div class="export-subtitle">Tijd: ${localData.eventConfig.startTime} - ${localData.eventConfig.endTime}</div>
-          <div class="export-subtitle">Gegenereerd: ${new Date().toLocaleString()}</div>
-          <div class="export-subtitle">Pagina ${pageIndex + 1} van ${totalPages}</div>
-        </div>
-      `;
-      
-      // Create tables for current page
-      const tablesHtml = currentPageTables.map((table, tableIndex) => {
-        const originalIndex = localData.tables.indexOf(table);
-        return `
-          <div class="export-table">
-            <div class="export-table-header">
-              <div class="export-table-name">Tafel ${originalIndex + 1}: ${table.name}</div>
-              <div class="export-table-speakers">met ${table.speaker1} & ${table.speaker2}</div>
-            </div>
-            <div class="export-slots">
-              ${localData.eventConfig.timeSlots.map((slot) => {
-                const bookingKey = `${table.id}-${slot.index}`;
-                const booking = localData.bookings[bookingKey];
-                
-                if (booking) {
-                  return `
-                    <div class="export-slot booked">
-                      <div class="export-time">${slot.start} - ${slot.end}</div>
-                      <div class="export-booking-info booked">GEBOEKT: ${booking.name} (${booking.artistName})</div>
-                    </div>
-                  `;
-                } else {
-                  return `
-                    <div class="export-slot available">
-                      <div class="export-time">${slot.start} - ${slot.end}</div>
-                      <div class="export-booking-info available">Beschikbaar</div>
-                    </div>
-                  `;
-                }
-              }).join('')}
-            </div>
-          </div>
-        `;
-      }).join('');
-      
-      // Add summary only to last page
-      const summaryHtml = isLastPage ? `
-        <div class="export-summary">
-          <h4>Samenvatting</h4>
-          <div class="export-summary-grid">
-            <div class="export-summary-item"><strong>Totale Tafels:</strong> ${localData.tables.length}</div>
-            <div class="export-summary-item"><strong>Totale Boekingen:</strong> ${bookingsList.length}</div>
-            <div class="export-summary-item"><strong>Totale Tijdslots:</strong> ${localData.tables.length * localData.eventConfig.timeSlots.length}</div>
-            <div class="export-summary-item"><strong>Beschikbare Slots:</strong> ${(localData.tables.length * localData.eventConfig.timeSlots.length) - bookingsList.length}</div>
-          </div>
-        </div>
-      ` : '';
+          const exportContainer = document.getElementById('exportContainer');
+          const dateStr = localData.eventConfig.date || new Date().toISOString().split('T')[0];
+          
+          // Generate each page as JPG
+          for (let pageIndex = 0; pageIndex < pages.length; pageIndex++) {
+            const currentPageTables = pages[pageIndex];
+            const isLastPage = pageIndex === pages.length - 1;
+            const totalPages = pages.length;
+            
+            showStatus("exportStatus", `Pagina ${pageIndex + 1} van ${totalPages} genereren...`, "success");
+            
+            // Create header for each page
+            const headerHtml = `
+              <div class="export-header">
+                <div class="export-title">Gesprekstafel Boekingsschema</div>
+                <div class="export-subtitle">Evenement Datum: ${eventDate}</div>
+                <div class="export-subtitle">Tijd: ${localData.eventConfig.startTime} - ${localData.eventConfig.endTime}</div>
+                <div class="export-subtitle">Gegenereerd: ${new Date().toLocaleString()}</div>
+                <div class="export-subtitle">Pagina ${pageIndex + 1} van ${totalPages}</div>
+              </div>
+            `;
+            
+            // Create tables for current page
+            const tablesHtml = currentPageTables.map((table, tableIndex) => {
+              const originalIndex = localData.tables.indexOf(table);
+              return `
+                <div class="export-table">
+                  <div class="export-table-header">
+                    <div class="export-table-name">Tafel ${originalIndex + 1}: ${table.name}</div>
+                    <div class="export-table-speakers">met ${table.speaker1} & ${table.speaker2}</div>
+                  </div>
+                  <div class="export-slots">
+                    ${localData.eventConfig.timeSlots.map((slot) => {
+                      const bookingKey = `${table.id}-${slot.index}`;
+                      const booking = localData.bookings[bookingKey];
+                      
+                      if (booking) {
+                        return `
+                          <div class="export-slot booked">
+                            <div class="export-time">${slot.start} - ${slot.end}</div>
+                            <div class="export-booking-info booked">GEBOEKT: ${booking.name} (${booking.artistName})</div>
+                          </div>
+                        `;
+                      } else {
+                        return `
+                          <div class="export-slot available">
+                            <div class="export-time">${slot.start} - ${slot.end}</div>
+                            <div class="export-booking-info available">Beschikbaar</div>
+                          </div>
+                        `;
+                      }
+                    }).join('')}
+                  </div>
+                </div>
+              `;
+            }).join('');
+            
+            // Add summary only to last page
+            const summaryHtml = isLastPage ? `
+              <div class="export-summary">
+                <h4>Samenvatting</h4>
+                <div class="export-summary-grid">
+                  <div class="export-summary-item"><strong>Totale Tafels:</strong> ${localData.tables.length}</div>
+                  <div class="export-summary-item"><strong>Totale Boekingen:</strong> ${bookingsList.length}</div>
+                  <div class="export-summary-item"><strong>Totale Tijdslots:</strong> ${localData.tables.length * localData.eventConfig.timeSlots.length}</div>
+                  <div class="export-summary-item"><strong>Beschikbare Slots:</strong> ${(localData.tables.length * localData.eventConfig.timeSlots.length) - bookingsList.length}</div>
+                </div>
+              </div>
+            ` : '';
 
-      // Combine all HTML for current page
-      const pageHtml = headerHtml + tablesHtml + summaryHtml;
-      
-      // Insert content into hidden container
-      exportContainer.innerHTML = pageHtml;
-      
-      // Position container for proper A4 rendering
-      exportContainer.style.position = 'absolute';
-      exportContainer.style.top = '0';
-      exportContainer.style.left = '0';
-      exportContainer.style.width = '210mm';
-      exportContainer.style.height = '297mm';
-      exportContainer.style.zIndex = '-1';
-      exportContainer.style.backgroundColor = '#ffffff';
-      exportContainer.style.padding = '15mm';
-      exportContainer.style.boxSizing = 'border-box';
-      exportContainer.style.overflow = 'hidden';
-      
-      // Wait for content to render
-      await new Promise(resolve => setTimeout(resolve, 200));
-      
-      // Generate high-quality image with proper A4 dimensions
-      const canvas = await html2canvas(exportContainer, {
-        backgroundColor: '#ffffff',
-        scale: 3, // Higher scale for better quality
-        useCORS: true,
-        logging: false,
-        width: Math.round(210 * 3.78), // 210mm to pixels at 96 DPI * scale
-        height: Math.round(297 * 3.78), // 297mm to pixels at 96 DPI * scale
-        scrollX: 0,
-        scrollY: 0,
-        allowTaint: true,
-        foreignObjectRendering: true
-      });
-      
-      // Convert to high-quality JPG and download
-      const imgData = canvas.toDataURL('image/jpeg', 0.95);
-      const link = document.createElement('a');
-      link.download = `gesprekstafel-schema-${dateStr}-pagina-${pageIndex + 1}.jpg`;
-      link.href = imgData;
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-      
-      // Delay between downloads
-      await new Promise(resolve => setTimeout(resolve, 1000));
-    }
-    
-    // Reset container
-    exportContainer.style.position = 'fixed';
-    exportContainer.style.top = '-9999px';
-    exportContainer.style.left = '-9999px';
-    exportContainer.style.width = '210mm';
-    exportContainer.style.height = 'auto';
-    exportContainer.style.zIndex = 'auto';
-    exportContainer.style.overflow = 'visible';
-    exportContainer.innerHTML = '';
-    
-    showStatus("exportStatus", `${pages.length} JPG pagina's succesvol geëxporteerd (A4 formaat, klaar voor afdrukken)`, "success");
-    
-  } catch (error) {
-    console.error('JPG export mislukt:', error);
-    showStatus("exportStatus", "JPG export mislukt: " + error.message, "error");
-  }
-}
+            // Combine all HTML for current page
+            const pageHtml = headerHtml + tablesHtml + summaryHtml;
+            
+            // Insert content into hidden container
+            exportContainer.innerHTML = pageHtml;
+            
+            // Position container for proper A4 rendering
+            exportContainer.style.position = 'absolute';
+            exportContainer.style.top = '0';
+            exportContainer.style.left = '0';
+            exportContainer.style.width = '210mm';
+            exportContainer.style.height = '297mm';
+            exportContainer.style.zIndex = '-1';
+            exportContainer.style.backgroundColor = '#ffffff';
+            exportContainer.style.padding = '15mm';
+            exportContainer.style.boxSizing = 'border-box';
+            exportContainer.style.overflow = 'hidden';
+            
+            // Wait for content to render
+            await new Promise(resolve => setTimeout(resolve, 200));
+            
+            // Generate high-quality image with proper A4 dimensions
+            const canvas = await html2canvas(exportContainer, {
+              backgroundColor: '#ffffff',
+              scale: 3, // Higher scale for better quality
+              useCORS: true,
+              logging: false,
+              width: Math.round(210 * 3.78), // 210mm to pixels at 96 DPI * scale
+              height: Math.round(297 * 3.78), // 297mm to pixels at 96 DPI * scale
+              scrollX: 0,
+              scrollY: 0,
+              allowTaint: true,
+              foreignObjectRendering: true
+            });
+            
+            // Convert to high-quality JPG and download
+            const imgData = canvas.toDataURL('image/jpeg', 0.95);
+            const link = document.createElement('a');
+            link.download = `gesprekstafel-schema-${dateStr}-pagina-${pageIndex + 1}.jpg`;
+            link.href = imgData;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            
+            // Delay between downloads
+            await new Promise(resolve => setTimeout(resolve, 1000));
+          }
+          
+          // Reset container
+          exportContainer.style.position = 'fixed';
+          exportContainer.style.top = '-9999px';
+          exportContainer.style.left = '-9999px';
+          exportContainer.style.width = '210mm';
+          exportContainer.style.height = 'auto';
+          exportContainer.style.zIndex = 'auto';
+          exportContainer.style.overflow = 'visible';
+          exportContainer.innerHTML = '';
+          
+          showStatus("exportStatus", `${pages.length} JPG pagina's succesvol geëxporteerd (A4 formaat, klaar voor afdrukken)`, "success");
+          
+        } catch (error) {
+          console.error('JPG export mislukt:', error);
+          showStatus("exportStatus", "JPG export mislukt: " + error.message, "error");
+        }
+      }
+
       async function exportTo4KSignage() {
-  const bookingsList = Object.values(localData.bookings);
-  
-  if (typeof html2canvas === 'undefined') {
-    showStatus("exportStatus", "Afbeelding export bibliotheek niet geladen", "error");
-    return;
-  }
+        const bookingsList = Object.values(localData.bookings);
+        
+        if (typeof html2canvas === 'undefined') {
+          showStatus("exportStatus", "Afbeelding export bibliotheek niet geladen", "error");
+          return;
+        }
 
-  try {
-    showStatus("exportStatus", "4K signage afbeelding genereren voor TV monitors...", "success");
-    
-    // Generate event date string
-    let eventDate = "Niet geconfigureerd";
-    if (localData.eventConfig.date) {
-      eventDate = new Date(localData.eventConfig.date).toLocaleDateString("nl-NL", {
-        weekday: "long",
-        year: "numeric",
-        month: "long",
-        day: "numeric",
-      });
-    }
+        try {
+          showStatus("exportStatus", "4K signage afbeelding genereren voor TV monitors...", "success");
+          
+          // Generate event date string
+          let eventDate = "Niet geconfigureerd";
+          if (localData.eventConfig.date) {
+            eventDate = new Date(localData.eventConfig.date).toLocaleDateString("nl-NL", {
+              weekday: "long",
+              year: "numeric",
+              month: "long",
+              day: "numeric",
+            });
+          }
 
-    // Create a temporary container for 4K signage
-    let signageContainer = document.getElementById('signageContainer');
-    if (!signageContainer) {
-      signageContainer = document.createElement('div');
-      signageContainer.id = 'signageContainer';
-      signageContainer.className = 'signage-container';
-      document.body.appendChild(signageContainer);
-    }
+          // Create a temporary container for 4K signage
+          let signageContainer = document.getElementById('signageContainer');
+          if (!signageContainer) {
+            signageContainer = document.createElement('div');
+            signageContainer.id = 'signageContainer';
+            signageContainer.className = 'signage-container';
+            document.body.appendChild(signageContainer);
+          }
 
-    // Calculate statistics
-    const totalSlots = localData.tables.length * localData.eventConfig.timeSlots.length;
-    const bookedSlots = bookingsList.length;
-    const availableSlots = totalSlots - bookedSlots;
-    const occupancyRate = totalSlots > 0 ? Math.round((bookedSlots / totalSlots) * 100) : 0;
+          // Calculate statistics
+          const totalSlots = localData.tables.length * localData.eventConfig.timeSlots.length;
+          const bookedSlots = bookingsList.length;
+          const availableSlots = totalSlots - bookedSlots;
+          const occupancyRate = totalSlots > 0 ? Math.round((bookedSlots / totalSlots) * 100) : 0;
 
-    // Create header
-    const headerHtml = `
-      <div class="signage-header">
-        <div class="signage-title">Planning Expertenhub</div>
-        <div class="signage-subtitle">${eventDate}</div>
-        <div class="signage-subtitle">${localData.eventConfig.startTime} - ${localData.eventConfig.endTime}</div>
-      </div>
-    `;
-
-    // Create tables grid
-    const tablesHtml = `
-      <div class="signage-tables-grid">
-        ${localData.tables.map((table, index) => `
-          <div class="signage-table">
-            <div class="signage-table-header">
-              <div class="signage-table-name">Tafel ${index + 1}:</br> ${table.name}</div>
-              <div class="signage-table-speakers">met ${table.speaker1} & ${table.speaker2}</div>
+          // Create header
+          const headerHtml = `
+            <div class="signage-header">
+              <div class="signage-title">Gesprekstafel Schema</div>
+              <div class="signage-subtitle">${eventDate}</div>
+              <div class="signage-subtitle">${localData.eventConfig.startTime} - ${localData.eventConfig.endTime}</div>
             </div>
-            <div class="signage-slots">
-              ${localData.eventConfig.timeSlots.map((slot) => {
-                const bookingKey = `${table.id}-${slot.index}`;
-                const booking = localData.bookings[bookingKey];
-                
-                if (booking) {
-                  return `
-                    <div class="signage-slot booked">
-                      <div class="signage-time">${slot.start} - ${slot.end}</div>
-                      <div class="signage-booking-info booked">${booking.name} (${booking.artistName})</div>
-                    </div>
-                  `;
-                } else {
-                  return `
-                    <div class="signage-slot available">
-                      <div class="signage-time">${slot.start} - ${slot.end}</div>
-                      <div class="signage-booking-info available">Beschikbaar</div>
-                    </div>
-                  `;
-                }
-              }).join('')}
+          `;
+
+          // Create tables grid
+          const tablesHtml = `
+            <div class="signage-tables-grid">
+              ${localData.tables.map((table, index) => `
+                <div class="signage-table">
+                  <div class="signage-table-header">
+                    <div class="signage-table-name">Tafel ${index + 1}: ${table.name}</div>
+                    <div class="signage-table-speakers">met ${table.speaker1} & ${table.speaker2}</div>
+                  </div>
+                  <div class="signage-slots">
+                    ${localData.eventConfig.timeSlots.map((slot) => {
+                      const bookingKey = `${table.id}-${slot.index}`;
+                      const booking = localData.bookings[bookingKey];
+                      
+                      if (booking) {
+                        return `
+                          <div class="signage-slot booked">
+                            <div class="signage-time">${slot.start} - ${slot.end}</div>
+                            <div class="signage-booking-info booked">${booking.name} (${booking.artistName})</div>
+                          </div>
+                        `;
+                      } else {
+                        return `
+                          <div class="signage-slot available">
+                            <div class="signage-time">${slot.start} - ${slot.end}</div>
+                            <div class="signage-booking-info available">Beschikbaar</div>
+                          </div>
+                        `;
+                      }
+                    }).join('')}
+                  </div>
+                </div>
+              `).join('')}
             </div>
-          </div>
-        `).join('')}
-      </div>
-    `;
+          `;
 
-    // Create footer with statistics
-    const footerHtml = `
-      <div class="signage-footer">
-        <div class="signage-stats">
-          <div class="signage-stat">
-            <span class="signage-stat-number">${localData.tables.length}</span>
-            <span>Tafels</span>
-          </div>
-          <div class="signage-stat">
-            <span class="signage-stat-number">${bookedSlots}</span>
-            <span>Geboekt</span>
-          </div>
-          <div class="signage-stat">
-            <span class="signage-stat-number">${availableSlots}</span>
-            <span>Beschikbaar</span>
-          </div>
-          <div class="signage-stat">
-            <span class="signage-stat-number">${occupancyRate}%</span>
-            <span>Bezetting</span>
-          </div>
-        </div>
-        <div class="signage-generated">
-          Gegenereerd: ${new Date().toLocaleString()}
-        </div>
-      </div>
-    `;
+          // Create footer with statistics
+          const footerHtml = `
+            <div class="signage-footer">
+              <div class="signage-stats">
+                <div class="signage-stat">
+                  <span class="signage-stat-number">${localData.tables.length}</span>
+                  <span>Tafels</span>
+                </div>
+                <div class="signage-stat">
+                  <span class="signage-stat-number">${bookedSlots}</span>
+                  <span>Geboekt</span>
+                </div>
+                <div class="signage-stat">
+                  <span class="signage-stat-number">${availableSlots}</span>
+                  <span>Beschikbaar</span>
+                </div>
+                <div class="signage-stat">
+                  <span class="signage-stat-number">${occupancyRate}%</span>
+                  <span>Bezetting</span>
+                </div>
+              </div>
+              <div class="signage-generated">
+                Gegenereerd: ${new Date().toLocaleString()}
+              </div>
+            </div>
+          `;
 
-    // Combine all HTML
-    const signageHtml = headerHtml + tablesHtml + footerHtml;
-    
-    // Insert content into signage container
-    signageContainer.innerHTML = signageHtml;
-    
-    // Position container for 4K rendering
-    signageContainer.style.position = 'absolute';
-    signageContainer.style.top = '0';
-    signageContainer.style.left = '0';
-    signageContainer.style.width = '3840px';
-    signageContainer.style.height = '2160px';
-    signageContainer.style.zIndex = '-1';
-    
-    // Wait for content to render
-    await new Promise(resolve => setTimeout(resolve, 500));
-    
-    // Generate 4K image
-    const canvas = await html2canvas(signageContainer, {
-      backgroundColor: 'transparent',
-      scale: 1,
-      useCORS: true,
-      logging: false,
-      width: 3840,
-      height: 2160,
-      scrollX: 0,
-      scrollY: 0,
-      allowTaint: true,
-      foreignObjectRendering: true
-    });
-    
-    // Convert to high-quality JPG and download
-    const imgData = canvas.toDataURL('image/jpeg', 0.95);
-    const link = document.createElement('a');
-    const dateStr = localData.eventConfig.date || new Date().toISOString().split('T')[0];
-    link.download = `gesprekstafel-signage-4k-${dateStr}.jpg`;
-    link.href = imgData;
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-    
-    // Reset container
-    signageContainer.style.position = 'fixed';
-    signageContainer.style.top = '-9999px';
-    signageContainer.style.left = '-9999px';
-    signageContainer.style.zIndex = 'auto';
-    signageContainer.innerHTML = '';
-    
-    showStatus("exportStatus", "4K signage afbeelding succesvol geëxporteerd (3840x2160, klaar voor TV monitors)", "success");
-    
-  } catch (error) {
-    console.error('4K signage export mislukt:', error);
-    showStatus("exportStatus", "4K signage export mislukt: " + error.message, "error");
-  }
-}
+          // Combine all HTML
+          const signageHtml = headerHtml + tablesHtml + footerHtml;
+          
+          // Insert content into signage container
+          signageContainer.innerHTML = signageHtml;
+          
+          // Position container for 4K rendering
+          signageContainer.style.position = 'absolute';
+          signageContainer.style.top = '0';
+          signageContainer.style.left = '0';
+          signageContainer.style.width = '3840px';
+          signageContainer.style.height = '2160px';
+          signageContainer.style.zIndex = '-1';
+          
+          // Wait for content to render
+          await new Promise(resolve => setTimeout(resolve, 500));
+          
+          // Generate 4K image
+          const canvas = await html2canvas(signageContainer, {
+            backgroundColor: 'transparent',
+            scale: 1,
+            useCORS: true,
+            logging: false,
+            width: 3840,
+            height: 2160,
+            scrollX: 0,
+            scrollY: 0,
+            allowTaint: true,
+            foreignObjectRendering: true
+          });
+          
+          // Convert to high-quality JPG and download
+          const imgData = canvas.toDataURL('image/jpeg', 0.95);
+          const link = document.createElement('a');
+          const dateStr = localData.eventConfig.date || new Date().toISOString().split('T')[0];
+          link.download = `gesprekstafel-signage-4k-${dateStr}.jpg`;
+          link.href = imgData;
+          document.body.appendChild(link);
+          link.click();
+          document.body.removeChild(link);
+          
+          // Reset container
+          signageContainer.style.position = 'fixed';
+          signageContainer.style.top = '-9999px';
+          signageContainer.style.left = '-9999px';
+          signageContainer.style.zIndex = 'auto';
+          signageContainer.innerHTML = '';
+          
+          showStatus("exportStatus", "4K signage afbeelding succesvol geëxporteerd (3840x2160, klaar voor TV monitors)", "success");
+          
+        } catch (error) {
+          console.error('4K signage export mislukt:', error);
+          showStatus("exportStatus", "4K signage export mislukt: " + error.message, "error");
+        }
+      }
 
       function exportToExcel() {
         const bookingsList = Object.values(localData.bookings);
