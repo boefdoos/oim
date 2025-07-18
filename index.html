@@ -923,45 +923,6 @@
           </div>
         </div>
 
-        <!-- FIREBASE CONFIGURATION SECTION -->
-        <div class="firebase-config-section">
-          <h3>Firebase Configuratie</h3>
-          <p style="margin-bottom: 15px; font-size: 0.9rem; color: #0c5aa6;">
-            <strong>✅ Firebase is al geconfigureerd!</strong> Uw "ostend-is-music" project is klaar voor realtime synchronisatie.<br>
-            U kunt de configuratie hieronder bijwerken indien nodig, of de huidige setup blijven gebruiken.
-          </p>
-          
-          <details style="margin-bottom: 15px; padding: 10px; background: #f8f9fa; border-radius: 4px; border: 1px solid #e1e8ed;">
-            <summary style="cursor: pointer; font-weight: 500; color: #2c3e50;">Hoe Firebase Configuratie te verkrijgen</summary>
-            <div style="margin-top: 10px; font-size: 0.85rem; line-height: 1.4;">
-              <ol>
-                <li>Ga naar <a href="https://console.firebase.google.com" target="_blank">Firebase Console</a></li>
-                <li>Maak een nieuw project aan of selecteer een bestaand project</li>
-                <li>Ga naar Project Instellingen (tandwiel icoon) → Algemeen tabblad</li>
-                <li>Scroll naar beneden naar "Uw apps" sectie</li>
-                <li>Voeg een web app toe of selecteer een bestaande web app</li>
-                <li>Kopieer de configuratiewaarden uit het Firebase SDK snippet</li>
-                <li><strong>Vergeet niet Firestore Database en Authentication in te schakelen!</strong></li>
-              </ol>
-            </div>
-          </details>
-          
-          <div class="config-form">
-            <input type="text" id="firebaseApiKey" placeholder="Firebase API Sleutel" />
-            <input type="text" id="firebaseAuthDomain" placeholder="Auth Domein (project-id.firebaseapp.com)" />
-            <input type="text" id="firebaseProjectId" placeholder="Project ID" />
-            <input type="text" id="firebaseStorageBucket" placeholder="Storage Bucket" />
-            <input type="text" id="firebaseMessagingSenderId" placeholder="Messaging Sender ID" />
-            <input type="text" id="firebaseAppId" placeholder="App ID" />
-          </div>
-          <div class="config-actions">
-            <button onclick="updateFirebaseConfig()" class="btn-success">Configuratie Bijwerken</button>
-            <button onclick="testFirebaseConnection()" class="btn-secondary">Verbinding Testen</button>
-            <button onclick="resetToDemo()" class="btn-secondary">Config Wissen (Offline Modus)</button>
-          </div>
-          <div id="firebaseConfigStatus" class="status-message" style="display: none"></div>
-        </div>
-
         <!-- EMAILJS CONFIGURATION SECTION -->
         <div class="firebase-config-section" style="background: #f0f8ff;">
           <h3>EmailJS Configuratie</h3>
