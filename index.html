@@ -514,7 +514,7 @@
       }
 
       .firebase-config-section {
-        background: #e7f3ff;
+        background: #e8f5e8;
         border: 1px solid #b3d4fc;
         padding: 15px;
         border-radius: 4px;
@@ -522,20 +522,8 @@
       }
 
       .firebase-config-section h3 {
-        color: #0c5aa6;
+        color: #155724;
         margin-bottom: 10px;
-      }
-
-      .config-form {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 10px;
-        margin-bottom: 15px;
-      }
-
-      .config-form input {
-        font-size: 0.8rem;
-        padding: 8px;
       }
 
       .config-actions {
@@ -543,16 +531,16 @@
         gap: 10px;
       }
 
-      .auth-section {
-        background: #f0f8ff;
-        border: 1px solid #b3d4fc;
+      .user-management {
+        background: #fff3cd;
+        border: 1px solid #ffeaa7;
         padding: 15px;
         border-radius: 4px;
         margin-bottom: 20px;
       }
 
-      .auth-section h3 {
-        color: #0c5aa6;
+      .user-management h3 {
+        color: #856404;
         margin-bottom: 10px;
       }
 
@@ -567,19 +555,6 @@
         display: flex;
         gap: 10px;
         align-items: center;
-      }
-
-      .user-management {
-        background: #fff3cd;
-        border: 1px solid #ffeaa7;
-        padding: 15px;
-        border-radius: 4px;
-        margin-bottom: 20px;
-      }
-
-      .user-management h3 {
-        color: #856404;
-        margin-bottom: 10px;
       }
 
       .export-container {
@@ -720,7 +695,6 @@
         padding: 8px 0;
       }
 
-      /* 4K Signage Export Styles */
       .signage-container {
         position: fixed;
         top: -9999px;
@@ -920,77 +894,21 @@
           </div>
         </div>
 
-        <!-- FIREBASE CONFIGURATION SECTION -->
+        <!-- LIVE DISPLAY SECTION -->
         <div class="firebase-config-section">
-          <h3>Firebase Configuratie</h3>
-          <p style="margin-bottom: 15px; font-size: 0.9rem; color: #0c5aa6;">
-            <strong>✅ Firebase is al geconfigureerd!</strong> Uw "ostend-is-music" project is klaar voor realtime synchronisatie.<br>
-            U kunt de configuratie hieronder bijwerken indien nodig, of de huidige setup blijven gebruiken.
+          <h3>📺 Live 4K Display</h3>
+          <p style="margin-bottom: 15px; font-size: 0.9rem; color: #155724;">
+            Open een real-time 4K display scherm voor TV monitors of grote schermen. Het scherm werkt automatisch bij wanneer boekingen wijzigen.
           </p>
-          
-          <details style="margin-bottom: 15px; padding: 10px; background: #f8f9fa; border-radius: 4px; border: 1px solid #e1e8ed;">
-            <summary style="cursor: pointer; font-weight: 500; color: #2c3e50;">Hoe Firebase Configuratie te verkrijgen</summary>
-            <div style="margin-top: 10px; font-size: 0.85rem; line-height: 1.4;">
-              <ol>
-                <li>Ga naar <a href="https://console.firebase.google.com" target="_blank">Firebase Console</a></li>
-                <li>Maak een nieuw project aan of selecteer een bestaand project</li>
-                <li>Ga naar Project Instellingen (tandwiel icoon) → Algemeen tabblad</li>
-                <li>Scroll naar beneden naar "Uw apps" sectie</li>
-                <li>Voeg een web app toe of selecteer een bestaande web app</li>
-                <li>Kopieer de configuratiewaarden uit het Firebase SDK snippet</li>
-                <li><strong>Vergeet niet Firestore Database en Authentication in te schakelen!</strong></li>
-              </ol>
-            </div>
-          </details>
-          
-          <div class="config-form">
-            <input type="text" id="firebaseApiKey" placeholder="Firebase API Sleutel" />
-            <input type="text" id="firebaseAuthDomain" placeholder="Auth Domein (project-id.firebaseapp.com)" />
-            <input type="text" id="firebaseProjectId" placeholder="Project ID" />
-            <input type="text" id="firebaseStorageBucket" placeholder="Storage Bucket" />
-            <input type="text" id="firebaseMessagingSenderId" placeholder="Messaging Sender ID" />
-            <input type="text" id="firebaseAppId" placeholder="App ID" />
-          </div>
           <div class="config-actions">
-            <button onclick="updateFirebaseConfig()" class="btn-success">Configuratie Bijwerken</button>
-            <button onclick="testFirebaseConnection()" class="btn-secondary">Verbinding Testen</button>
-            <button onclick="resetToDemo()" class="btn-secondary">Config Wissen (Offline Modus)</button>
+            <button onclick="open4KDisplay()" class="btn-success" style="padding: 12px 20px; font-size: 1rem;">
+              🖥️ Open 4K Live Display
+            </button>
+            <button onclick="close4KDisplay()" class="btn-secondary" style="margin-left: 10px;">
+              Sluit Display
+            </button>
           </div>
-          <div id="firebaseConfigStatus" class="status-message" style="display: none"></div>
-        </div>
-
-        <!-- EMAILJS CONFIGURATION SECTION -->
-        <div class="firebase-config-section" style="background: #f0f8ff;">
-          <h3>EmailJS Configuratie</h3>
-          <p style="margin-bottom: 15px; font-size: 0.9rem; color: #0c5aa6;">
-            Configureer EmailJS om automatisch boekingsbevestigingen naar gebruikers te sturen.
-          </p>
-          
-          <details style="margin-bottom: 15px; padding: 10px; background: #f8f9fa; border-radius: 4px; border: 1px solid #e1e8ed;">
-            <summary style="cursor: pointer; font-weight: 500; color: #2c3e50;">Hoe EmailJS Configuratie te verkrijgen</summary>
-            <div style="margin-top: 10px; font-size: 0.85rem; line-height: 1.4;">
-              <ol>
-                <li>Ga naar <a href="https://www.emailjs.com" target="_blank">EmailJS.com</a> en maak een gratis account aan</li>
-                <li>Maak een e-mailservice aan (Gmail, Outlook, etc.)</li>
-                <li>Maak een e-mailtemplate aan met deze variabelen: {{user_name}}, {{user_email}}, {{artist_name}}, {{table_name}}, {{speakers}}, {{event_date}}, {{time_slot}}</li>
-                <li>Verkrijg uw Service ID vanaf de Email Services pagina</li>
-                <li>Verkrijg uw Template ID vanaf de Email Templates pagina</li>
-                <li>Verkrijg uw Public Key vanaf Account Settings → API Keys</li>
-              </ol>
-            </div>
-          </details>
-          
-          <div class="config-form">
-            <input type="text" id="emailServiceId" placeholder="EmailJS Service ID" />
-            <input type="text" id="emailTemplateId" placeholder="EmailJS Template ID" />
-            <input type="text" id="emailPublicKey" placeholder="EmailJS Public Key" />
-            <input type="text" id="emailFromName" placeholder="Afzender Naam (bijv. Event Team)" />
-          </div>
-          <div class="config-actions">
-            <button onclick="updateEmailConfig()" class="btn-success">E-mail Configuratie Bijwerken</button>
-            <button onclick="testEmailConfig()" class="btn-secondary">Test E-mail Versturen</button>
-          </div>
-          <div id="emailConfigStatus" class="status-message" style="display: none"></div>
+          <div id="displayStatus" class="status-message" style="display: none"></div>
         </div>
 
         <!-- USER MANAGEMENT SECTION -->
@@ -1308,9 +1226,9 @@
 
       // EmailJS Configuration
       let EMAILJS_CONFIG = {
-        serviceId: "service_0m2owju", // Replace with your EmailJS service ID
-        templateId: "template_7xq3pho", // Replace with your EmailJS template ID
-        publicKey: "VehBeO9qQGs5TbvvnY", // Replace with your EmailJS public key
+        serviceId: "service_0m2owju", 
+        templateId: "template_7xq3pho", 
+        publicKey: "VehBeO9qQGs5TbvvnY", 
         fromName: "Event Team"
       };
 
@@ -1326,6 +1244,9 @@
         tables: [],
         bookings: {}
       };
+
+      // 4K Display Window Management
+      let display4KWindow = null;
 
       // Constants
       const MAX_BOOKINGS_PER_EMAIL = 3;
@@ -1422,7 +1343,7 @@
         try {
           updateConnectionStatus('connecting');
           
-          const firebaseConfig = config || getStoredFirebaseConfig() || DEFAULT_FIREBASE_CONFIG;
+          const firebaseConfig = config || DEFAULT_FIREBASE_CONFIG;
           
           if (!firebaseConfig) {
             throw new Error('Geen Firebase configuratie verstrekt');
@@ -1468,20 +1389,408 @@
         }
       }
 
-      function getStoredFirebaseConfig() {
-        const stored = localStorage.getItem('firebaseConfig');
-        return stored ? JSON.parse(stored) : null;
-      }
-
-      function storeFirebaseConfig(config) {
-        localStorage.setItem('firebaseConfig', JSON.stringify(config));
-      }
-
       async function testFirebaseConnection() {
         if (!db) throw new Error('Firestore niet geïnitialiseerd');
         
         // Try to read a document to test connectivity
         await db.collection('system').doc('test').get();
+      }
+
+      // 4K Display Functions
+      function open4KDisplay() {
+        if (display4KWindow && !display4KWindow.closed) {
+          display4KWindow.focus();
+          showDisplayStatus("4K Display is al geopend", "warning");
+          return;
+        }
+
+        try {
+          // Open new window with 4K dimensions
+          display4KWindow = window.open(
+            '', 
+            '4KDisplay',
+            'width=1920,height=1080,scrollbars=no,resizable=yes,status=no,toolbar=no,menubar=no'
+          );
+
+          if (!display4KWindow) {
+            throw new Error('Popup werd geblokkeerd door browser');
+          }
+
+          // Create the 4K display content
+          const displayContent = create4KDisplayContent();
+          
+          display4KWindow.document.open();
+          display4KWindow.document.write(displayContent);
+          display4KWindow.document.close();
+          
+          // Set up auto-refresh for the display window
+          setup4KDisplayListeners();
+          
+          showDisplayStatus("4K Display succesvol geopend", "success");
+          
+        } catch (error) {
+          console.error('4K Display openen mislukt:', error);
+          showDisplayStatus("Fout bij openen 4K Display: " + error.message, "error");
+        }
+      }
+
+      function close4KDisplay() {
+        if (display4KWindow && !display4KWindow.closed) {
+          display4KWindow.close();
+          display4KWindow = null;
+          showDisplayStatus("4K Display gesloten", "success");
+        } else {
+          showDisplayStatus("Geen 4K Display om te sluiten", "warning");
+        }
+      }
+
+      function create4KDisplayContent() {
+        // Generate event date string
+        let eventDate = "Niet geconfigureerd";
+        if (localData.eventConfig.date) {
+          eventDate = new Date(localData.eventConfig.date).toLocaleDateString("nl-NL", {
+            weekday: "long",
+            year: "numeric",
+            month: "long",
+            day: "numeric",
+          });
+        }
+
+        // Calculate statistics
+        const bookingsList = Object.values(localData.bookings);
+        const totalSlots = localData.tables.length * localData.eventConfig.timeSlots.length;
+        const bookedSlots = bookingsList.length;
+        const availableSlots = totalSlots - bookedSlots;
+        const occupancyRate = totalSlots > 0 ? Math.round((bookedSlots / totalSlots) * 100) : 0;
+
+        return `
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>4K Live Display - Gesprekstafel Schema</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    
+    body {
+      width: 100vw;
+      height: 100vh;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      color: white;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .display-header {
+      text-align: center;
+      padding: 20px;
+      border-bottom: 3px solid rgba(255, 255, 255, 0.3);
+    }
+
+    .display-title {
+      font-size: 3.5rem;
+      font-weight: bold;
+      margin-bottom: 10px;
+      text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+    }
+
+    .display-subtitle {
+      font-size: 1.5rem;
+      margin-bottom: 5px;
+      opacity: 0.9;
+    }
+
+    .display-tables-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 20px;
+      padding: 20px;
+      flex: 1;
+      overflow-y: auto;
+    }
+
+    .display-table {
+      background: rgba(255, 255, 255, 0.95);
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+      color: #333;
+    }
+
+    .display-table-header {
+      background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+      padding: 15px;
+      color: white;
+      text-align: center;
+    }
+
+    .display-table-name {
+      font-size: 1.3rem;
+      font-weight: bold;
+      margin-bottom: 5px;
+    }
+
+    .display-table-speakers {
+      font-size: 1rem;
+      opacity: 0.9;
+    }
+
+    .display-slots {
+      padding: 10px;
+      max-height: 400px;
+      overflow-y: auto;
+    }
+
+    .display-slot {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 8px 12px;
+      margin-bottom: 5px;
+      border-radius: 6px;
+      font-size: 0.95rem;
+      min-height: 40px;
+    }
+
+    .display-slot.available {
+      background: #d4edda;
+      border-left: 4px solid #28a745;
+    }
+
+    .display-slot.booked {
+      background: #fff3cd;
+      border-left: 4px solid #ffc107;
+    }
+
+    .display-time {
+      font-weight: bold;
+      font-size: 1rem;
+      min-width: 100px;
+    }
+
+    .display-booking-info {
+      flex: 1;
+      text-align: center;
+      font-weight: bold;
+      font-size: 0.9rem;
+    }
+
+    .display-booking-info.booked {
+      color: #856404;
+    }
+
+    .display-booking-info.available {
+      color: #155724;
+      font-style: italic;
+    }
+
+    .display-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: rgba(255, 255, 255, 0.1);
+      padding: 15px 20px;
+      backdrop-filter: blur(10px);
+      border-top: 1px solid rgba(255, 255, 255, 0.2);
+    }
+
+    .display-stats {
+      display: flex;
+      gap: 30px;
+      font-size: 1.1rem;
+    }
+
+    .display-stat {
+      text-align: center;
+    }
+
+    .display-stat-number {
+      font-size: 1.8rem;
+      font-weight: bold;
+      display: block;
+    }
+
+    .display-generated {
+      font-size: 0.9rem;
+      opacity: 0.8;
+    }
+
+    .auto-refresh-indicator {
+      position: fixed;
+      top: 10px;
+      right: 10px;
+      background: rgba(0, 0, 0, 0.5);
+      padding: 5px 10px;
+      border-radius: 15px;
+      font-size: 0.8rem;
+      z-index: 1000;
+    }
+
+    .refresh-dot {
+      display: inline-block;
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #28a745;
+      margin-right: 5px;
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0% { opacity: 1; }
+      50% { opacity: 0.5; }
+      100% { opacity: 1; }
+    }
+  </style>
+</head>
+<body>
+  <div class="auto-refresh-indicator">
+    <span class="refresh-dot"></span>Live Updates
+  </div>
+  
+  <div class="display-header">
+    <div class="display-title">Gesprekstafel Schema</div>
+    <div class="display-subtitle">${eventDate}</div>
+    <div class="display-subtitle">${localData.eventConfig.startTime} - ${localData.eventConfig.endTime}</div>
+  </div>
+  
+  <div class="display-tables-grid" id="displayTablesGrid">
+    ${localData.tables.map((table, index) => `
+      <div class="display-table">
+        <div class="display-table-header">
+          <div class="display-table-name">Tafel ${index + 1}: ${table.name}</div>
+          <div class="display-table-speakers">met ${table.speaker1} & ${table.speaker2}</div>
+        </div>
+        <div class="display-slots">
+          ${localData.eventConfig.timeSlots.map((slot) => {
+            const bookingKey = `${table.id}-${slot.index}`;
+            const booking = localData.bookings[bookingKey];
+            
+            if (booking) {
+              return `
+                <div class="display-slot booked">
+                  <div class="display-time">${slot.start} - ${slot.end}</div>
+                  <div class="display-booking-info booked">${booking.name} (${booking.artistName})</div>
+                </div>
+              `;
+            } else {
+              return `
+                <div class="display-slot available">
+                  <div class="display-time">${slot.start} - ${slot.end}</div>
+                  <div class="display-booking-info available">Beschikbaar</div>
+                </div>
+              `;
+            }
+          }).join('')}
+        </div>
+      </div>
+    `).join('')}
+  </div>
+  
+  <div class="display-footer">
+    <div class="display-stats">
+      <div class="display-stat">
+        <span class="display-stat-number">${localData.tables.length}</span>
+        <span>Tafels</span>
+      </div>
+      <div class="display-stat">
+        <span class="display-stat-number">${bookedSlots}</span>
+        <span>Geboekt</span>
+      </div>
+      <div class="display-stat">
+        <span class="display-stat-number">${availableSlots}</span>
+        <span>Beschikbaar</span>
+      </div>
+      <div class="display-stat">
+        <span class="display-stat-number">${occupancyRate}%</span>
+        <span>Bezetting</span>
+      </div>
+    </div>
+    <div class="display-generated">
+      Laatst bijgewerkt: ${new Date().toLocaleString()}
+    </div>
+  </div>
+
+  <script>
+    // Function to update display content
+    function updateDisplayContent() {
+      if (window.opener && !window.opener.closed) {
+        // Get updated data from parent window
+        try {
+          const parentData = window.opener.localData;
+          if (parentData) {
+            // Update the display with new data
+            location.reload();
+          }
+        } catch (error) {
+          console.error('Error updating display:', error);
+        }
+      } else {
+        // Parent window is closed, close this window too
+        window.close();
+      }
+    }
+
+    // Auto-refresh every 5 seconds
+    setInterval(updateDisplayContent, 5000);
+
+    // Close this window if parent window is closed
+    window.addEventListener('beforeunload', function() {
+      if (window.opener && !window.opener.closed) {
+        try {
+          window.opener.display4KWindow = null;
+        } catch (error) {
+          // Ignore cross-origin errors
+        }
+      }
+    });
+  </script>
+</body>
+</html>
+        `;
+      }
+
+      function setup4KDisplayListeners() {
+        if (!display4KWindow || display4KWindow.closed) return;
+        
+        // Function to update the display window
+        function updateDisplay() {
+          if (display4KWindow && !display4KWindow.closed) {
+            try {
+              // Reload the display window content
+              const newContent = create4KDisplayContent();
+              display4KWindow.document.open();
+              display4KWindow.document.write(newContent);
+              display4KWindow.document.close();
+            } catch (error) {
+              console.error('Error updating 4K display:', error);
+            }
+          }
+        }
+
+        // Set up a periodic update (Firebase listeners will trigger data changes)
+        const displayUpdateInterval = setInterval(() => {
+          if (display4KWindow && !display4KWindow.closed) {
+            updateDisplay();
+          } else {
+            clearInterval(displayUpdateInterval);
+            display4KWindow = null;
+          }
+        }, 3000); // Update every 3 seconds
+      }
+
+      function showDisplayStatus(message, type) {
+        const element = document.getElementById('displayStatus');
+        element.textContent = message;
+        element.className = `status-message ${type}`;
+        element.style.display = 'block';
+
+        setTimeout(() => {
+          element.style.display = 'none';
+        }, 5000);
       }
 
       function updateConnectionStatus(status) {
@@ -1983,202 +2292,6 @@
         document.getElementById('slotDuration').value = localData.eventConfig.slotDuration;
       }
 
-      // Firebase configuration management
-      function updateFirebaseConfig() {
-        const config = {
-          apiKey: document.getElementById('firebaseApiKey').value.trim(),
-          authDomain: document.getElementById('firebaseAuthDomain').value.trim(),
-          projectId: document.getElementById('firebaseProjectId').value.trim(),
-          storageBucket: document.getElementById('firebaseStorageBucket').value.trim(),
-          messagingSenderId: document.getElementById('firebaseMessagingSenderId').value.trim(),
-          appId: document.getElementById('firebaseAppId').value.trim()
-        };
-
-        if (!config.projectId || !config.apiKey) {
-          showFirebaseConfigStatus('Project ID en API Sleutel zijn vereist', 'error');
-          return;
-        }
-
-        storeFirebaseConfig(config);
-        showFirebaseConfigStatus('Configuratie opgeslagen. Opnieuw verbinden...', 'success');
-
-        unsubscribeListeners.forEach(unsubscribe => unsubscribe());
-        unsubscribeListeners = [];
-
-        setTimeout(() => {
-          initializeFirebase(config);
-        }, 1000);
-      }
-
-      function resetToDemo() {
-        localStorage.removeItem('firebaseConfig');
-        showFirebaseConfigStatus('Configuratie gereset naar standaard.', 'success');
-        
-        if (DEFAULT_FIREBASE_CONFIG) {
-          document.getElementById('firebaseApiKey').value = DEFAULT_FIREBASE_CONFIG.apiKey || '';
-          document.getElementById('firebaseAuthDomain').value = DEFAULT_FIREBASE_CONFIG.authDomain || '';
-          document.getElementById('firebaseProjectId').value = DEFAULT_FIREBASE_CONFIG.projectId || '';
-          document.getElementById('firebaseStorageBucket').value = DEFAULT_FIREBASE_CONFIG.storageBucket || '';
-          document.getElementById('firebaseMessagingSenderId').value = DEFAULT_FIREBASE_CONFIG.messagingSenderId || '';
-          document.getElementById('firebaseAppId').value = DEFAULT_FIREBASE_CONFIG.appId || '';
-          
-          unsubscribeListeners.forEach(unsubscribe => unsubscribe());
-          unsubscribeListeners = [];
-          
-          setTimeout(() => {
-            initializeFirebase(DEFAULT_FIREBASE_CONFIG);
-          }, 1000);
-        } else {
-          document.getElementById('firebaseApiKey').value = '';
-          document.getElementById('firebaseAuthDomain').value = '';
-          document.getElementById('firebaseProjectId').value = '';
-          document.getElementById('firebaseStorageBucket').value = '';
-          document.getElementById('firebaseMessagingSenderId').value = '';
-          document.getElementById('firebaseAppId').value = '';
-
-          unsubscribeListeners.forEach(unsubscribe => unsubscribe());
-          unsubscribeListeners = [];
-          
-          isFirebaseInitialized = false;
-          isOnline = false;
-          db = null;
-          auth = null;
-          updateConnectionStatus('disconnected');
-          
-          loadDataFromLocalStorage();
-        }
-      }
-
-      function testFirebaseConnection() {
-        showFirebaseConfigStatus('Verbinding testen...', 'success');
-        
-        setTimeout(async () => {
-          try {
-            await testFirebaseConnection();
-            showFirebaseConfigStatus('Verbinding succesvol getest', 'success');
-          } catch (error) {
-            showFirebaseConfigStatus('Verbindingstest mislukt: ' + error.message, 'error');
-          }
-        }, 1000);
-      }
-
-      function showFirebaseConfigStatus(message, type) {
-        const element = document.getElementById('firebaseConfigStatus');
-        element.textContent = message;
-        element.className = `status-message ${type}`;
-        element.style.display = 'block';
-
-        setTimeout(() => {
-          element.style.display = 'none';
-        }, 5000);
-      }
-
-      // EmailJS configuration management
-      function getStoredEmailConfig() {
-        const stored = localStorage.getItem('emailConfig');
-        return stored ? JSON.parse(stored) : null;
-      }
-
-      function storeEmailConfig(config) {
-        localStorage.setItem('emailConfig', JSON.stringify(config));
-      }
-
-      function updateEmailConfig() {
-        const config = {
-          serviceId: document.getElementById('emailServiceId').value.trim(),
-          templateId: document.getElementById('emailTemplateId').value.trim(),
-          publicKey: document.getElementById('emailPublicKey').value.trim(),
-          fromName: document.getElementById('emailFromName').value.trim() || 'Event Team'
-        };
-
-        // Validate required fields
-        if (!config.serviceId || !config.templateId || !config.publicKey) {
-          showEmailConfigStatus('Alle EmailJS velden zijn vereist', 'error');
-          return;
-        }
-
-        // Update global config
-        EMAILJS_CONFIG = config;
-        storeEmailConfig(config);
-        
-        // Reinitialize EmailJS
-        if (typeof emailjs !== 'undefined') {
-          emailjs.init(config.publicKey);
-        }
-        
-        showEmailConfigStatus('E-mail configuratie succesvol opgeslagen', 'success');
-      }
-
-      async function testEmailConfig() {
-        if (!EMAILJS_CONFIG.serviceId || !EMAILJS_CONFIG.templateId || !EMAILJS_CONFIG.publicKey) {
-          showEmailConfigStatus('Configureer eerst EmailJS instellingen', 'error');
-          return;
-        }
-
-        if (typeof emailjs === 'undefined') {
-          showEmailConfigStatus('EmailJS niet geladen', 'error');
-          return;
-        }
-
-        const testEmail = currentUser ? currentUser.email : 'test@example.com';
-        
-        const testParams = {
-          user_name: 'Test Gebruiker',
-          user_email: testEmail,
-          artist_name: 'Test Artiest',
-          table_name: 'Test Tafel',
-          speakers: 'Spreker 1 & Spreker 2',
-          event_date: 'Test Datum',
-          time_slot: '10:00 - 10:10',
-          to_email: testEmail,
-        };
-
-        try {
-          showEmailConfigStatus('Test e-mail verzenden...', 'success');
-          
-          await emailjs.send(
-            EMAILJS_CONFIG.serviceId,
-            EMAILJS_CONFIG.templateId,
-            testParams,
-            EMAILJS_CONFIG.publicKey
-          );
-          
-          showEmailConfigStatus(`Test e-mail succesvol verzonden naar ${testEmail}`, 'success');
-        } catch (error) {
-          console.error('Test e-mail mislukt:', error);
-          showEmailConfigStatus('Test e-mail mislukt: ' + error.text || error.message, 'error');
-        }
-      }
-
-      function loadEmailConfig() {
-        const stored = getStoredEmailConfig();
-        if (stored) {
-          EMAILJS_CONFIG = { ...EMAILJS_CONFIG, ...stored };
-          
-          // Load into form fields
-          document.getElementById('emailServiceId').value = stored.serviceId || '';
-          document.getElementById('emailTemplateId').value = stored.templateId || '';
-          document.getElementById('emailPublicKey').value = stored.publicKey || '';
-          document.getElementById('emailFromName').value = stored.fromName || '';
-          
-          // Initialize EmailJS with stored config
-          if (typeof emailjs !== 'undefined' && stored.publicKey) {
-            emailjs.init(stored.publicKey);
-          }
-        }
-      }
-
-      function showEmailConfigStatus(message, type) {
-        const element = document.getElementById('emailConfigStatus');
-        element.textContent = message;
-        element.className = `status-message ${type}`;
-        element.style.display = 'block';
-
-        setTimeout(() => {
-          element.style.display = 'none';
-        }, 5000);
-      }
-
       function switchToAdmin() {
         document.getElementById("client-interface").style.display = "none";
         document.getElementById("admin-interface").style.display = "block";
@@ -2186,20 +2299,6 @@
         if (currentUser) {
           document.getElementById('adminUserEmail').textContent = currentUser.email;
         }
-        
-        // Load Firebase config
-        const config = getStoredFirebaseConfig() || DEFAULT_FIREBASE_CONFIG;
-        if (config) {
-          document.getElementById('firebaseApiKey').value = config.apiKey || '';
-          document.getElementById('firebaseAuthDomain').value = config.authDomain || '';
-          document.getElementById('firebaseProjectId').value = config.projectId || '';
-          document.getElementById('firebaseStorageBucket').value = config.storageBucket || '';
-          document.getElementById('firebaseMessagingSenderId').value = config.messagingSenderId || '';
-          document.getElementById('firebaseAppId').value = config.appId || '';
-        }
-        
-        // Load Email config
-        loadEmailConfig();
         
         renderBookingsOverview();
       }
@@ -3234,12 +3333,6 @@ END:VCALENDAR`;
 
       // Initialize EmailJS
       (function() {
-        // Load stored email configuration
-        const storedEmailConfig = getStoredEmailConfig();
-        if (storedEmailConfig) {
-          EMAILJS_CONFIG = { ...EMAILJS_CONFIG, ...storedEmailConfig };
-        }
-        
         // Initialize EmailJS with the configuration
         if (typeof emailjs !== 'undefined' && EMAILJS_CONFIG.publicKey) {
           emailjs.init(EMAILJS_CONFIG.publicKey);
@@ -3249,9 +3342,6 @@ END:VCALENDAR`;
       // Initialize application
       window.addEventListener("load", async function () {
         document.getElementById("eventDate").value = new Date().toISOString().split("T")[0];
-
-        // Load email configuration
-        loadEmailConfig();
 
         await initializeFirebase();
         
@@ -3285,6 +3375,11 @@ END:VCALENDAR`;
 
       window.addEventListener('beforeunload', () => {
         unsubscribeListeners.forEach(unsubscribe => unsubscribe());
+        
+        // Close 4K display window if open
+        if (display4KWindow && !display4KWindow.closed) {
+          display4KWindow.close();
+        }
       });
     </script>
   </body>
