@@ -973,24 +973,99 @@
         var availableSlots = totalSlots - bookedSlots;
         var occupancyRate = totalSlots > 0 ? Math.round((bookedSlots / totalSlots) * 100) : 0;
 
-        var tablesHtml = localData.tables.map(function(table, index) {
-          var slotsHtml = localData.eventConfig.timeSlots.map(function(slot) {
+        // Build HTML as array to avoid quote issues
+        var htmlParts = [];
+        
+        htmlParts.push('<!DOCTYPE html><html lang="nl"><head>');
+        htmlParts.push('<meta charset="UTF-8">');
+        htmlParts.push('<meta name="viewport" content="width=device-width, initial-scale=1.0">');
+        htmlParts.push('<title>4K Live Display</title>');
+        htmlParts.push('<style>');
+        htmlParts.push('* { margin: 0; padding: 0; box-sizing: border-box; }');
+        htmlParts.push('body { width: 100vw; height: 100vh; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); font-family: Arial, sans-serif; color: white; overflow: hidden; display: flex; flex-direction: column; }');
+        htmlParts.push('.display-header { text-align: center; padding: 20px; border-bottom: 3px solid rgba(255, 255, 255, 0.3); }');
+        htmlParts.push('.display-title { font-size: 3rem; font-weight: bold; margin-bottom: 10px; }');
+        htmlParts.push('.display-subtitle { font-size: 1.5rem; margin-bottom: 5px; opacity: 0.9; }');
+        htmlParts.push('.display-tables-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; padding: 20px; flex: 1; overflow-y: auto; }');
+        htmlParts.push('.display-table { background: rgba(255, 255, 255, 0.95); border-radius: 12px; overflow: hidden; color: #333; }');
+        htmlParts.push('.display-table-header { background: #2c3e50; padding: 15px; color: white; text-align: center; }');
+        htmlParts.push('.display-table-name { font-size: 1.2rem; font-weight: bold; margin-bottom: 5px; }');
+        htmlParts.push('.display-table-speakers { font-size: 1rem; }');
+        htmlParts.push('.display-slots { padding: 10px; }');
+        htmlParts.push('.display-slot { display: flex; justify-content: space-between; padding: 8px; margin-bottom: 5px; border-radius: 4px; }');
+        htmlParts.push('.display-slot.available { background: #d4edda; border-left: 4px solid #28a745; }');
+        htmlParts.push('.display-slot.booked { background: #fff3cd; border-left: 4px solid #ffc107; }');
+        htmlParts.push('.display-time { font-weight: bold; }');
+        htmlParts.push('.display-booking-info { flex: 1; text-align: center; font-weight: bold; }');
+        htmlParts.push('.display-booking-info.booked { color: #856404; }');
+        htmlParts.push('.display-booking-info.available { color: #155724; }');
+        htmlParts.push('.display-footer { display: flex; justify-content: space-between; background: rgba(255, 255, 255, 0.1); padding: 15px; }');
+        htmlParts.push('.display-stats { display: flex; gap: 30px; }');
+        htmlParts.push('.display-stat { text-align: center; }');
+        htmlParts.push('.display-stat-number { font-size: 1.5rem; font-weight: bold; display: block; }');
+        htmlParts.push('</style></head><body>');
+        
+        htmlParts.push('<div class="display-header">');
+        htmlParts.push('<div class="display-title">Gesprekstafel Schema</div>');
+        htmlParts.push('<div class="display-subtitle">' + eventDate + '</div>');
+        htmlParts.push('<div class="display-subtitle">' + localData.eventConfig.startTime + ' - ' + localData.eventConfig.endTime + '</div>');
+        htmlParts.push('</div>');
+        
+        htmlParts.push('<div class="display-tables-grid">');
+        
+        for (var i = 0; i < localData.tables.length; i++) {
+          var table = localData.tables[i];
+          htmlParts.push('<div class="display-table">');
+          htmlParts.push('<div class="display-table-header">');
+          htmlParts.push('<div class="display-table-name">Tafel ' + (i + 1) + ': ' + table.name + '</div>');
+          htmlParts.push('<div class="display-table-speakers">met ' + table.speaker1 + ' & ' + table.speaker2 + '</div>');
+          htmlParts.push('</div>');
+          htmlParts.push('<div class="display-slots">');
+          
+          for (var j = 0; j < localData.eventConfig.timeSlots.length; j++) {
+            var slot = localData.eventConfig.timeSlots[j];
             var bookingKey = table.id + '-' + slot.index;
             var booking = localData.bookings[bookingKey];
             
             if (booking) {
-              return '<div class="display-slot booked"><div class="display-time">' + slot.start + ' - ' + slot.end + '</div><div class="display-booking-info booked">' + booking.name + ' (' + booking.artistName + ')</div></div>';
+              htmlParts.push('<div class="display-slot booked">');
+              htmlParts.push('<div class="display-time">' + slot.start + ' - ' + slot.end + '</div>');
+              htmlParts.push('<div class="display-booking-info booked">' + booking.name + '</div>');
+              htmlParts.push('</div>');
             } else {
-              return '<div class="display-slot available"><div class="display-time">' + slot.start + ' - ' + slot.end + '</div><div class="display-booking-info available">Beschikbaar</div></div>';
+              htmlParts.push('<div class="display-slot available">');
+              htmlParts.push('<div class="display-time">' + slot.start + ' - ' + slot.end + '</div>');
+              htmlParts.push('<div class="display-booking-info available">Beschikbaar</div>');
+              htmlParts.push('</div>');
             }
-          }).join('');
+          }
+          
+          htmlParts.push('</div></div>');
+        }
+        
+        htmlParts.push('</div>');
+        
+        htmlParts.push('<div class="display-footer">');
+        htmlParts.push('<div class="display-stats">');
+        htmlParts.push('<div class="display-stat"><span class="display-stat-number">' + localData.tables.length + '</span><span>Tafels</span></div>');
+        htmlParts.push('<div class="display-stat"><span class="display-stat-number">' + bookedSlots + '</span><span>Geboekt</span></div>');
+        htmlParts.push('<div class="display-stat"><span class="display-stat-number">' + availableSlots + '</span><span>Beschikbaar</span></div>');
+        htmlParts.push('<div class="display-stat"><span class="display-stat-number">' + occupancyRate + '%</span><span>Bezetting</span></div>');
+        htmlParts.push('</div>');
+        htmlParts.push('<div>Laatst bijgewerkt: ' + new Date().toLocaleString() + '</div>');
+        htmlParts.push('</div>');
+        
+        htmlParts.push('<script>');
+        htmlParts.push('setInterval(function() {');
+        htmlParts.push('  if (window.opener && !window.opener.closed) {');
+        htmlParts.push('    location.reload();');
+        htmlParts.push('  } else {');
+        htmlParts.push('    window.close();');
+        htmlParts.push('  }');
+        htmlParts.push('}, 5000);');
+        htmlParts.push('</script></body></html>');
 
-          return '<div class="display-table"><div class="display-table-header"><div class="display-table-name">Tafel ' + (index + 1) + ': ' + table.name + '</div><div class="display-table-speakers">met ' + table.speaker1 + ' & ' + table.speaker2 + '</div></div><div class="display-slots">' + slotsHtml + '</div></div>';
-        }).join('');
-
-        var htmlContent = '<!DOCTYPE html><html lang="nl"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>4K Live Display - Gesprekstafel Schema</title><style>* { margin: 0; padding: 0; box-sizing: border-box; } body { width: 100vw; height: 100vh; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; color: white; overflow: hidden; display: flex; flex-direction: column; } .display-header { text-align: center; padding: 20px; border-bottom: 3px solid rgba(255, 255, 255, 0.3); } .display-title { font-size: 3.5rem; font-weight: bold; margin-bottom: 10px; text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3); } .display-subtitle { font-size: 1.5rem; margin-bottom: 5px; opacity: 0.9; } .display-tables-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 20px; padding: 20px; flex: 1; overflow-y: auto; } .display-table { background: rgba(255, 255, 255, 0.95); border-radius: 12px; overflow: hidden; box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2); color: #333; } .display-table-header { background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%); padding: 15px; color: white; text-align: center; } .display-table-name { font-size: 1.3rem; font-weight: bold; margin-bottom: 5px; } .display-table-speakers { font-size: 1rem; opacity: 0.9; } .display-slots { padding: 10px; max-height: 400px; overflow-y: auto; } .display-slot { display: flex; justify-content: space-between; align-items: center; padding: 8px 12px; margin-bottom: 5px; border-radius: 6px; font-size: 0.95rem; min-height: 40px; } .display-slot.available { background: #d4edda; border-left: 4px solid #28a745; } .display-slot.booked { background: #fff3cd; border-left: 4px solid #ffc107; } .display-time { font-weight: bold; font-size: 1rem; min-width: 100px; } .display-booking-info { flex: 1; text-align: center; font-weight: bold; font-size: 0.9rem; } .display-booking-info.booked { color: #856404; } .display-booking-info.available { color: #155724; font-style: italic; } .display-footer { display: flex; justify-content: space-between; align-items: center; background: rgba(255, 255, 255, 0.1); padding: 15px 20px; backdrop-filter: blur(10px); border-top: 1px solid rgba(255, 255, 255, 0.2); } .display-stats { display: flex; gap: 30px; font-size: 1.1rem; } .display-stat { text-align: center; } .display-stat-number { font-size: 1.8rem; font-weight: bold; display: block; } .display-generated { font-size: 0.9rem; opacity: 0.8; } .auto-refresh-indicator { position: fixed; top: 10px; right: 10px; background: rgba(0, 0, 0, 0.5); padding: 5px 10px; border-radius: 15px; font-size: 0.8rem; z-index: 1000; } .refresh-dot { display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: #28a745; margin-right: 5px; animation: pulse 2s infinite; } @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.5; } 100% { opacity: 1; } }</style></head><body><div class="auto-refresh-indicator"><span class="refresh-dot"></span>Live Updates</div><div class="display-header"><div class="display-title">Gesprekstafel Schema</div><div class="display-subtitle">' + eventDate + '</div><div class="display-subtitle">' + localData.eventConfig.startTime + ' - ' + localData.eventConfig.endTime + '</div></div><div class="display-tables-grid">' + tablesHtml + '</div><div class="display-footer"><div class="display-stats"><div class="display-stat"><span class="display-stat-number">' + localData.tables.length + '</span><span>Tafels</span></div><div class="display-stat"><span class="display-stat-number">' + bookedSlots + '</span><span>Geboekt</span></div><div class="display-stat"><span class="display-stat-number">' + availableSlots + '</span><span>Beschikbaar</span></div><div class="display-stat"><span class="display-stat-number">' + occupancyRate + '%</span><span>Bezetting</span></div></div><div class="display-generated">Laatst bijgewerkt: ' + new Date().toLocaleString() + '</div></div><script>function updateDisplayContent() { if (window.opener && !window.opener.closed) { try { location.reload(); } catch (error) { console.error("Error updating display:", error); } } else { window.close(); } } setInterval(updateDisplayContent, 5000); window.addEventListener("beforeunload", function() { if (window.opener && !window.opener.closed) { try { window.opener.display4KWindow = null; } catch (error) {} } });</script></body></html>';
-
-        return htmlContent;
+        return htmlParts.join('');
       }
 
       function setup4KDisplayListeners() {
