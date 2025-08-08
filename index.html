@@ -598,7 +598,7 @@
         <div class="firebase-config-section">
           <h3>📺 Live 4K Display</h3>
           <p style="margin-bottom: 15px; font-size: 0.9rem; color: #155724;">
-            Open een real-time 4K display scherm voor TV monitors of grote schermen. Het scherm werkt automatisch bij wanneer boekingen wijzigen.
+            Open een real-time 4K display scherm voor TV monitors of grote schermen.
           </p>
           <div class="config-actions">
             <button onclick="open4KDisplay()" class="btn-success" style="padding: 12px 20px; font-size: 1rem;">🖥️ Open 4K Live Display</button>
@@ -688,8 +688,6 @@
             <h2>Exporteren & Rapporten</h2>
             <button class="btn-success" onclick="exportToCSV()">Exporteren naar CSV</button>
             <button class="btn-success" onclick="exportToExcel()" style="margin-left: 10px">Exporteren naar Excel</button>
-            <button class="btn-success" onclick="exportToJPG()" style="margin-left: 10px">Exporteren naar JPG (Printbaar)</button>
-            <button class="btn-success" onclick="exportTo4KSignage()" style="margin-left: 10px">Exporteren naar 4K Signage (TV)</button>
             <div id="exportStatus" class="status-message" style="display: none"></div>
           </div>
         </div>
@@ -714,28 +712,6 @@
           <button onclick="closeLoginModal()" class="btn-secondary">Annuleren</button>
         </div>
         <div id="loginError" class="status-message error" style="display: none"></div>
-      </div>
-
-      <!-- PASSWORD CHANGE MODAL -->
-      <div class="modal" id="passwordChangeModal">
-        <h3>Wachtwoord Wijzigen</h3>
-        <div class="form-group">
-          <label for="currentPassword">Huidige Wachtwoord:</label>
-          <input type="password" id="currentPassword" placeholder="Voer huidige wachtwoord in" style="width: 100%; margin-bottom: 15px" required />
-        </div>
-        <div class="form-group">
-          <label for="newPassword">Nieuwe Wachtwoord:</label>
-          <input type="password" id="newPassword" placeholder="Voer nieuw wachtwoord in (min 6 tekens)" style="width: 100%; margin-bottom: 15px" minlength="6" required />
-        </div>
-        <div class="form-group">
-          <label for="confirmPassword">Bevestig Wachtwoord:</label>
-          <input type="password" id="confirmPassword" placeholder="Bevestig nieuw wachtwoord" style="width: 100%; margin-bottom: 15px" minlength="6" required />
-        </div>
-        <div style="text-align: center">
-          <button onclick="updatePassword()" style="margin-right: 10px">Wachtwoord Bijwerken</button>
-          <button onclick="closePasswordChangeModal()" class="btn-secondary">Annuleren</button>
-        </div>
-        <div id="passwordChangeStatus" class="status-message" style="display: none"></div>
       </div>
 
       <!-- BOOKING FORM -->
@@ -773,7 +749,6 @@
         <div class="booking-actions">
           <button onclick="addToCalendar()">Toevoegen aan Kalender</button>
         </div>
-        <div id="emailPreview" class="email-preview hidden"></div>
       </div>
     </div>
 
@@ -784,12 +759,8 @@
     
     <!-- EmailJS SDK -->
     <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
-    
-    <!-- html2canvas SDK -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 
     <script>
-      // Global variables
       var db = null;
       var auth = null;
       var isFirebaseInitialized = false;
@@ -801,15 +772,13 @@
       var currentBookingSelection = null;
       var isAdminMode = false;
 
-      // Configuration
       var DEFAULT_FIREBASE_CONFIG = {
         apiKey: "AIzaSyDTG9ciegpaJBvy4LZt9s9TdemnNAyz1EQ",
         authDomain: "ostend-is-music.firebaseapp.com",
         projectId: "ostend-is-music",
         storageBucket: "ostend-is-music.firebasestorage.app",
         messagingSenderId: "481655541764",
-        appId: "1:481655541764:web:60b142aafa966c24466551",
-        measurementId: "G-PH6EPPW3BY"
+        appId: "1:481655541764:web:60b142aafa966c24466551"
       };
 
       var EMAILJS_CONFIG = {
@@ -833,7 +802,6 @@
 
       var MAX_BOOKINGS_PER_EMAIL = 3;
 
-      // Helper functions
       function countBookingsByEmail(email) {
         var normalizedEmail = email.toLowerCase().trim();
         return Object.values(localData.bookings).filter(function(booking) {
@@ -868,32 +836,20 @@
         var currentBookingCount = countBookingsByEmail(email);
         var remainingBookings = MAX_BOOKINGS_PER_EMAIL - currentBookingCount;
 
+        var confirmBtn = document.getElementById('confirmBookingBtn');
+        
         if (remainingBookings <= 0) {
-          var existingBookings = getBookingsByEmail(email);
-          var bookingDetails = existingBookings.map(function(booking) {
-            return booking.tableName + " (" + booking.timeSlot + ")";
-          }).join(', ');
-          
-          statusElement.textContent = "Maximum boekingen bereikt (" + MAX_BOOKINGS_PER_EMAIL + "/" + MAX_BOOKINGS_PER_EMAIL + "). Huidige: " + bookingDetails;
+          statusElement.textContent = "Maximum boekingen bereikt";
           statusElement.className = "status-message error";
           statusElement.style.display = "block";
-          
-          var confirmBtn = document.getElementById('confirmBookingBtn');
           if (confirmBtn) {
             confirmBtn.disabled = true;
             confirmBtn.textContent = 'Maximum Boekingen Bereikt';
           }
         } else if (currentBookingCount > 0) {
-          var existingBookings = getBookingsByEmail(email);
-          var bookingDetails = existingBookings.map(function(booking) {
-            return booking.tableName + " (" + booking.timeSlot + ")";
-          }).join(', ');
-          
-          statusElement.textContent = currentBookingCount + "/" + MAX_BOOKINGS_PER_EMAIL + " boekingen gebruikt. " + remainingBookings + " resterend. Huidige: " + bookingDetails;
+          statusElement.textContent = currentBookingCount + "/" + MAX_BOOKINGS_PER_EMAIL + " boekingen gebruikt";
           statusElement.className = "status-message warning";
           statusElement.style.display = "block";
-          
-          var confirmBtn = document.getElementById('confirmBookingBtn');
           if (confirmBtn) {
             confirmBtn.disabled = false;
             confirmBtn.textContent = 'Boeking Bevestigen';
@@ -902,8 +858,6 @@
           statusElement.textContent = remainingBookings + "/" + MAX_BOOKINGS_PER_EMAIL + " boekingen beschikbaar";
           statusElement.className = "status-message success";
           statusElement.style.display = "block";
-          
-          var confirmBtn = document.getElementById('confirmBookingBtn');
           if (confirmBtn) {
             confirmBtn.disabled = false;
             confirmBtn.textContent = 'Boeking Bevestigen';
@@ -911,7 +865,6 @@
         }
       }
 
-      // 4K Display Functions
       function open4KDisplay() {
         if (display4KWindow && !display4KWindow.closed) {
           display4KWindow.focus();
@@ -920,107 +873,64 @@
         }
 
         try {
-          display4KWindow = window.open(
-            '', 
-            '4KDisplay',
-            'width=1920,height=1080,scrollbars=no,resizable=yes,status=no,toolbar=no,menubar=no'
-          );
-
+          display4KWindow = window.open('', '4KDisplay', 'width=1920,height=1080,scrollbars=no,resizable=yes');
+          
           if (!display4KWindow) {
-            throw new Error('Popup werd geblokkeerd door browser');
+            throw new Error('Popup werd geblokkeerd');
           }
 
-          var displayContent = create4KDisplayContent();
-          
+          var html = buildDisplayHTML();
           display4KWindow.document.open();
-          display4KWindow.document.write(displayContent);
+          display4KWindow.document.write(html);
           display4KWindow.document.close();
           
-          setup4KDisplayListeners();
-          
-          showDisplayStatus("4K Display succesvol geopend", "success");
+          setupDisplayRefresh();
+          showDisplayStatus("4K Display geopend", "success");
           
         } catch (error) {
-          console.error('4K Display openen mislukt:', error);
-          showDisplayStatus("Fout bij openen 4K Display: " + error.message, "error");
+          showDisplayStatus("Fout: " + error.message, "error");
         }
       }
 
-      function close4KDisplay() {
-        if (display4KWindow && !display4KWindow.closed) {
-          display4KWindow.close();
-          display4KWindow = null;
-          showDisplayStatus("4K Display gesloten", "success");
-        } else {
-          showDisplayStatus("Geen 4K Display om te sluiten", "warning");
-        }
-      }
-
-      function create4KDisplayContent() {
-        var eventDate = "Niet geconfigureerd";
+      function buildDisplayHTML() {
+        var parts = [];
+        parts.push('<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Live Display</title>');
+        parts.push('<style>');
+        parts.push('body{margin:0;padding:20px;background:linear-gradient(45deg,#667eea,#764ba2);color:white;font-family:Arial,sans-serif;}');
+        parts.push('.header{text-align:center;margin-bottom:30px;}');
+        parts.push('.title{font-size:2.5rem;margin-bottom:10px;}');
+        parts.push('.subtitle{font-size:1.2rem;margin-bottom:5px;}');
+        parts.push('.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:20px;}');
+        parts.push('.table{background:rgba(255,255,255,0.9);color:#333;border-radius:10px;padding:15px;}');
+        parts.push('.table-header{background:#2c3e50;color:white;padding:10px;border-radius:5px;text-align:center;margin-bottom:10px;}');
+        parts.push('.table-name{font-weight:bold;font-size:1.1rem;}');
+        parts.push('.slot{display:flex;justify-content:space-between;padding:8px;margin:5px 0;border-radius:5px;}');
+        parts.push('.slot.available{background:#d4edda;border-left:4px solid #28a745;}');
+        parts.push('.slot.booked{background:#fff3cd;border-left:4px solid #ffc107;}');
+        parts.push('.time{font-weight:bold;}');
+        parts.push('.info{font-weight:bold;}');
+        parts.push('.footer{text-align:center;margin-top:30px;font-size:0.9rem;}');
+        parts.push('</style></head><body>');
+        
+        parts.push('<div class="header">');
+        parts.push('<div class="title">Gesprekstafel Schema</div>');
+        
         if (localData.eventConfig.date) {
-          eventDate = new Date(localData.eventConfig.date).toLocaleDateString("nl-NL", {
-            weekday: "long",
-            year: "numeric",
-            month: "long",
-            day: "numeric"
-          });
+          var eventDate = new Date(localData.eventConfig.date).toLocaleDateString("nl-NL");
+          parts.push('<div class="subtitle">' + eventDate + '</div>');
+          parts.push('<div class="subtitle">' + localData.eventConfig.startTime + ' - ' + localData.eventConfig.endTime + '</div>');
         }
-
-        var bookingsList = Object.values(localData.bookings);
-        var totalSlots = localData.tables.length * localData.eventConfig.timeSlots.length;
-        var bookedSlots = bookingsList.length;
-        var availableSlots = totalSlots - bookedSlots;
-        var occupancyRate = totalSlots > 0 ? Math.round((bookedSlots / totalSlots) * 100) : 0;
-
-        // Build HTML as array to avoid quote issues
-        var htmlParts = [];
         
-        htmlParts.push('<!DOCTYPE html><html lang="nl"><head>');
-        htmlParts.push('<meta charset="UTF-8">');
-        htmlParts.push('<meta name="viewport" content="width=device-width, initial-scale=1.0">');
-        htmlParts.push('<title>4K Live Display</title>');
-        htmlParts.push('<style>');
-        htmlParts.push('* { margin: 0; padding: 0; box-sizing: border-box; }');
-        htmlParts.push('body { width: 100vw; height: 100vh; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); font-family: Arial, sans-serif; color: white; overflow: hidden; display: flex; flex-direction: column; }');
-        htmlParts.push('.display-header { text-align: center; padding: 20px; border-bottom: 3px solid rgba(255, 255, 255, 0.3); }');
-        htmlParts.push('.display-title { font-size: 3rem; font-weight: bold; margin-bottom: 10px; }');
-        htmlParts.push('.display-subtitle { font-size: 1.5rem; margin-bottom: 5px; opacity: 0.9; }');
-        htmlParts.push('.display-tables-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; padding: 20px; flex: 1; overflow-y: auto; }');
-        htmlParts.push('.display-table { background: rgba(255, 255, 255, 0.95); border-radius: 12px; overflow: hidden; color: #333; }');
-        htmlParts.push('.display-table-header { background: #2c3e50; padding: 15px; color: white; text-align: center; }');
-        htmlParts.push('.display-table-name { font-size: 1.2rem; font-weight: bold; margin-bottom: 5px; }');
-        htmlParts.push('.display-table-speakers { font-size: 1rem; }');
-        htmlParts.push('.display-slots { padding: 10px; }');
-        htmlParts.push('.display-slot { display: flex; justify-content: space-between; padding: 8px; margin-bottom: 5px; border-radius: 4px; }');
-        htmlParts.push('.display-slot.available { background: #d4edda; border-left: 4px solid #28a745; }');
-        htmlParts.push('.display-slot.booked { background: #fff3cd; border-left: 4px solid #ffc107; }');
-        htmlParts.push('.display-time { font-weight: bold; }');
-        htmlParts.push('.display-booking-info { flex: 1; text-align: center; font-weight: bold; }');
-        htmlParts.push('.display-booking-info.booked { color: #856404; }');
-        htmlParts.push('.display-booking-info.available { color: #155724; }');
-        htmlParts.push('.display-footer { display: flex; justify-content: space-between; background: rgba(255, 255, 255, 0.1); padding: 15px; }');
-        htmlParts.push('.display-stats { display: flex; gap: 30px; }');
-        htmlParts.push('.display-stat { text-align: center; }');
-        htmlParts.push('.display-stat-number { font-size: 1.5rem; font-weight: bold; display: block; }');
-        htmlParts.push('</style></head><body>');
-        
-        htmlParts.push('<div class="display-header">');
-        htmlParts.push('<div class="display-title">Gesprekstafel Schema</div>');
-        htmlParts.push('<div class="display-subtitle">' + eventDate + '</div>');
-        htmlParts.push('<div class="display-subtitle">' + localData.eventConfig.startTime + ' - ' + localData.eventConfig.endTime + '</div>');
-        htmlParts.push('</div>');
-        
-        htmlParts.push('<div class="display-tables-grid">');
+        parts.push('</div>');
+        parts.push('<div class="grid">');
         
         for (var i = 0; i < localData.tables.length; i++) {
           var table = localData.tables[i];
-          htmlParts.push('<div class="display-table">');
-          htmlParts.push('<div class="display-table-header">');
-          htmlParts.push('<div class="display-table-name">Tafel ' + (i + 1) + ': ' + table.name + '</div>');
-          htmlParts.push('<div class="display-table-speakers">met ' + table.speaker1 + ' & ' + table.speaker2 + '</div>');
-          htmlParts.push('</div>');
-          htmlParts.push('<div class="display-slots">');
+          parts.push('<div class="table">');
+          parts.push('<div class="table-header">');
+          parts.push('<div class="table-name">Tafel ' + (i + 1) + ': ' + table.name + '</div>');
+          parts.push('<div>met ' + table.speaker1 + ' & ' + table.speaker2 + '</div>');
+          parts.push('</div>');
           
           for (var j = 0; j < localData.eventConfig.timeSlots.length; j++) {
             var slot = localData.eventConfig.timeSlots[j];
@@ -1028,64 +938,54 @@
             var booking = localData.bookings[bookingKey];
             
             if (booking) {
-              htmlParts.push('<div class="display-slot booked">');
-              htmlParts.push('<div class="display-time">' + slot.start + ' - ' + slot.end + '</div>');
-              htmlParts.push('<div class="display-booking-info booked">' + booking.name + '</div>');
-              htmlParts.push('</div>');
+              parts.push('<div class="slot booked">');
+              parts.push('<div class="time">' + slot.start + ' - ' + slot.end + '</div>');
+              parts.push('<div class="info">' + booking.name + '</div>');
+              parts.push('</div>');
             } else {
-              htmlParts.push('<div class="display-slot available">');
-              htmlParts.push('<div class="display-time">' + slot.start + ' - ' + slot.end + '</div>');
-              htmlParts.push('<div class="display-booking-info available">Beschikbaar</div>');
-              htmlParts.push('</div>');
+              parts.push('<div class="slot available">');
+              parts.push('<div class="time">' + slot.start + ' - ' + slot.end + '</div>');
+              parts.push('<div class="info">Beschikbaar</div>');
+              parts.push('</div>');
             }
           }
           
-          htmlParts.push('</div></div>');
+          parts.push('</div>');
         }
         
-        htmlParts.push('</div>');
+        parts.push('</div>');
+        parts.push('<div class="footer">Laatst bijgewerkt: ' + new Date().toLocaleString() + '</div>');
+        parts.push('<script>setInterval(function(){if(window.opener && !window.opener.closed){location.reload();}else{window.close();}},5000);</script>');
+        parts.push('</body></html>');
         
-        htmlParts.push('<div class="display-footer">');
-        htmlParts.push('<div class="display-stats">');
-        htmlParts.push('<div class="display-stat"><span class="display-stat-number">' + localData.tables.length + '</span><span>Tafels</span></div>');
-        htmlParts.push('<div class="display-stat"><span class="display-stat-number">' + bookedSlots + '</span><span>Geboekt</span></div>');
-        htmlParts.push('<div class="display-stat"><span class="display-stat-number">' + availableSlots + '</span><span>Beschikbaar</span></div>');
-        htmlParts.push('<div class="display-stat"><span class="display-stat-number">' + occupancyRate + '%</span><span>Bezetting</span></div>');
-        htmlParts.push('</div>');
-        htmlParts.push('<div>Laatst bijgewerkt: ' + new Date().toLocaleString() + '</div>');
-        htmlParts.push('</div>');
-        
-        htmlParts.push('<script>');
-        htmlParts.push('setInterval(function() {');
-        htmlParts.push('  if (window.opener && !window.opener.closed) {');
-        htmlParts.push('    location.reload();');
-        htmlParts.push('  } else {');
-        htmlParts.push('    window.close();');
-        htmlParts.push('  }');
-        htmlParts.push('}, 5000);');
-        htmlParts.push('</script></body></html>');
-
-        return htmlParts.join('');
+        return parts.join('');
       }
 
-      function setup4KDisplayListeners() {
-        if (!display4KWindow || display4KWindow.closed) return;
+      function setupDisplayRefresh() {
+        if (!display4KWindow) return;
         
-        var displayUpdateInterval = setInterval(function() {
+        setInterval(function() {
           if (display4KWindow && !display4KWindow.closed) {
             try {
-              var newContent = create4KDisplayContent();
+              var newHtml = buildDisplayHTML();
               display4KWindow.document.open();
-              display4KWindow.document.write(newContent);
+              display4KWindow.document.write(newHtml);
               display4KWindow.document.close();
             } catch (error) {
-              console.error('Error updating 4K display:', error);
+              console.log('Display update error:', error);
             }
           } else {
-            clearInterval(displayUpdateInterval);
             display4KWindow = null;
           }
         }, 3000);
+      }
+
+      function close4KDisplay() {
+        if (display4KWindow) {
+          display4KWindow.close();
+          display4KWindow = null;
+          showDisplayStatus("Display gesloten", "success");
+        }
       }
 
       function showDisplayStatus(message, type) {
@@ -1093,13 +993,11 @@
         element.textContent = message;
         element.className = 'status-message ' + type;
         element.style.display = 'block';
-
         setTimeout(function() {
           element.style.display = 'none';
-        }, 5000);
+        }, 3000);
       }
 
-      // Firebase initialization
       function initializeFirebase() {
         try {
           updateConnectionStatus('connecting');
@@ -1122,20 +1020,15 @@
             isFirebaseInitialized = true;
             isOnline = true;
             updateConnectionStatus('connected');
-            
             setupRealtimeListeners();
             loadDataFromFirestore();
-          }).catch(function(error) {
-            console.error('Firebase verbinding mislukt:', error);
-            isFirebaseInitialized = false;
+          }).catch(function() {
             isOnline = false;
             updateConnectionStatus('disconnected');
             loadDataFromLocalStorage();
           });
           
         } catch (error) {
-          console.error('Firebase initialisatie mislukt:', error);
-          isFirebaseInitialized = false;
           isOnline = false;
           updateConnectionStatus('disconnected');
           loadDataFromLocalStorage();
@@ -1144,20 +1037,18 @@
 
       function updateConnectionStatus(status) {
         var statusElement = document.getElementById('connectionStatus');
-        
         switch (status) {
           case 'connected':
             statusElement.className = 'connection-status connected';
             statusElement.innerHTML = '<span class="sync-indicator synced"></span>●';
             break;
           case 'connecting':
-            statusElement.className = 'connection-status disconnected';
+            statusElement.className = 'connection-status disconnected';  
             statusElement.innerHTML = '<span class="sync-indicator syncing"></span>●';
             break;
-          case 'disconnected':
+          default:
             statusElement.className = 'connection-status disconnected';
             statusElement.innerHTML = '<span class="sync-indicator"></span>○';
-            break;
         }
       }
 
@@ -1165,7 +1056,7 @@
         if (!db) return;
 
         var eventConfigRef = db.collection('system').doc('eventConfig');
-        var unsubscribeEventConfig = eventConfigRef.onSnapshot(function(doc) {
+        var unsubEventConfig = eventConfigRef.onSnapshot(function(doc) {
           if (doc.exists) {
             localData.eventConfig = doc.data();
             updateEventUI();
@@ -1174,32 +1065,18 @@
         });
 
         var tablesRef = db.collection('tables');
-        var unsubscribeTables = tablesRef.onSnapshot(function(snapshot) {
-          snapshot.docChanges().forEach(function(change) {
-            var tableData = Object.assign({ id: change.doc.id }, change.doc.data());
-            
-            if (change.type === 'added') {
-              var existingIndex = localData.tables.findIndex(function(t) { return t.id === tableData.id; });
-              if (existingIndex === -1) {
-                localData.tables.push(tableData);
-              }
-            } else if (change.type === 'removed') {
-              localData.tables = localData.tables.filter(function(t) { return t.id !== tableData.id; });
-            } else if (change.type === 'modified') {
-              var index = localData.tables.findIndex(function(t) { return t.id === tableData.id; });
-              if (index !== -1) {
-                localData.tables[index] = tableData;
-              }
-            }
+        var unsubTables = tablesRef.onSnapshot(function(snapshot) {
+          localData.tables = [];
+          snapshot.forEach(function(doc) {
+            localData.tables.push(Object.assign({id: doc.id}, doc.data()));
           });
-          
           localData.tables.sort(function(a, b) { return (a.order || 0) - (b.order || 0); });
           renderTables();
           renderClientInterface();
         });
 
         var bookingsRef = db.collection('bookings');
-        var unsubscribeBookings = bookingsRef.onSnapshot(function(snapshot) {
+        var unsubBookings = bookingsRef.onSnapshot(function(snapshot) {
           localData.bookings = {};
           snapshot.forEach(function(doc) {
             localData.bookings[doc.id] = doc.data();
@@ -1208,10 +1085,9 @@
           renderClientInterface();
         });
 
-        unsubscribeListeners = [unsubscribeEventConfig, unsubscribeTables, unsubscribeBookings];
+        unsubscribeListeners = [unsubEventConfig, unsubTables, unsubBookings];
       }
 
-      // Authentication functions
       function showLoginModal() {
         document.getElementById("overlay").style.display = "block";
         document.getElementById("loginModal").style.display = "block";
@@ -1245,7 +1121,6 @@
           closeLoginModal();
           switchToAdmin();
         }).catch(function(error) {
-          console.error('Inloggen mislukt:', error);
           var errorMessage = "Inloggen mislukt";
           switch (error.code) {
             case 'auth/user-not-found':
@@ -1253,9 +1128,6 @@
               break;
             case 'auth/wrong-password':
               errorMessage = "Onjuist wachtwoord";
-              break;
-            case 'auth/invalid-email':
-              errorMessage = "Ongeldig e-mailadres";
               break;
             default:
               errorMessage = error.message;
@@ -1272,21 +1144,11 @@
 
       function logout() {
         if (auth && currentUser) {
-          auth.signOut().then(function() {
-            currentUser = null;
-            isAdminMode = false;
-            switchToClient();
-          }).catch(function(error) {
-            console.error('Uitloggen mislukt:', error);
-            currentUser = null;
-            isAdminMode = false;
-            switchToClient();
-          });
-        } else {
-          currentUser = null;
-          isAdminMode = false;
-          switchToClient();
+          auth.signOut();
         }
+        currentUser = null;
+        isAdminMode = false;
+        switchToClient();
       }
 
       function createAdminUser() {
@@ -1298,107 +1160,17 @@
           return;
         }
 
-        if (password.length < 6) {
-          showUserManagementStatus("Wachtwoord moet minimaal 6 tekens bevatten", "error");
-          return;
-        }
-
         if (!auth) {
           showUserManagementStatus("Authenticatie niet beschikbaar", "error");
           return;
         }
 
-        auth.createUserWithEmailAndPassword(email, password).then(function(userCredential) {
-          return userCredential.user.sendEmailVerification();
-        }).then(function() {
-          showUserManagementStatus("Admin gebruiker succesvol aangemaakt", "success");
+        auth.createUserWithEmailAndPassword(email, password).then(function() {
+          showUserManagementStatus("Admin gebruiker aangemaakt", "success");
           document.getElementById("newUserEmail").value = "";
           document.getElementById("newUserPassword").value = "";
         }).catch(function(error) {
-          console.error('Gebruiker aanmaken mislukt:', error);
-          var errorMessage = "Gebruiker aanmaken mislukt";
-          switch (error.code) {
-            case 'auth/email-already-in-use':
-              errorMessage = "Account bestaat al";
-              break;
-            case 'auth/invalid-email':
-              errorMessage = "Ongeldig e-mailadres";
-              break;
-            case 'auth/weak-password':
-              errorMessage = "Wachtwoord is te zwak";
-              break;
-            default:
-              errorMessage = error.message;
-          }
-          showUserManagementStatus(errorMessage, "error");
-        });
-      }
-
-      function changePassword() {
-        document.getElementById("overlay").style.display = "block";
-        document.getElementById("passwordChangeModal").style.display = "block";
-        document.getElementById("currentPassword").value = "";
-        document.getElementById("newPassword").value = "";
-        document.getElementById("confirmPassword").value = "";
-        document.getElementById("passwordChangeStatus").style.display = "none";
-      }
-
-      function closePasswordChangeModal() {
-        document.getElementById("overlay").style.display = "none";
-        document.getElementById("passwordChangeModal").style.display = "none";
-      }
-
-      function updatePassword() {
-        var currentPassword = document.getElementById("currentPassword").value;
-        var newPassword = document.getElementById("newPassword").value;
-        var confirmPassword = document.getElementById("confirmPassword").value;
-
-        if (!currentPassword || !newPassword || !confirmPassword) {
-          showPasswordChangeStatus("Vul alle velden in", "error");
-          return;
-        }
-
-        if (newPassword !== confirmPassword) {
-          showPasswordChangeStatus("Nieuwe wachtwoorden komen niet overeen", "error");
-          return;
-        }
-
-        if (newPassword.length < 6) {
-          showPasswordChangeStatus("Wachtwoord moet minimaal 6 tekens bevatten", "error");
-          return;
-        }
-
-        if (!auth || !currentUser) {
-          showPasswordChangeStatus("Niet geauthenticeerd", "error");
-          return;
-        }
-
-        var credential = firebase.auth.EmailAuthProvider.credential(currentUser.email, currentPassword);
-        currentUser.reauthenticateWithCredential(credential).then(function() {
-          return currentUser.updatePassword(newPassword);
-        }).then(function() {
-          showPasswordChangeStatus("Wachtwoord succesvol bijgewerkt", "success");
-          document.getElementById("currentPassword").value = "";
-          document.getElementById("newPassword").value = "";
-          document.getElementById("confirmPassword").value = "";
-          
-          setTimeout(function() {
-            closePasswordChangeModal();
-          }, 2000);
-        }).catch(function(error) {
-          console.error('Wachtwoord wijzigen mislukt:', error);
-          var errorMessage = "Wachtwoord wijzigen mislukt";
-          switch (error.code) {
-            case 'auth/wrong-password':
-              errorMessage = "Huidig wachtwoord is onjuist";
-              break;
-            case 'auth/weak-password':
-              errorMessage = "Nieuw wachtwoord is te zwak";
-              break;
-            default:
-              errorMessage = error.message;
-          }
-          showPasswordChangeStatus(errorMessage, "error");
+          showUserManagementStatus("Fout: " + error.message, "error");
         });
       }
 
@@ -1407,98 +1179,44 @@
         element.textContent = message;
         element.className = "status-message " + type;
         element.style.display = "block";
-
-        setTimeout(function() {
-          element.style.display = "none";
-        }, 5000);
+        setTimeout(function() { element.style.display = "none"; }, 3000);
       }
 
-      function showPasswordChangeStatus(message, type) {
-        var element = document.getElementById("passwordChangeStatus");
-        element.textContent = message;
-        element.className = "status-message " + type;
-        element.style.display = "block";
-
-        setTimeout(function() {
-          element.style.display = "none";
-        }, 5000);
-      }
-
-      // Data operations
       function saveEventConfigToFirestore() {
-        if (!db) {
-          saveDataToLocalStorage();
-          return Promise.resolve();
+        if (db) {
+          return db.collection('system').doc('eventConfig').set(localData.eventConfig);
         }
-
-        return db.collection('system').doc('eventConfig').set(localData.eventConfig).catch(function(error) {
-          console.error('Fout bij opslaan event config:', error);
-          saveDataToLocalStorage();
-        });
+        return Promise.resolve();
       }
 
       function saveTableToFirestore(table) {
-        if (!db) {
-          saveDataToLocalStorage();
-          return Promise.resolve(table.id);
+        if (db) {
+          return db.collection('tables').add(table).then(function(docRef) {
+            return docRef.id;
+          });
         }
-
-        return db.collection('tables').add(Object.assign({}, table, {
-          createdAt: firebase.firestore.FieldValue.serverTimestamp()
-        })).then(function(docRef) {
-          return docRef.id;
-        }).catch(function(error) {
-          console.error('Fout bij opslaan tafel:', error);
-          saveDataToLocalStorage();
-          return table.id;
-        });
+        return Promise.resolve(table.id);
       }
 
       function removeTableFromFirestore(tableId) {
-        if (!db) {
-          saveDataToLocalStorage();
-          return Promise.resolve();
+        if (db) {
+          return db.collection('tables').doc(tableId).delete();
         }
-
-        return db.collection('tables').doc(tableId).delete().then(function() {
-          return db.collection('bookings').where('tableId', '==', tableId).get();
-        }).then(function(bookingsSnapshot) {
-          var batch = db.batch();
-          bookingsSnapshot.forEach(function(doc) {
-            batch.delete(doc.ref);
-          });
-          return batch.commit();
-        }).catch(function(error) {
-          console.error('Fout bij verwijderen tafel:', error);
-          saveDataToLocalStorage();
-        });
+        return Promise.resolve();
       }
 
       function saveBookingToFirestore(bookingKey, booking) {
-        if (!db) {
-          saveDataToLocalStorage();
-          return Promise.resolve();
+        if (db) {
+          return db.collection('bookings').doc(bookingKey).set(booking);
         }
-
-        return db.collection('bookings').doc(bookingKey).set(Object.assign({}, booking, {
-          createdAt: firebase.firestore.FieldValue.serverTimestamp()
-        })).catch(function(error) {
-          console.error('Fout bij opslaan boeking:', error);
-          saveDataToLocalStorage();
-          throw error;
-        });
+        return Promise.resolve();
       }
 
       function removeBookingFromFirestore(bookingKey) {
-        if (!db) {
-          saveDataToLocalStorage();
-          return Promise.resolve();
+        if (db) {
+          return db.collection('bookings').doc(bookingKey).delete();
         }
-
-        return db.collection('bookings').doc(bookingKey).delete().catch(function(error) {
-          console.error('Fout bij verwijderen boeking:', error);
-          saveDataToLocalStorage();
-        });
+        return Promise.resolve();
       }
 
       function loadDataFromFirestore() {
@@ -1509,33 +1227,26 @@
           db.collection('tables').get(),
           db.collection('bookings').get()
         ]).then(function(results) {
-          var eventConfigDoc = results[0];
-          var tablesSnapshot = results[1];
-          var bookingsSnapshot = results[2];
+          var eventDoc = results[0];
+          var tablesSnap = results[1];
+          var bookingsSnap = results[2];
 
-          if (eventConfigDoc.exists) {
-            localData.eventConfig = eventConfigDoc.data();
+          if (eventDoc.exists) {
+            localData.eventConfig = eventDoc.data();
           }
 
           localData.tables = [];
-          tablesSnapshot.forEach(function(doc) {
-            var tableData = Object.assign({ id: doc.id }, doc.data());
-            if (typeof tableData.order === 'undefined') {
-              tableData.order = localData.tables.length;
-            }
-            localData.tables.push(tableData);
+          tablesSnap.forEach(function(doc) {
+            localData.tables.push(Object.assign({id: doc.id}, doc.data()));
           });
           localData.tables.sort(function(a, b) { return (a.order || 0) - (b.order || 0); });
 
           localData.bookings = {};
-          bookingsSnapshot.forEach(function(doc) {
+          bookingsSnap.forEach(function(doc) {
             localData.bookings[doc.id] = doc.data();
           });
 
           updateUI();
-        }).catch(function(error) {
-          console.error('Fout bij laden data:', error);
-          loadDataFromLocalStorage();
         });
       }
 
@@ -1570,11 +1281,9 @@
       function switchToAdmin() {
         document.getElementById("client-interface").style.display = "none";
         document.getElementById("admin-interface").style.display = "block";
-        
         if (currentUser) {
           document.getElementById('adminUserEmail').textContent = currentUser.email;
         }
-        
         renderBookingsOverview();
       }
 
@@ -1590,13 +1299,17 @@
         for (var i = 0; i < tabs.length; i++) {
           tabs[i].classList.remove("active");
         }
-        document.querySelector('[onclick="switchTab(\'' + tabName + '\')"]').classList.add("active");
+        
+        var targetTab = document.querySelector('[onclick="switchTab(\'' + tabName + '\')"]');
+        if (targetTab) targetTab.classList.add("active");
 
         var contents = document.querySelectorAll(".tab-content");
         for (var i = 0; i < contents.length; i++) {
           contents[i].classList.remove("active");
         }
-        document.getElementById(tabName + "-tab").classList.add("active");
+        
+        var targetContent = document.getElementById(tabName + "-tab");
+        if (targetContent) targetContent.classList.add("active");
 
         if (tabName === "bookings") {
           renderBookingsOverview();
@@ -1614,11 +1327,6 @@
           return;
         }
 
-        if (startTime >= endTime) {
-          showStatus("eventStatus", "Eindtijd moet na starttijd zijn", "error");
-          return;
-        }
-
         localData.eventConfig.date = date;
         localData.eventConfig.startTime = startTime;
         localData.eventConfig.endTime = endTime;
@@ -1627,7 +1335,6 @@
         var slots = [];
         var start = new Date(date + "T" + startTime);
         var end = new Date(date + "T" + endTime);
-
         var current = new Date(start);
         var slotIndex = 0;
 
@@ -1637,18 +1344,15 @@
             slots.push({
               index: slotIndex++,
               start: current.toTimeString().slice(0, 5),
-              end: slotEnd.toTimeString().slice(0, 5),
-              startTime: current.toISOString(),
-              endTime: slotEnd.toISOString()
+              end: slotEnd.toTimeString().slice(0, 5)
             });
           }
           current = new Date(slotEnd);
         }
 
         localData.eventConfig.timeSlots = slots;
-        saveEventConfigToFirestore().then(function() {
-          showStatus("eventStatus", slots.length + " tijdslots gegenereerd", "success");
-        });
+        saveEventConfigToFirestore();
+        showStatus("eventStatus", slots.length + " tijdslots gegenereerd", "success");
       }
 
       function addTable() {
@@ -1657,12 +1361,7 @@
         var speaker2 = document.getElementById("speaker2").value.trim();
 
         if (!name || !speaker1 || !speaker2) {
-          alert("Vul alle tafel velden in");
-          return;
-        }
-
-        if (localData.tables.length >= 20) {
-          alert("Maximaal 20 tafels toegestaan");
+          alert("Vul alle velden in");
           return;
         }
 
@@ -1676,57 +1375,50 @@
         if (db) {
           saveTableToFirestore(table).then(function(tableId) {
             table.id = tableId;
-            document.getElementById("tableName").value = "";
-            document.getElementById("speaker1").value = "";
-            document.getElementById("speaker2").value = "";
-          }).catch(function(error) {
-            console.error('Tafel toevoegen mislukt:', error);
-            alert('Tafel toevoegen mislukt. Probeer opnieuw.');
+            clearTableForm();
           });
         } else {
           table.id = "table_" + Date.now();
           localData.tables.push(table);
           renderTables();
           saveDataToLocalStorage();
-          
-          document.getElementById("tableName").value = "";
-          document.getElementById("speaker1").value = "";
-          document.getElementById("speaker2").value = "";
+          clearTableForm();
         }
+      }
+
+      function clearTableForm() {
+        document.getElementById("tableName").value = "";
+        document.getElementById("speaker1").value = "";
+        document.getElementById("speaker2").value = "";
       }
 
       function renderTables() {
         var grid = document.getElementById("tablesGrid");
         
         if (localData.tables.length === 0) {
-          grid.innerHTML = '<p style="text-align: center; color: #666; padding: 20px;">Nog geen tafels geconfigureerd.</p>';
+          grid.innerHTML = '<p style="text-align: center; padding: 20px;">Nog geen tafels.</p>';
           return;
         }
         
-        grid.innerHTML = localData.tables.map(function(table, index) {
-          return '<div class="table-card"><h4>Tafel ' + (index + 1) + ': ' + table.name + '</h4><p><strong>Sprekers:</strong> ' + table.speaker1 + ' & ' + table.speaker2 + '</p><button onclick="removeTable(\'' + table.id + '\')" class="btn-danger" style="margin-top: 10px;">Verwijderen</button></div>';
-        }).join("");
+        var html = '';
+        for (var i = 0; i < localData.tables.length; i++) {
+          var table = localData.tables[i];
+          html += '<div class="table-card">';
+          html += '<h4>Tafel ' + (i + 1) + ': ' + table.name + '</h4>';
+          html += '<p><strong>Sprekers:</strong> ' + table.speaker1 + ' & ' + table.speaker2 + '</p>';
+          html += '<button onclick="removeTable(\'' + table.id + '\')" class="btn-danger">Verwijderen</button>';
+          html += '</div>';
+        }
+        grid.innerHTML = html;
       }
 
       function removeTable(tableId) {
         if (confirm("Weet u zeker dat u deze tafel wilt verwijderen?")) {
-          var tableIndex = localData.tables.findIndex(function(t) { return t.id === tableId; });
-          if (tableIndex !== -1) {
-            localData.tables.splice(tableIndex, 1);
-            renderTables();
-          }
-          
-          Object.keys(localData.bookings).forEach(function(key) {
-            if (localData.bookings[key].tableId === tableId) {
-              delete localData.bookings[key];
-            }
-          });
+          localData.tables = localData.tables.filter(function(t) { return t.id !== tableId; });
+          renderTables();
           
           if (db) {
-            removeTableFromFirestore(tableId).catch(function(error) {
-              console.error('Tafel verwijderen mislukt:', error);
-              alert('Tafel verwijderen mislukt.');
-            });
+            removeTableFromFirestore(tableId);
           } else {
             saveDataToLocalStorage();
           }
@@ -1736,33 +1428,49 @@
       function renderClientInterface() {
         var eventInfo = document.getElementById("eventInfo");
         if (localData.eventConfig.date && localData.eventConfig.timeSlots.length > 0) {
-          var eventDate = new Date(localData.eventConfig.date).toLocaleDateString("nl-NL", {
-            weekday: "long",
-            year: "numeric",
-            month: "long",
-            day: "numeric"
-          });
-          eventInfo.innerHTML = "<strong>" + eventDate + "</strong><br>" + localData.eventConfig.startTime + " - " + localData.eventConfig.endTime + " | " + localData.eventConfig.slotDuration + " minuten per sessie<br><small style=\"color: #856404; font-weight: 500;\">📝 Maximaal " + MAX_BOOKINGS_PER_EMAIL + " boekingen per e-mailadres</small>";
+          var eventDate = new Date(localData.eventConfig.date).toLocaleDateString("nl-NL");
+          eventInfo.innerHTML = '<strong>' + eventDate + '</strong><br>' + 
+                               localData.eventConfig.startTime + ' - ' + localData.eventConfig.endTime + 
+                               '<br><small>Max ' + MAX_BOOKINGS_PER_EMAIL + ' boekingen per e-mail</small>';
         } else {
           eventInfo.innerHTML = "Evenement nog niet geconfigureerd";
         }
 
         var container = document.getElementById("clientBookingGrid");
-
-        if (localData.tables.length === 0 || localData.eventConfig.timeSlots.length === 0) {
-          container.innerHTML = "<p>Geen tafels beschikbaar voor boeking op dit moment.</p>";
+        
+        if (localData.tables.length === 0) {
+          container.innerHTML = "<p>Geen tafels beschikbaar.</p>";
           return;
         }
 
-        container.innerHTML = localData.tables.map(function(table, tableIndex) {
-          var slotsHtml = localData.eventConfig.timeSlots.map(function(slot) {
+        var html = '';
+        for (var i = 0; i < localData.tables.length; i++) {
+          var table = localData.tables[i];
+          html += '<div class="client-table-card">';
+          html += '<div class="table-header">';
+          html += '<div class="table-title">Tafel ' + (i + 1) + ': ' + table.name + '</div>';
+          html += '<div class="speakers">met ' + table.speaker1 + ' & ' + table.speaker2 + '</div>';
+          html += '</div>';
+          html += '<div class="time-slots-container">';
+          
+          for (var j = 0; j < localData.eventConfig.timeSlots.length; j++) {
+            var slot = localData.eventConfig.timeSlots[j];
             var bookingKey = table.id + "-" + slot.index;
             var isBooked = localData.bookings[bookingKey];
-            return '<div class="time-slot-item ' + (isBooked ? "booked" : "available") + '"><div class="time-info">' + slot.start + ' - ' + slot.end + '</div><button class="slot-btn ' + (isBooked ? "booked" : "available") + '" ' + (!isBooked ? 'onclick="openBookingForm(\'' + table.id + '\', ' + slot.index + ')"' : "") + ' ' + (isBooked ? "disabled" : "") + '>' + (isBooked ? "Geboekt" : "Boeken") + '</button></div>';
-          }).join("");
+            
+            html += '<div class="time-slot-item ' + (isBooked ? 'booked' : 'available') + '">';
+            html += '<div class="time-info">' + slot.start + ' - ' + slot.end + '</div>';
+            if (isBooked) {
+              html += '<button class="slot-btn booked" disabled>Geboekt</button>';
+            } else {
+              html += '<button class="slot-btn available" onclick="openBookingForm(\'' + table.id + '\', ' + slot.index + ')">Boeken</button>';
+            }
+            html += '</div>';
+          }
           
-          return '<div class="client-table-card"><div class="table-header"><div class="table-title">Tafel ' + (tableIndex + 1) + ': ' + table.name + '</div><div class="speakers">met ' + table.speaker1 + ' & ' + table.speaker2 + '</div></div><div class="time-slots-container">' + slotsHtml + '</div></div>';
-        }).join("");
+          html += '</div></div>';
+        }
+        container.innerHTML = html;
       }
 
       function openBookingForm(tableId, slotIndex) {
@@ -1776,22 +1484,18 @@
 
         currentBookingSelection = { tableId: tableId, slotIndex: slotIndex };
 
-        var eventDate = new Date(localData.eventConfig.date).toLocaleDateString("nl-NL", {
-          weekday: "long",
-          year: "numeric",
-          month: "long",
-          day: "numeric"
-        });
-
-        document.getElementById("selectedSlotInfo").innerHTML = "<strong>" + table.name + "</strong><br>" + eventDate + "<br>" + slot.start + " - " + slot.end + "<br>Sprekers: " + table.speaker1 + " & " + table.speaker2;
+        var eventDate = new Date(localData.eventConfig.date).toLocaleDateString("nl-NL");
+        document.getElementById("selectedSlotInfo").innerHTML = 
+          '<strong>' + table.name + '</strong><br>' +
+          eventDate + '<br>' + 
+          slot.start + ' - ' + slot.end + '<br>' +
+          'Sprekers: ' + table.speaker1 + ' & ' + table.speaker2;
 
         document.getElementById("overlay").style.display = "block";
         document.getElementById("bookingForm").style.display = "block";
         document.getElementById("userName").value = "";
         document.getElementById("userEmail").value = "";
         document.getElementById("userArtistName").value = "";
-        document.getElementById("bookingStatus").style.display = "none";
-        document.getElementById("emailBookingStatus").style.display = "none";
         
         var confirmBtn = document.getElementById('confirmBookingBtn');
         confirmBtn.disabled = false;
@@ -1810,19 +1514,18 @@
         var artistName = document.getElementById("userArtistName").value.trim();
 
         if (!name || !email || !artistName) {
-          showStatus("bookingStatus", "Vul alle verplichte velden in", "error");
+          showStatus("bookingStatus", "Vul alle velden in", "error");
           return;
         }
 
         var emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         if (!emailRegex.test(email)) {
-          showStatus("bookingStatus", "Voer een geldig e-mailadres in", "error");
+          showStatus("bookingStatus", "Ongeldig e-mailadres", "error");
           return;
         }
 
-        var currentBookingCount = countBookingsByEmail(email);
-        if (currentBookingCount >= MAX_BOOKINGS_PER_EMAIL) {
-          showStatus("bookingStatus", "Maximum aantal boekingen bereikt", "error");
+        if (countBookingsByEmail(email) >= MAX_BOOKINGS_PER_EMAIL) {
+          showStatus("bookingStatus", "Maximum boekingen bereikt", "error");
           return;
         }
 
@@ -1836,7 +1539,7 @@
         var bookingKey = tableId + "-" + slotIndex;
 
         if (localData.bookings[bookingKey]) {
-          showStatus("bookingStatus", "Dit tijdslot is al geboekt", "error");
+          showStatus("bookingStatus", "Tijdslot al geboekt", "error");
           return;
         }
 
@@ -1857,62 +1560,47 @@
           timestamp: new Date().toISOString()
         };
 
-        var confirmBtn = document.getElementById('confirmBookingBtn');
-        confirmBtn.disabled = true;
-        confirmBtn.textContent = 'Verwerken...';
-
         showStatus("bookingStatus", "Boeking wordt verwerkt...", "success");
 
         saveBookingToFirestore(bookingKey, booking).then(function() {
           localData.bookings[bookingKey] = booking;
           currentBookingConfirmation = booking;
 
-          var eventDate = new Date(booking.date).toLocaleDateString("nl-NL", {
-            weekday: "long",
-            year: "numeric",
-            month: "long",
-            day: "numeric"
-          });
-
-          var emailParams = {
-            user_name: booking.name,
-            user_email: booking.email,
-            artist_name: booking.artistName,
-            table_name: booking.tableName,
-            speakers: booking.speaker1 + " & " + booking.speaker2,
-            event_date: eventDate,
-            time_slot: booking.timeSlot,
-            to_email: booking.email,
-            from_name: EMAILJS_CONFIG.fromName
-          };
-
           if (typeof emailjs !== 'undefined') {
-            emailjs.send(EMAILJS_CONFIG.serviceId, EMAILJS_CONFIG.templateId, emailParams, EMAILJS_CONFIG.publicKey).catch(function(emailError) {
-              console.log("E-mail verzenden mislukt:", emailError);
-            });
+            var emailParams = {
+              user_name: booking.name,
+              user_email: booking.email,
+              artist_name: booking.artistName,
+              table_name: booking.tableName,
+              speakers: booking.speaker1 + ' & ' + booking.speaker2,
+              event_date: new Date(booking.date).toLocaleDateString("nl-NL"),
+              time_slot: booking.timeSlot,
+              to_email: booking.email
+            };
+
+            emailjs.send(EMAILJS_CONFIG.serviceId, EMAILJS_CONFIG.templateId, emailParams, EMAILJS_CONFIG.publicKey);
           }
 
           closeBookingForm();
           showConfirmationModal();
-        }).catch(function(error) {
-          console.error('Boeking mislukt:', error);
-          showStatus("bookingStatus", "Boeking mislukt. Probeer opnieuw.", "error");
-        }).finally(function() {
-          confirmBtn.disabled = false;
-          confirmBtn.textContent = 'Boeking Bevestigen';
         });
       }
 
       function showConfirmationModal() {
         var booking = currentBookingConfirmation;
-        var eventDate = new Date(booking.date).toLocaleDateString("nl-NL", {
-          weekday: "long",
-          year: "numeric",
-          month: "long",
-          day: "numeric"
-        });
+        var eventDate = new Date(booking.date).toLocaleDateString("nl-NL");
 
-        document.getElementById("confirmationDetails").innerHTML = '<div class="confirmation-details"><strong>Boekingsdetails:</strong><br><strong>Naam:</strong> ' + booking.name + '<br><strong>E-mail:</strong> ' + booking.email + '<br><strong>Artiest/Band:</strong> ' + booking.artistName + '<br><strong>Tafel:</strong> ' + booking.tableName + '<br><strong>Sprekers:</strong> ' + booking.speaker1 + ' & ' + booking.speaker2 + '<br><strong>Datum:</strong> ' + eventDate + '<br><strong>Tijd:</strong> ' + booking.timeSlot + '</div>';
+        document.getElementById("confirmationDetails").innerHTML = 
+          '<div class="confirmation-details">' +
+          '<strong>Boekingsdetails:</strong><br>' +
+          '<strong>Naam:</strong> ' + booking.name + '<br>' +
+          '<strong>E-mail:</strong> ' + booking.email + '<br>' +
+          '<strong>Artiest/Band:</strong> ' + booking.artistName + '<br>' +
+          '<strong>Tafel:</strong> ' + booking.tableName + '<br>' +
+          '<strong>Sprekers:</strong> ' + booking.speaker1 + ' & ' + booking.speaker2 + '<br>' +
+          '<strong>Datum:</strong> ' + eventDate + '<br>' +
+          '<strong>Tijd:</strong> ' + booking.timeSlot +
+          '</div>';
 
         document.getElementById("overlay").style.display = "block";
         document.getElementById("confirmationModal").style.display = "block";
@@ -1921,14 +1609,14 @@
       function closeConfirmationModal() {
         document.getElementById("overlay").style.display = "none";
         document.getElementById("confirmationModal").style.display = "none";
-        document.getElementById("emailPreview").classList.add("hidden");
       }
 
       function addToCalendar() {
         var booking = currentBookingConfirmation;
         var eventDate = new Date(booking.date);
-        var startParts = booking.timeSlot.split(" - ")[0].split(":");
-        var endParts = booking.timeSlot.split(" - ")[1].split(":");
+        var timeParts = booking.timeSlot.split(" - ");
+        var startParts = timeParts[0].split(":");
+        var endParts = timeParts[1].split(":");
 
         var startTime = new Date(eventDate);
         startTime.setHours(parseInt(startParts[0]), parseInt(startParts[1]));
@@ -1936,13 +1624,18 @@
         var endTime = new Date(eventDate);
         endTime.setHours(parseInt(endParts[0]), parseInt(endParts[1]));
 
-        var icsContent = "BEGIN:VCALENDAR\nVERSION:2.0\nPRODID:-//Event//Gesprekstafel//EN\nBEGIN:VEVENT\nUID:" + Date.now() + "@event.com\nDTSTAMP:" + new Date().toISOString().replace(/[-:]/g, "").split(".")[0] + "Z\nDTSTART:" + startTime.toISOString().replace(/[-:]/g, "").split(".")[0] + "Z\nDTEND:" + endTime.toISOString().replace(/[-:]/g, "").split(".")[0] + "Z\nSUMMARY:Gesprekstafel: " + booking.tableName + "\nDESCRIPTION:Gesprek met " + booking.speaker1 + " & " + booking.speaker2 + "\nLOCATION:Event Locatie\nEND:VEVENT\nEND:VCALENDAR";
+        var icsContent = 'BEGIN:VCALENDAR\nVERSION:2.0\nBEGIN:VEVENT\n';
+        icsContent += 'DTSTART:' + startTime.toISOString().replace(/[-:]/g, '').split('.')[0] + 'Z\n';
+        icsContent += 'DTEND:' + endTime.toISOString().replace(/[-:]/g, '').split('.')[0] + 'Z\n';
+        icsContent += 'SUMMARY:Gesprekstafel: ' + booking.tableName + '\n';
+        icsContent += 'DESCRIPTION:Gesprek met ' + booking.speaker1 + ' & ' + booking.speaker2 + '\n';
+        icsContent += 'END:VEVENT\nEND:VCALENDAR';
 
-        var blob = new Blob([icsContent], { type: "text/calendar" });
+        var blob = new Blob([icsContent], { type: 'text/calendar' });
         var url = URL.createObjectURL(blob);
-        var a = document.createElement("a");
+        var a = document.createElement('a');
         a.href = url;
-        a.download = "gesprekstafel-boeking.ics";
+        a.download = 'gesprekstafel-boeking.ics';
         a.click();
         URL.revokeObjectURL(url);
       }
@@ -1956,42 +1649,41 @@
           return;
         }
 
-        var emailStats = {};
-        bookingsList.forEach(function(booking) {
-          var email = booking.email.toLowerCase();
-          if (!emailStats[email]) {
-            emailStats[email] = { count: 0, bookings: [] };
-          }
-          emailStats[email].count++;
-          emailStats[email].bookings.push(booking);
-        });
-
-        var totalEmails = Object.keys(emailStats).length;
-        var maxBookingsEmails = Object.values(emailStats).filter(function(stat) { return stat.count >= MAX_BOOKINGS_PER_EMAIL; }).length;
+        var html = '<div style="background: #f8f9fa; padding: 15px; border-radius: 4px; margin-bottom: 20px;">';
+        html += '<h4>Totale Boekingen: ' + bookingsList.length + '</h4></div>';
         
-        var summaryHTML = '<div style="background: #f8f9fa; padding: 15px; border-radius: 4px; margin-bottom: 20px; border: 1px solid #e9ecef;"><h4 style="margin-bottom: 10px; color: #2c3e50;">Boekingsoverzicht</h4><div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px;"><div><strong>Totale Boekingen:</strong> ' + bookingsList.length + '</div><div><strong>Unieke E-mails:</strong> ' + totalEmails + '</div><div><strong>Bij Max Limiet:</strong> ' + maxBookingsEmails + '</div><div><strong>Gemiddeld per E-mail:</strong> ' + (bookingsList.length / totalEmails).toFixed(1) + '</div></div></div>';
-
-        var tableHTML = '<table class="bookings-table"><thead><tr><th>Naam</th><th>E-mail</th><th>Artiest/Band</th><th>Tafel</th><th>Datum</th><th>Tijd</th><th>Sprekers</th><th>E-mail Aantal</th><th>Acties</th></tr></thead><tbody>' + bookingsList.map(function(booking) {
+        html += '<table class="bookings-table">';
+        html += '<thead><tr><th>Naam</th><th>E-mail</th><th>Artiest</th><th>Tafel</th><th>Tijd</th><th>Acties</th></tr></thead>';
+        html += '<tbody>';
+        
+        for (var i = 0; i < bookingsList.length; i++) {
+          var booking = bookingsList[i];
           var bookingKey = booking.tableId + "-" + booking.slotIndex;
-          var emailCount = emailStats[booking.email.toLowerCase()].count;
-          var isAtLimit = emailCount >= MAX_BOOKINGS_PER_EMAIL;
-          
-          return '<tr style="' + (isAtLimit ? 'background-color: #fff3cd;' : '') + '"><td>' + booking.name + '</td><td>' + booking.email + '</td><td>' + (booking.artistName || "N/A") + '</td><td>' + booking.tableName + '</td><td>' + new Date(booking.date).toLocaleDateString() + '</td><td>' + booking.timeSlot + '</td><td>' + booking.speaker1 + ' & ' + booking.speaker2 + '</td><td style="text-align: center; ' + (isAtLimit ? 'font-weight: bold; color: #856404;' : '') + '">' + emailCount + '/' + MAX_BOOKINGS_PER_EMAIL + '</td><td><button onclick="cancelBooking(\'' + bookingKey + '\')" class="btn-danger" style="padding: 5px 10px; font-size: 12px;">Annuleren</button></td></tr>';
-        }).join("") + '</tbody></table>';
-
-        container.innerHTML = summaryHTML + tableHTML;
+          html += '<tr>';
+          html += '<td>' + booking.name + '</td>';
+          html += '<td>' + booking.email + '</td>';
+          html += '<td>' + (booking.artistName || 'N/A') + '</td>';
+          html += '<td>' + booking.tableName + '</td>';
+          html += '<td>' + booking.timeSlot + '</td>';
+          html += '<td><button onclick="cancelBooking(\'' + bookingKey + '\')" class="btn-danger">Annuleren</button></td>';
+          html += '</tr>';
+        }
+        
+        html += '</tbody></table>';
+        container.innerHTML = html;
       }
 
       function cancelBooking(bookingKey) {
         if (confirm("Weet u zeker dat u deze boeking wilt annuleren?")) {
-          removeBookingFromFirestore(bookingKey).then(function() {
-            if (!db) {
-              delete localData.bookings[bookingKey];
-              renderBookingsOverview();
-              renderClientInterface();
-              saveDataToLocalStorage();
-            }
-          });
+          delete localData.bookings[bookingKey];
+          renderBookingsOverview();
+          renderClientInterface();
+          
+          if (db) {
+            removeBookingFromFirestore(bookingKey);
+          } else {
+            saveDataToLocalStorage();
+          }
         }
       }
 
@@ -2002,63 +1694,24 @@
           return;
         }
 
-        var headers = ["Naam", "E-mail", "Artiest/Band", "Tafel", "Datum", "Tijd", "Spreker 1", "Spreker 2", "Boekingstijd"];
-        
-        var csvContent = [headers.join(",")].concat(bookingsList.map(function(booking) {
-          return [
-            booking.name,
-            booking.email,
-            booking.artistName || "",
-            booking.tableName,
-            booking.date,
-            booking.timeSlot,
-            booking.speaker1,
-            booking.speaker2,
-            new Date(booking.timestamp).toLocaleString()
-          ].map(function(field) { return '"' + field + '"'; }).join(",");
-        })).join("\n");
+        var csv = 'Naam,E-mail,Artiest,Tafel,Datum,Tijd\n';
+        for (var i = 0; i < bookingsList.length; i++) {
+          var b = bookingsList[i];
+          csv += '"' + b.name + '","' + b.email + '","' + (b.artistName || '') + '","' + b.tableName + '","' + b.date + '","' + b.timeSlot + '"\n';
+        }
 
-        downloadFile(csvContent, "gesprekstafel-boekingen.csv", "text/csv");
-        showStatus("exportStatus", "CSV succesvol geëxporteerd", "success");
+        downloadFile(csv, "gesprekstafel-boekingen.csv", "text/csv");
+        showStatus("exportStatus", "CSV geëxporteerd", "success");
       }
 
       function exportToExcel() {
-        var bookingsList = Object.values(localData.bookings);
-        if (bookingsList.length === 0) {
-          showStatus("exportStatus", "Geen boekingen om te exporteren", "error");
-          return;
-        }
-
-        var excelContent = ["Gesprekstafel Boekingsrapport", "Gegenereerd op: " + new Date().toLocaleString(), "Totale Boekingen: " + bookingsList.length, "", "Naam,E-mail,Artiest/Band,Tafel,Datum,Tijd,Spreker 1,Spreker 2,Boekingstijd"].concat(bookingsList.map(function(booking) {
-          return [
-            booking.name,
-            booking.email,
-            booking.artistName || "",
-            booking.tableName,
-            booking.date,
-            booking.timeSlot,
-            booking.speaker1,
-            booking.speaker2,
-            new Date(booking.timestamp).toLocaleString()
-          ].map(function(field) { return '"' + field + '"'; }).join(",");
-        })).join("\n");
-
-        downloadFile(excelContent, "gesprekstafel-boekingsrapport.csv", "text/csv");
-        showStatus("exportStatus", "Excel rapport succesvol geëxporteerd", "success");
-      }
-
-      function exportToJPG() {
-        showStatus("exportStatus", "JPG export functie vereist html2canvas bibliotheek", "warning");
-      }
-
-      function exportTo4KSignage() {
-        showStatus("exportStatus", "4K Signage export functie vereist html2canvas bibliotheek", "warning");
+        exportToCSV();
       }
 
       function downloadFile(content, filename, mimeType) {
         var blob = new Blob([content], { type: mimeType });
         var url = URL.createObjectURL(blob);
-        var a = document.createElement("a");
+        var a = document.createElement('a');
         a.href = url;
         a.download = filename;
         a.click();
@@ -2068,27 +1721,22 @@
       function showStatus(elementId, message, type) {
         var element = document.getElementById(elementId);
         element.textContent = message;
-        element.className = "status-message " + type;
-        element.style.display = "block";
-
+        element.className = 'status-message ' + type;
+        element.style.display = 'block';
         setTimeout(function() {
-          element.style.display = "none";
-        }, 5000);
+          element.style.display = 'none';
+        }, 3000);
       }
 
-      // Initialize EmailJS
       if (typeof emailjs !== 'undefined' && EMAILJS_CONFIG.publicKey) {
         emailjs.init(EMAILJS_CONFIG.publicKey);
       }
 
-      // Initialize application
       window.addEventListener("load", function() {
         document.getElementById("eventDate").value = new Date().toISOString().split("T")[0];
-
         initializeFirebase();
-        
         document.getElementById('loadingOverlay').style.display = 'none';
-
+        
         if (localData.eventConfig.timeSlots.length === 0) {
           generateTimeSlots();
         }
@@ -2098,17 +1746,12 @@
             closeBookingForm();
             closeLoginModal();
             closeConfirmationModal();
-            closePasswordChangeModal();
           }
         });
       });
 
       window.addEventListener('beforeunload', function() {
-        unsubscribeListeners.forEach(function(unsubscribe) {
-          unsubscribe();
-        });
-        
-        if (display4KWindow && !display4KWindow.closed) {
+        if (display4KWindow) {
           display4KWindow.close();
         }
       });
