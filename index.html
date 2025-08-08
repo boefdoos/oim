@@ -571,280 +571,6 @@
         box-sizing: border-box;
         font-size: 14px;
       }
-
-      .export-header {
-        text-align: center;
-        margin-bottom: 25px;
-        border-bottom: 3px solid #2c3e50;
-        padding-bottom: 15px;
-      }
-
-      .export-title {
-        font-size: 28px;
-        font-weight: bold;
-        color: #2c3e50;
-        margin-bottom: 8px;
-      }
-
-      .export-subtitle {
-        font-size: 16px;
-        color: #666;
-        margin-bottom: 4px;
-      }
-
-      .export-table {
-        margin-bottom: 25px;
-        border: 2px solid #ddd;
-        border-radius: 8px;
-        overflow: hidden;
-        break-inside: avoid;
-      }
-
-      .export-table-header {
-        background: #f8f9fa;
-        padding: 15px 20px;
-        border-bottom: 2px solid #ddd;
-      }
-
-      .export-table-name {
-        font-size: 20px;
-        font-weight: bold;
-        color: #2c3e50;
-        margin-bottom: 6px;
-      }
-
-      .export-table-speakers {
-        font-size: 16px;
-        color: #666;
-      }
-
-      .export-slots {
-        padding: 0;
-      }
-
-      .export-slot {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        padding: 12px 20px;
-        border-bottom: 1px solid #f0f0f0;
-        font-size: 16px;
-        min-height: 50px;
-      }
-
-      .export-slot:last-child {
-        border-bottom: none;
-      }
-
-      .export-slot.booked {
-        background: #fff3cd;
-        border-left: 6px solid #ffc107;
-      }
-
-      .export-slot.available {
-        background: #d4edda;
-        border-left: 6px solid #28a745;
-      }
-
-      .export-time {
-        font-weight: bold;
-        color: #2c3e50;
-        min-width: 120px;
-        font-size: 16px;
-      }
-
-      .export-booking-info {
-        flex: 1;
-        text-align: center;
-        font-weight: bold;
-        font-size: 16px;
-      }
-
-      .export-booking-info.booked {
-        color: #856404;
-      }
-
-      .export-booking-info.available {
-        color: #155724;
-        font-style: italic;
-      }
-
-      .export-summary {
-        margin-top: 25px;
-        padding: 20px;
-        background: #f8f9fa;
-        border-radius: 8px;
-        border: 2px solid #e9ecef;
-        page-break-inside: avoid;
-      }
-
-      .export-summary h4 {
-        color: #2c3e50;
-        margin-bottom: 15px;
-        font-size: 20px;
-      }
-
-      .export-summary-grid {
-        display: grid;
-        grid-template-columns: repeat(2, 1fr);
-        gap: 15px;
-        font-size: 16px;
-      }
-
-      .export-summary-item {
-        padding: 8px 0;
-      }
-
-      .signage-container {
-        position: fixed;
-        top: -9999px;
-        left: -9999px;
-        width: 3840px;
-        height: 2160px;
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        padding: 60px;
-        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-        box-sizing: border-box;
-        color: white;
-        overflow: hidden;
-      }
-
-      .signage-header {
-        text-align: center;
-        margin-bottom: 40px;
-        border-bottom: 4px solid rgba(255, 255, 255, 0.3);
-        padding-bottom: 30px;
-      }
-
-      .signage-title {
-        font-size: 72px;
-        font-weight: bold;
-        margin-bottom: 15px;
-        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
-      }
-
-      .signage-subtitle {
-        font-size: 36px;
-        margin-bottom: 8px;
-        opacity: 0.9;
-      }
-
-      .signage-tables-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(480px, 1fr));
-        gap: 30px;
-        margin-bottom: 40px;
-      }
-
-      .signage-table {
-        background: rgba(255, 255, 255, 0.95);
-        border-radius: 16px;
-        overflow: hidden;
-        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
-        color: #333;
-      }
-
-      .signage-table-header {
-        background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
-        padding: 20px;
-        color: white;
-        text-align: center;
-      }
-
-      .signage-table-name {
-        font-size: 28px;
-        font-weight: bold;
-        margin-bottom: 8px;
-      }
-
-      .signage-table-speakers {
-        font-size: 20px;
-        opacity: 0.9;
-      }
-
-      .signage-slots {
-        padding: 15px;
-        max-height: 600px;
-        overflow-y: auto;
-      }
-
-      .signage-slot {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        padding: 12px 16px;
-        margin-bottom: 8px;
-        border-radius: 8px;
-        font-size: 18px;
-        min-height: 50px;
-      }
-
-      .signage-slot.available {
-        background: #d4edda;
-        border-left: 6px solid #28a745;
-      }
-
-      .signage-slot.booked {
-        background: #fff3cd;
-        border-left: 6px solid #ffc107;
-      }
-
-      .signage-time {
-        font-weight: bold;
-        font-size: 20px;
-        min-width: 140px;
-      }
-
-      .signage-booking-info {
-        flex: 1;
-        text-align: center;
-        font-weight: bold;
-        font-size: 18px;
-      }
-
-      .signage-booking-info.booked {
-        color: #856404;
-      }
-
-      .signage-booking-info.available {
-        color: #155724;
-        font-style: italic;
-      }
-
-      .signage-footer {
-        position: absolute;
-        bottom: 60px;
-        left: 60px;
-        right: 60px;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        background: rgba(255, 255, 255, 0.1);
-        padding: 20px 30px;
-        border-radius: 12px;
-        backdrop-filter: blur(10px);
-      }
-
-      .signage-stats {
-        display: flex;
-        gap: 40px;
-        font-size: 24px;
-      }
-
-      .signage-stat {
-        text-align: center;
-      }
-
-      .signage-stat-number {
-        font-size: 32px;
-        font-weight: bold;
-        display: block;
-      }
-
-      .signage-generated {
-        font-size: 20px;
-        opacity: 0.8;
-      }
     </style>
   </head>
   <body>
@@ -873,13 +599,7 @@
       </div>
 
       <!-- ADMIN ACCESS BUTTON -->
-      <button
-        class="admin-access-btn"
-        onclick="showLoginModal()"
-        title="Admin Toegang"
-      >
-        ⚙
-      </button>
+      <button class="admin-access-btn" onclick="showLoginModal()" title="Admin Toegang">⚙</button>
 
       <!-- ADMIN INTERFACE -->
       <div id="admin-interface" class="admin-interface">
@@ -888,9 +608,7 @@
           <div class="admin-user-info">
             <span id="adminUserEmail"></span>
             <button onclick="logout()" class="btn-secondary">Uitloggen</button>
-            <button onclick="switchToClient()" class="btn-secondary">
-              Terug naar Boekingen
-            </button>
+            <button onclick="switchToClient()" class="btn-secondary">Terug naar Boekingen</button>
           </div>
         </div>
 
@@ -901,12 +619,8 @@
             Open een real-time 4K display scherm voor TV monitors of grote schermen. Het scherm werkt automatisch bij wanneer boekingen wijzigen.
           </p>
           <div class="config-actions">
-            <button onclick="open4KDisplay()" class="btn-success" style="padding: 12px 20px; font-size: 1rem;">
-              🖥️ Open 4K Live Display
-            </button>
-            <button onclick="close4KDisplay()" class="btn-secondary" style="margin-left: 10px;">
-              Sluit Display
-            </button>
+            <button onclick="open4KDisplay()" class="btn-success" style="padding: 12px 20px; font-size: 1rem;">🖥️ Open 4K Live Display</button>
+            <button onclick="close4KDisplay()" class="btn-secondary" style="margin-left: 10px;">Sluit Display</button>
           </div>
           <div id="displayStatus" class="status-message" style="display: none"></div>
         </div>
@@ -929,15 +643,9 @@
         </div>
 
         <div class="nav-tabs">
-          <button class="nav-tab active" onclick="switchTab('setup')">
-            Evenement Instellen
-          </button>
-          <button class="nav-tab" onclick="switchTab('bookings')">
-            Boekingen Beheren
-          </button>
-          <button class="nav-tab" onclick="switchTab('export')">
-            Exporteren & Rapporten
-          </button>
+          <button class="nav-tab active" onclick="switchTab('setup')">Evenement Instellen</button>
+          <button class="nav-tab" onclick="switchTab('bookings')">Boekingen Beheren</button>
+          <button class="nav-tab" onclick="switchTab('export')">Exporteren & Rapporten</button>
         </div>
 
         <div id="setup-tab" class="tab-content active">
@@ -958,21 +666,11 @@
               </div>
               <div class="form-group">
                 <label for="slotDuration">Tijdslot Duur (minuten):</label>
-                <input
-                  type="number"
-                  id="slotDuration"
-                  value="10"
-                  min="5"
-                  max="30"
-                />
+                <input type="number" id="slotDuration" value="10" min="5" max="30" />
               </div>
             </div>
             <button onclick="generateTimeSlots()">Tijdslots Genereren</button>
-            <div
-              id="eventStatus"
-              class="status-message"
-              style="display: none"
-            ></div>
+            <div id="eventStatus" class="status-message" style="display: none"></div>
           </div>
 
           <div class="section">
@@ -980,11 +678,7 @@
             <div class="form-grid">
               <div class="form-group">
                 <label for="tableName">Tafel Naam:</label>
-                <input
-                  type="text"
-                  id="tableName"
-                  placeholder="bijv. AI & Technologie"
-                />
+                <input type="text" id="tableName" placeholder="bijv. AI & Technologie" />
               </div>
               <div class="form-group">
                 <label for="speaker1">Spreker 1:</label>
@@ -996,7 +690,6 @@
               </div>
             </div>
             <button onclick="addTable()">Tafel Toevoegen</button>
-
             <div class="tables-grid" id="tablesGrid"></div>
           </div>
         </div>
@@ -1011,35 +704,11 @@
         <div id="export-tab" class="tab-content">
           <div class="section">
             <h2>Exporteren & Rapporten</h2>
-            <button class="btn-success" onclick="exportToCSV()">
-              Exporteren naar CSV
-            </button>
-            <button
-              class="btn-success"
-              onclick="exportToExcel()"
-              style="margin-left: 10px"
-            >
-              Exporteren naar Excel
-            </button>
-            <button
-              class="btn-success"
-              onclick="exportToJPG()"
-              style="margin-left: 10px"
-            >
-              Exporteren naar JPG (Printbaar)
-            </button>
-            <button
-              class="btn-success"
-              onclick="exportTo4KSignage()"
-              style="margin-left: 10px"
-            >
-              Exporteren naar 4K Signage (TV)
-            </button>
-            <div
-              id="exportStatus"
-              class="status-message"
-              style="display: none"
-            ></div>
+            <button class="btn-success" onclick="exportToCSV()">Exporteren naar CSV</button>
+            <button class="btn-success" onclick="exportToExcel()" style="margin-left: 10px">Exporteren naar Excel</button>
+            <button class="btn-success" onclick="exportToJPG()" style="margin-left: 10px">Exporteren naar JPG (Printbaar)</button>
+            <button class="btn-success" onclick="exportTo4KSignage()" style="margin-left: 10px">Exporteren naar 4K Signage (TV)</button>
+            <div id="exportStatus" class="status-message" style="display: none"></div>
           </div>
         </div>
       </div>
@@ -1049,135 +718,74 @@
 
       <!-- LOGIN MODAL -->
       <div class="modal" id="loginModal">
-        <form onsubmit="loginAdmin(); return false;">
-          <h3>Admin Inloggen</h3>
-          <div class="form-group">
-            <label for="adminEmail">E-mail:</label>
-            <input
-              type="email"
-              id="adminEmail"
-              placeholder="Voer admin e-mail in"
-              style="width: 100%; margin-bottom: 15px"
-              required
-            />
-          </div>
-          <div class="form-group">
-            <label for="adminPassword">Wachtwoord:</label>
-            <input
-              type="password"
-              id="adminPassword"
-              placeholder="Voer wachtwoord in"
-              onkeypress="if(event.key==='Enter') loginAdmin()"
-              style="width: 100%; margin-bottom: 15px"
-              required
-            />
-          </div>
-          <div style="text-align: center">
-            <button type="submit" style="margin-right: 10px">
-              Inloggen
-            </button>
-            <button type="button" onclick="closeLoginModal()" class="btn-secondary">
-              Annuleren
-            </button>
-          </div>
-          <div
-            id="loginError"
-            class="status-message error"
-            style="display: none"
-          ></div>
-        </form>
+        <h3>Admin Inloggen</h3>
+        <div class="form-group">
+          <label for="adminEmail">E-mail:</label>
+          <input type="email" id="adminEmail" placeholder="Voer admin e-mail in" style="width: 100%; margin-bottom: 15px" required />
+        </div>
+        <div class="form-group">
+          <label for="adminPassword">Wachtwoord:</label>
+          <input type="password" id="adminPassword" placeholder="Voer wachtwoord in" onkeypress="if(event.key==='Enter') loginAdmin()" style="width: 100%; margin-bottom: 15px" required />
+        </div>
+        <div style="text-align: center">
+          <button onclick="loginAdmin()" style="margin-right: 10px">Inloggen</button>
+          <button onclick="closeLoginModal()" class="btn-secondary">Annuleren</button>
+        </div>
+        <div id="loginError" class="status-message error" style="display: none"></div>
       </div>
 
       <!-- PASSWORD CHANGE MODAL -->
       <div class="modal" id="passwordChangeModal">
-        <form onsubmit="updatePassword(); return false;">
-          <h3>Wachtwoord Wijzigen</h3>
-          <div class="form-group">
-            <label for="currentPassword">Huidige Wachtwoord:</label>
-            <input
-              type="password"
-              id="currentPassword"
-              placeholder="Voer huidige wachtwoord in"
-              style="width: 100%; margin-bottom: 15px"
-              required
-            />
-          </div>
-          <div class="form-group">
-            <label for="newPassword">Nieuwe Wachtwoord:</label>
-            <input
-              type="password"
-              id="newPassword"
-              placeholder="Voer nieuw wachtwoord in (min 6 tekens)"
-              style="width: 100%; margin-bottom: 15px"
-              minlength="6"
-              required
-            />
-          </div>
-          <div class="form-group">
-            <label for="confirmPassword">Bevestig Wachtwoord:</label>
-            <input
-              type="password"
-              id="confirmPassword"
-              placeholder="Bevestig nieuw wachtwoord"
-              style="width: 100%; margin-bottom: 15px"
-              minlength="6"
-              required
-            />
-          </div>
-          <div style="text-align: center">
-            <button type="submit" style="margin-right: 10px">
-              Wachtwoord Bijwerken
-            </button>
-            <button type="button" onclick="closePasswordChangeModal()" class="btn-secondary">
-              Annuleren
-            </button>
-          </div>
-          <div
-            id="passwordChangeStatus"
-            class="status-message"
-            style="display: none"
-          ></div>
-        </form>
+        <h3>Wachtwoord Wijzigen</h3>
+        <div class="form-group">
+          <label for="currentPassword">Huidige Wachtwoord:</label>
+          <input type="password" id="currentPassword" placeholder="Voer huidige wachtwoord in" style="width: 100%; margin-bottom: 15px" required />
+        </div>
+        <div class="form-group">
+          <label for="newPassword">Nieuwe Wachtwoord:</label>
+          <input type="password" id="newPassword" placeholder="Voer nieuw wachtwoord in (min 6 tekens)" style="width: 100%; margin-bottom: 15px" minlength="6" required />
+        </div>
+        <div class="form-group">
+          <label for="confirmPassword">Bevestig Wachtwoord:</label>
+          <input type="password" id="confirmPassword" placeholder="Bevestig nieuw wachtwoord" style="width: 100%; margin-bottom: 15px" minlength="6" required />
+        </div>
+        <div style="text-align: center">
+          <button onclick="updatePassword()" style="margin-right: 10px">Wachtwoord Bijwerken</button>
+          <button onclick="closePasswordChangeModal()" class="btn-secondary">Annuleren</button>
+        </div>
+        <div id="passwordChangeStatus" class="status-message" style="display: none"></div>
       </div>
 
       <!-- BOOKING FORM -->
       <div class="modal" id="bookingForm">
         <button class="close-btn" onclick="closeBookingForm()">&times;</button>
-        <form onsubmit="confirmBooking(); return false;">
-          <h3>Boek Uw Gesprek</h3>
-          <div class="form-group">
-            <label for="userName">Uw Naam: *</label>
-            <input type="text" id="userName" required />
-          </div>
-          <div class="form-group">
-            <label for="userEmail">E-mail: *</label>
-            <input type="email" id="userEmail" required onblur="checkEmailBookingLimit()" />
-            <div id="emailBookingStatus" class="status-message" style="display: none; margin-top: 5px; text-align: left; padding: 5px;"></div>
-          </div>
-          <div class="form-group">
-            <label for="userArtistName">Artiest Naam/Band: *</label>
-            <input type="text" id="userArtistName" required />
-          </div>
-          <div class="form-group">
-            <label>Geselecteerd Tijdslot:</label>
-            <div id="selectedSlotInfo" class="confirmation-details"></div>
-          </div>
-          <div class="booking-actions">
-            <button type="submit" id="confirmBookingBtn">Boeking Bevestigen</button>
-          </div>
-          <div
-            id="bookingStatus"
-            class="status-message"
-            style="display: none"
-          ></div>
-        </form>
+        <h3>Boek Uw Gesprek</h3>
+        <div class="form-group">
+          <label for="userName">Uw Naam: *</label>
+          <input type="text" id="userName" required />
+        </div>
+        <div class="form-group">
+          <label for="userEmail">E-mail: *</label>
+          <input type="email" id="userEmail" required onblur="checkEmailBookingLimit()" />
+          <div id="emailBookingStatus" class="status-message" style="display: none; margin-top: 5px; text-align: left; padding: 5px;"></div>
+        </div>
+        <div class="form-group">
+          <label for="userArtistName">Artiest Naam/Band: *</label>
+          <input type="text" id="userArtistName" required />
+        </div>
+        <div class="form-group">
+          <label>Geselecteerd Tijdslot:</label>
+          <div id="selectedSlotInfo" class="confirmation-details"></div>
+        </div>
+        <div class="booking-actions">
+          <button onclick="confirmBooking()" id="confirmBookingBtn">Boeking Bevestigen</button>
+        </div>
+        <div id="bookingStatus" class="status-message" style="display: none"></div>
       </div>
 
       <!-- CONFIRMATION MODAL -->
       <div class="modal" id="confirmationModal">
-        <button class="close-btn" onclick="closeConfirmationModal()">
-          &times;
-        </button>
+        <button class="close-btn" onclick="closeConfirmationModal()">&times;</button>
         <h3>Boeking Bevestigd</h3>
         <div id="confirmationDetails"></div>
         <div class="booking-actions">
@@ -1196,10 +804,7 @@
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
     
     <!-- EmailJS SDK -->
-    <script
-      type="text/javascript"
-      src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"
-    ></script>
+    <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
     
     <!-- html2canvas SDK -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
@@ -1232,7 +837,7 @@
         fromName: "Event Team"
       };
 
-      // Global data storage (fallback for offline mode)
+      // Global data storage
       let localData = {
         eventConfig: {
           date: "",
@@ -1338,64 +943,6 @@
         }
       }
 
-      // Initialize Firebase
-      async function initializeFirebase(config = null) {
-        try {
-          updateConnectionStatus('connecting');
-          
-          const firebaseConfig = config || DEFAULT_FIREBASE_CONFIG;
-          
-          if (!firebaseConfig) {
-            throw new Error('Geen Firebase configuratie verstrekt');
-          }
-          
-          // Initialize Firebase
-          if (!firebase.apps.length) {
-            firebase.initializeApp(firebaseConfig);
-          }
-          
-          db = firebase.firestore();
-          auth = firebase.auth();
-          
-          // Set up auth state listener
-          auth.onAuthStateChanged((user) => {
-            currentUser = user;
-            if (user && isAdminMode) {
-              document.getElementById('adminUserEmail').textContent = user.email;
-            }
-          });
-          
-          // Test connection
-          await testFirebaseConnection();
-          
-          isFirebaseInitialized = true;
-          isOnline = true;
-          updateConnectionStatus('connected');
-          
-          // Set up real-time listeners
-          setupRealtimeListeners();
-          
-          // Load initial data
-          await loadDataFromFirestore();
-          
-        } catch (error) {
-          console.error('Firebase initialisatie mislukt:', error);
-          isFirebaseInitialized = false;
-          isOnline = false;
-          updateConnectionStatus('disconnected');
-          
-          // Use local storage fallback
-          loadDataFromLocalStorage();
-        }
-      }
-
-      async function testFirebaseConnection() {
-        if (!db) throw new Error('Firestore niet geïnitialiseerd');
-        
-        // Try to read a document to test connectivity
-        await db.collection('system').doc('test').get();
-      }
-
       // 4K Display Functions
       function open4KDisplay() {
         if (display4KWindow && !display4KWindow.closed) {
@@ -1405,7 +952,7 @@
         }
 
         try {
-          // Open new window with 4K dimensions
+          // Open new window with optimized dimensions
           display4KWindow = window.open(
             '', 
             '4KDisplay',
@@ -1657,7 +1204,7 @@
     <div class="display-subtitle">${localData.eventConfig.startTime} - ${localData.eventConfig.endTime}</div>
   </div>
   
-  <div class="display-tables-grid" id="displayTablesGrid">
+  <div class="display-tables-grid">
     ${localData.tables.map((table, index) => `
       <div class="display-table">
         <div class="display-table-header">
@@ -1666,7 +1213,7 @@
         </div>
         <div class="display-slots">
           ${localData.eventConfig.timeSlots.map((slot) => {
-            const bookingKey = `${table.id}-${slot.index}`;
+            const bookingKey = table.id + '-' + slot.index;
             const booking = localData.bookings[bookingKey];
             
             if (booking) {
@@ -1715,29 +1262,20 @@
   </div>
 
   <script>
-    // Function to update display content
     function updateDisplayContent() {
       if (window.opener && !window.opener.closed) {
-        // Get updated data from parent window
         try {
-          const parentData = window.opener.localData;
-          if (parentData) {
-            // Update the display with new data
-            location.reload();
-          }
+          location.reload();
         } catch (error) {
           console.error('Error updating display:', error);
         }
       } else {
-        // Parent window is closed, close this window too
         window.close();
       }
     }
 
-    // Auto-refresh every 5 seconds
     setInterval(updateDisplayContent, 5000);
 
-    // Close this window if parent window is closed
     window.addEventListener('beforeunload', function() {
       if (window.opener && !window.opener.closed) {
         try {
@@ -1756,11 +1294,9 @@
       function setup4KDisplayListeners() {
         if (!display4KWindow || display4KWindow.closed) return;
         
-        // Function to update the display window
-        function updateDisplay() {
+        const displayUpdateInterval = setInterval(() => {
           if (display4KWindow && !display4KWindow.closed) {
             try {
-              // Reload the display window content
               const newContent = create4KDisplayContent();
               display4KWindow.document.open();
               display4KWindow.document.write(newContent);
@@ -1768,18 +1304,11 @@
             } catch (error) {
               console.error('Error updating 4K display:', error);
             }
-          }
-        }
-
-        // Set up a periodic update (Firebase listeners will trigger data changes)
-        const displayUpdateInterval = setInterval(() => {
-          if (display4KWindow && !display4KWindow.closed) {
-            updateDisplay();
           } else {
             clearInterval(displayUpdateInterval);
             display4KWindow = null;
           }
-        }, 3000); // Update every 3 seconds
+        }, 3000);
       }
 
       function showDisplayStatus(message, type) {
@@ -1793,9 +1322,45 @@
         }, 5000);
       }
 
+      // Initialize Firebase
+      async function initializeFirebase() {
+        try {
+          updateConnectionStatus('connecting');
+          
+          if (!firebase.apps.length) {
+            firebase.initializeApp(DEFAULT_FIREBASE_CONFIG);
+          }
+          
+          db = firebase.firestore();
+          auth = firebase.auth();
+          
+          auth.onAuthStateChanged((user) => {
+            currentUser = user;
+            if (user && isAdminMode) {
+              document.getElementById('adminUserEmail').textContent = user.email;
+            }
+          });
+          
+          await db.collection('system').doc('test').get();
+          
+          isFirebaseInitialized = true;
+          isOnline = true;
+          updateConnectionStatus('connected');
+          
+          setupRealtimeListeners();
+          await loadDataFromFirestore();
+          
+        } catch (error) {
+          console.error('Firebase initialisatie mislukt:', error);
+          isFirebaseInitialized = false;
+          isOnline = false;
+          updateConnectionStatus('disconnected');
+          loadDataFromLocalStorage();
+        }
+      }
+
       function updateConnectionStatus(status) {
         const statusElement = document.getElementById('connectionStatus');
-        const indicator = statusElement.querySelector('.sync-indicator');
         
         switch (status) {
           case 'connected':
@@ -1810,23 +1375,12 @@
             statusElement.className = 'connection-status disconnected';
             statusElement.innerHTML = '<span class="sync-indicator"></span>○';
             break;
-          case 'syncing':
-            if (statusElement.className.includes('connected')) {
-              indicator.className = 'sync-indicator syncing';
-            }
-            break;
-          case 'synced':
-            if (statusElement.className.includes('connected')) {
-              indicator.className = 'sync-indicator synced';
-            }
-            break;
         }
       }
 
       function setupRealtimeListeners() {
         if (!db) return;
 
-        // Listen to event configuration changes
         const eventConfigRef = db.collection('system').doc('eventConfig');
         const unsubscribeEventConfig = eventConfigRef.onSnapshot((doc) => {
           if (doc.exists) {
@@ -1834,11 +1388,8 @@
             updateEventUI();
             renderClientInterface();
           }
-        }, (error) => {
-          console.error('Fout bij beluisteren van event config:', error);
         });
 
-        // Listen to tables changes
         const tablesRef = db.collection('tables');
         const unsubscribeTables = tablesRef.onSnapshot((snapshot) => {
           snapshot.docChanges().forEach((change) => {
@@ -1862,11 +1413,8 @@
           localData.tables.sort((a, b) => (a.order || 0) - (b.order || 0));
           renderTables();
           renderClientInterface();
-        }, (error) => {
-          console.error('Fout bij beluisteren van tafels:', error);
         });
 
-        // Listen to bookings changes
         const bookingsRef = db.collection('bookings');
         const unsubscribeBookings = bookingsRef.onSnapshot((snapshot) => {
           localData.bookings = {};
@@ -1875,8 +1423,6 @@
           });
           renderBookingsOverview();
           renderClientInterface();
-        }, (error) => {
-          console.error('Fout bij beluisteren van boekingen:', error);
         });
 
         unsubscribeListeners = [unsubscribeEventConfig, unsubscribeTables, unsubscribeBookings];
@@ -1889,7 +1435,6 @@
         document.getElementById("adminEmail").value = "";
         document.getElementById("adminPassword").value = "";
         document.getElementById("loginError").style.display = "none";
-        document.getElementById("adminEmail").focus();
       }
 
       function closeLoginModal() {
@@ -1898,20 +1443,17 @@
       }
 
       async function loginAdmin() {
-        // Prevent form submission
-        event?.preventDefault();
-        
         const email = document.getElementById("adminEmail").value.trim();
         const password = document.getElementById("adminPassword").value;
 
         if (!email || !password) {
           showLoginError("Voer e-mail en wachtwoord in");
-          return false;
+          return;
         }
 
         if (!auth) {
-          showLoginError("Authenticatie niet beschikbaar - controleer Firebase configuratie");
-          return false;
+          showLoginError("Authenticatie niet beschikbaar");
+          return;
         }
 
         try {
@@ -1925,7 +1467,7 @@
           let errorMessage = "Inloggen mislukt";
           switch (error.code) {
             case 'auth/user-not-found':
-              errorMessage = "Geen admin account gevonden met dit e-mailadres";
+              errorMessage = "Geen admin account gevonden";
               break;
             case 'auth/wrong-password':
               errorMessage = "Onjuist wachtwoord";
@@ -1933,15 +1475,11 @@
             case 'auth/invalid-email':
               errorMessage = "Ongeldig e-mailadres";
               break;
-            case 'auth/too-many-requests':
-              errorMessage = "Te veel mislukte pogingen. Probeer later opnieuw";
-              break;
             default:
               errorMessage = error.message;
           }
           showLoginError(errorMessage);
         }
-        return false;
       }
 
       function showLoginError(message) {
@@ -1954,18 +1492,13 @@
         if (auth && currentUser) {
           try {
             await auth.signOut();
-            currentUser = null;
-            isAdminMode = false;
-            switchToClient();
           } catch (error) {
             console.error('Uitloggen mislukt:', error);
           }
-        } else {
-          // Fallback for when auth is not available
-          currentUser = null;
-          isAdminMode = false;
-          switchToClient();
         }
+        currentUser = null;
+        isAdminMode = false;
+        switchToClient();
       }
 
       async function createAdminUser() {
@@ -1983,20 +1516,16 @@
         }
 
         if (!auth) {
-          showUserManagementStatus("Authenticatie niet beschikbaar - controleer Firebase configuratie", "error");
+          showUserManagementStatus("Authenticatie niet beschikbaar", "error");
           return;
         }
 
         try {
-          // Create user account
           const userCredential = await auth.createUserWithEmailAndPassword(email, password);
-          
-          // Send email verification
           await userCredential.user.sendEmailVerification();
           
-          showUserManagementStatus("Admin gebruiker succesvol aangemaakt. Verificatie e-mail verzonden.", "success");
+          showUserManagementStatus("Admin gebruiker succesvol aangemaakt", "success");
           
-          // Clear form
           document.getElementById("newUserEmail").value = "";
           document.getElementById("newUserPassword").value = "";
           
@@ -2005,7 +1534,7 @@
           let errorMessage = "Gebruiker aanmaken mislukt";
           switch (error.code) {
             case 'auth/email-already-in-use':
-              errorMessage = "Een account met dit e-mailadres bestaat al";
+              errorMessage = "Account bestaat al";
               break;
             case 'auth/invalid-email':
               errorMessage = "Ongeldig e-mailadres";
@@ -2035,52 +1564,44 @@
       }
 
       async function updatePassword() {
-        // Prevent form submission
-        event?.preventDefault();
-        
         const currentPassword = document.getElementById("currentPassword").value;
         const newPassword = document.getElementById("newPassword").value;
         const confirmPassword = document.getElementById("confirmPassword").value;
 
         if (!currentPassword || !newPassword || !confirmPassword) {
           showPasswordChangeStatus("Vul alle velden in", "error");
-          return false;
+          return;
         }
 
         if (newPassword !== confirmPassword) {
           showPasswordChangeStatus("Nieuwe wachtwoorden komen niet overeen", "error");
-          return false;
+          return;
         }
 
         if (newPassword.length < 6) {
           showPasswordChangeStatus("Wachtwoord moet minimaal 6 tekens bevatten", "error");
-          return false;
+          return;
         }
 
         if (!auth || !currentUser) {
           showPasswordChangeStatus("Niet geauthenticeerd", "error");
-          return false;
+          return;
         }
 
         try {
-          // Reauthenticate user with current password
           const credential = firebase.auth.EmailAuthProvider.credential(
             currentUser.email,
             currentPassword
           );
           await currentUser.reauthenticateWithCredential(credential);
-          
-          // Update password
           await currentUser.updatePassword(newPassword);
           
           showPasswordChangeStatus("Wachtwoord succesvol bijgewerkt", "success");
           
-          // Clear form
           document.getElementById("currentPassword").value = "";
           document.getElementById("newPassword").value = "";
           document.getElementById("confirmPassword").value = "";
           
-          // Close modal after 2 seconds
           setTimeout(() => {
             closePasswordChangeModal();
           }, 2000);
@@ -2100,7 +1621,6 @@
           }
           showPasswordChangeStatus(errorMessage, "error");
         }
-        return false;
       }
 
       function showUserManagementStatus(message, type) {
@@ -2125,7 +1645,7 @@
         }, 5000);
       }
 
-      // Firestore data operations
+      // Firestore operations
       async function saveEventConfigToFirestore() {
         if (!db) {
           saveDataToLocalStorage();
@@ -2133,11 +1653,9 @@
         }
 
         try {
-          updateConnectionStatus('syncing');
           await db.collection('system').doc('eventConfig').set(localData.eventConfig);
-          updateConnectionStatus('synced');
         } catch (error) {
-          console.error('Fout bij opslaan van event config:', error);
+          console.error('Fout bij opslaan event config:', error);
           saveDataToLocalStorage();
         }
       }
@@ -2149,15 +1667,13 @@
         }
 
         try {
-          updateConnectionStatus('syncing');
           const docRef = await db.collection('tables').add({
             ...table,
             createdAt: firebase.firestore.FieldValue.serverTimestamp()
           });
-          updateConnectionStatus('synced');
           return docRef.id;
         } catch (error) {
-          console.error('Fout bij opslaan van tafel:', error);
+          console.error('Fout bij opslaan tafel:', error);
           saveDataToLocalStorage();
           return table.id;
         }
@@ -2170,10 +1686,8 @@
         }
 
         try {
-          updateConnectionStatus('syncing');
           await db.collection('tables').doc(tableId).delete();
           
-          // Remove related bookings
           const bookingsSnapshot = await db.collection('bookings')
             .where('tableId', '==', tableId)
             .get();
@@ -2184,9 +1698,8 @@
           });
           await batch.commit();
           
-          updateConnectionStatus('synced');
         } catch (error) {
-          console.error('Fout bij verwijderen van tafel:', error);
+          console.error('Fout bij verwijderen tafel:', error);
           saveDataToLocalStorage();
         }
       }
@@ -2198,14 +1711,12 @@
         }
 
         try {
-          updateConnectionStatus('syncing');
           await db.collection('bookings').doc(bookingKey).set({
             ...booking,
             createdAt: firebase.firestore.FieldValue.serverTimestamp()
           });
-          updateConnectionStatus('synced');
         } catch (error) {
-          console.error('Fout bij opslaan van boeking:', error);
+          console.error('Fout bij opslaan boeking:', error);
           saveDataToLocalStorage();
           throw error;
         }
@@ -2218,11 +1729,9 @@
         }
 
         try {
-          updateConnectionStatus('syncing');
           await db.collection('bookings').doc(bookingKey).delete();
-          updateConnectionStatus('synced');
         } catch (error) {
-          console.error('Fout bij verwijderen van boeking:', error);
+          console.error('Fout bij verwijderen boeking:', error);
           saveDataToLocalStorage();
         }
       }
@@ -2231,13 +1740,11 @@
         if (!db) return;
 
         try {
-          // Load event configuration
           const eventConfigDoc = await db.collection('system').doc('eventConfig').get();
           if (eventConfigDoc.exists) {
             localData.eventConfig = eventConfigDoc.data();
           }
 
-          // Load tables
           const tablesSnapshot = await db.collection('tables').get();
           localData.tables = [];
           tablesSnapshot.forEach((doc) => {
@@ -2249,7 +1756,6 @@
           });
           localData.tables.sort((a, b) => (a.order || 0) - (b.order || 0));
 
-          // Load bookings
           const bookingsSnapshot = await db.collection('bookings').get();
           localData.bookings = {};
           bookingsSnapshot.forEach((doc) => {
@@ -2258,7 +1764,7 @@
 
           updateUI();
         } catch (error) {
-          console.error('Fout bij laden van data van Firestore:', error);
+          console.error('Fout bij laden data:', error);
           loadDataFromLocalStorage();
         }
       }
@@ -2367,7 +1873,7 @@
         localData.eventConfig.timeSlots = slots;
         await saveEventConfigToFirestore();
         
-        showStatus("eventStatus", `${slots.length} tijdslots gegenereerd van ${startTime} tot ${endTime}`, "success");
+        showStatus("eventStatus", `${slots.length} tijdslots gegenereerd`, "success");
       }
 
       async function addTable() {
@@ -2396,7 +1902,6 @@
           if (db) {
             const tableId = await saveTableToFirestore(table);
             table.id = tableId;
-            // Don't add to localData.tables here - the realtime listener will handle it
           } else {
             table.id = `table_${Date.now()}`;
             localData.tables.push(table);
@@ -2432,7 +1937,7 @@
       }
 
       async function removeTable(tableId) {
-        if (confirm("Weet u zeker dat u deze tafel en alle boekingen wilt verwijderen?")) {
+        if (confirm("Weet u zeker dat u deze tafel wilt verwijderen?")) {
           try {
             const tableIndex = localData.tables.findIndex(t => t.id === tableId);
             if (tableIndex !== -1) {
@@ -2454,12 +1959,7 @@
             
           } catch (error) {
             console.error('Tafel verwijderen mislukt:', error);
-            if (db) {
-              await loadDataFromFirestore();
-            } else {
-              loadDataFromLocalStorage();
-            }
-            alert('Tafel verwijderen mislukt. Probeer opnieuw.');
+            alert('Tafel verwijderen mislukt.');
           }
         }
       }
@@ -2548,7 +2048,6 @@
         document.getElementById("bookingStatus").style.display = "none";
         document.getElementById("emailBookingStatus").style.display = "none";
         
-        // Reset confirm button
         const confirmBtn = document.getElementById('confirmBookingBtn');
         confirmBtn.disabled = false;
         confirmBtn.textContent = 'Boeking Bevestigen';
@@ -2561,43 +2060,30 @@
       }
 
       async function confirmBooking() {
-        // Prevent form submission
-        event?.preventDefault();
-        
         const name = document.getElementById("userName").value.trim();
         const email = document.getElementById("userEmail").value.trim();
         const artistName = document.getElementById("userArtistName").value.trim();
 
         if (!name || !email || !artistName) {
           showStatus("bookingStatus", "Vul alle verplichte velden in", "error");
-          return false;
+          return;
         }
 
-        // Email validation
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         if (!emailRegex.test(email)) {
           showStatus("bookingStatus", "Voer een geldig e-mailadres in", "error");
-          return false;
+          return;
         }
 
-        // Check booking limit per email
         const currentBookingCount = countBookingsByEmail(email);
         if (currentBookingCount >= MAX_BOOKINGS_PER_EMAIL) {
-          const existingBookings = getBookingsByEmail(email);
-          const bookingDetails = existingBookings.map(booking => 
-            `${booking.tableName} (${booking.timeSlot} op ${new Date(booking.date).toLocaleDateString()})`
-          ).join(', ');
-          
-          showStatus("bookingStatus", 
-            `Dit e-mailadres heeft al het maximum van ${MAX_BOOKINGS_PER_EMAIL} boekingen bereikt. Huidige boekingen: ${bookingDetails}`, 
-            "error"
-          );
-          return false;
+          showStatus("bookingStatus", "Maximum aantal boekingen bereikt", "error");
+          return;
         }
 
         if (!currentBookingSelection) {
           showStatus("bookingStatus", "Geen tijdslot geselecteerd", "error");
-          return false;
+          return;
         }
 
         const { tableId, slotIndex } = currentBookingSelection;
@@ -2605,7 +2091,7 @@
 
         if (localData.bookings[bookingKey]) {
           showStatus("bookingStatus", "Dit tijdslot is al geboekt", "error");
-          return false;
+          return;
         }
 
         const table = localData.tables.find((t) => t.id === tableId);
@@ -2633,7 +2119,6 @@
           showStatus("bookingStatus", "Boeking wordt verwerkt...", "success");
 
           await saveBookingToFirestore(bookingKey, booking);
-          
           localData.bookings[bookingKey] = booking;
           currentBookingConfirmation = booking;
 
@@ -2653,7 +2138,7 @@
             event_date: eventDate,
             time_slot: booking.timeSlot,
             to_email: booking.email,
-            from_name: EMAILJS_CONFIG.fromName || 'Event Team'
+            from_name: EMAILJS_CONFIG.fromName
           };
 
           try {
@@ -2679,7 +2164,6 @@
           confirmBtn.disabled = false;
           confirmBtn.textContent = 'Boeking Bevestigen';
         }
-        return false;
       }
 
       function showConfirmationModal() {
@@ -2726,25 +2210,17 @@
         const endTime = new Date(eventDate);
         endTime.setHours(parseInt(endHour), parseInt(endMinute));
 
-        const event = {
-          title: `Gesprekstafel: ${booking.tableName}`,
-          start: startTime,
-          end: endTime,
-          description: `Gesprek met ${booking.speaker1} & ${booking.speaker2}`,
-          location: "Event Locatie",
-        };
-
         const icsContent = `BEGIN:VCALENDAR
 VERSION:2.0
-PRODID:-//Your Company//Event//EN
+PRODID:-//Event//Gesprekstafel//EN
 BEGIN:VEVENT
-UID:${Date.now()}@yourcompany.com
+UID:${Date.now()}@event.com
 DTSTAMP:${new Date().toISOString().replace(/[-:]/g, "").split(".")[0]}Z
 DTSTART:${startTime.toISOString().replace(/[-:]/g, "").split(".")[0]}Z
 DTEND:${endTime.toISOString().replace(/[-:]/g, "").split(".")[0]}Z
-SUMMARY:${event.title}
-DESCRIPTION:${event.description}
-LOCATION:${event.location}
+SUMMARY:Gesprekstafel: ${booking.tableName}
+DESCRIPTION:Gesprek met ${booking.speaker1} & ${booking.speaker2}
+LOCATION:Event Locatie
 END:VEVENT
 END:VCALENDAR`;
 
@@ -2757,43 +2233,6 @@ END:VCALENDAR`;
         URL.revokeObjectURL(url);
       }
 
-      function showEmailPreview() {
-        const booking = currentBookingConfirmation;
-        const eventDate = new Date(booking.date).toLocaleDateString("nl-NL", {
-          weekday: "long",
-          year: "numeric",
-          month: "long",
-          day: "numeric",
-        });
-
-        const emailContent = `
-          <h4>E-mail Bevestiging Voorbeeld</h4>
-          <div style="border: 1px solid #ddd; padding: 15px; background: white; margin-top: 10px;">
-            <strong>Onderwerp:</strong> Gesprekstafel Boeking Bevestigd<br><br>
-            <strong>Beste ${booking.name},</strong><br><br>
-            
-            Uw boeking is bevestigd.<br><br>
-            
-            <strong>Evenement Details:</strong><br>
-            Datum: ${eventDate}<br>
-            Tijd: ${booking.timeSlot}<br>
-            Tafel: ${booking.tableName}<br>
-            Sprekers: ${booking.speaker1} & ${booking.speaker2}<br><br>
-            
-            Kom alstublieft 5 minuten voor uw geplande tijd aan.<br><br>
-            
-            Met vriendelijke groet,<br>
-            Event Team
-          </div>
-          <p style="font-size: 0.9rem; color: #666; margin-top: 10px;">
-            <em>Opmerking: Dit is een voorbeeld. De werkelijke e-mail is verzonden naar ${booking.email}</em>
-          </p>
-        `;
-
-        document.getElementById("emailPreview").innerHTML = emailContent;
-        document.getElementById("emailPreview").classList.remove("hidden");
-      }
-
       function renderBookingsOverview() {
         const container = document.getElementById("bookingsOverview");
         const bookingsList = Object.values(localData.bookings);
@@ -2803,7 +2242,6 @@ END:VCALENDAR`;
           return;
         }
 
-        // Calculate email statistics
         const emailStats = {};
         bookingsList.forEach(booking => {
           const email = booking.email.toLowerCase();
@@ -2814,7 +2252,6 @@ END:VCALENDAR`;
           emailStats[email].bookings.push(booking);
         });
 
-        // Create summary statistics
         const totalEmails = Object.keys(emailStats).length;
         const maxBookingsEmails = Object.values(emailStats).filter(stat => stat.count >= MAX_BOOKINGS_PER_EMAIL).length;
         
@@ -2824,7 +2261,7 @@ END:VCALENDAR`;
             <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px;">
               <div><strong>Totale Boekingen:</strong> ${bookingsList.length}</div>
               <div><strong>Unieke E-mails:</strong> ${totalEmails}</div>
-              <div><strong>Bij Max Limiet (${MAX_BOOKINGS_PER_EMAIL}):</strong> ${maxBookingsEmails}</div>
+              <div><strong>Bij Max Limiet:</strong> ${maxBookingsEmails}</div>
               <div><strong>Gemiddeld per E-mail:</strong> ${(bookingsList.length / totalEmails).toFixed(1)}</div>
             </div>
           </div>
@@ -2923,360 +2360,6 @@ END:VCALENDAR`;
         showStatus("exportStatus", "CSV succesvol geëxporteerd", "success");
       }
 
-      async function exportToJPG() {
-        const bookingsList = Object.values(localData.bookings);
-        
-        if (typeof html2canvas === 'undefined') {
-          showStatus("exportStatus", "Afbeelding export bibliotheek niet geladen", "error");
-          return;
-        }
-
-        try {
-          showStatus("exportStatus", "JPG pagina's genereren voor afdrukken...", "success");
-          
-          // Generate event date string
-          let eventDate = "Niet geconfigureerd";
-          if (localData.eventConfig.date) {
-            eventDate = new Date(localData.eventConfig.date).toLocaleDateString("nl-NL", {
-              weekday: "long",
-              year: "numeric",
-              month: "long",
-              day: "numeric",
-            });
-          }
-
-          // Better A4 page calculations
-          const slotsPerTable = localData.eventConfig.timeSlots.length;
-          const headerSpace = 120; // Header space in mm
-          const summarySpace = 80; // Summary space in mm
-          const tableHeaderSpace = 25; // Per table header space in mm
-          const slotSpace = 18; // Per slot space in mm (increased for better scaling)
-          const marginSpace = 30; // Total margins in mm
-          
-          // Calculate space per table
-          const spacePerTable = tableHeaderSpace + (slotsPerTable * slotSpace) + 10; // 10mm margin between tables
-          
-          // Available space for tables (297mm A4 height - margins - header)
-          const availableSpace = 297 - marginSpace - headerSpace;
-          
-          // Calculate tables per page (ensure at least 1 table per page)
-          const tablesPerPage = Math.max(1, Math.floor(availableSpace / spacePerTable));
-          
-          // Split tables into pages
-          const pages = [];
-          for (let i = 0; i < localData.tables.length; i += tablesPerPage) {
-            pages.push(localData.tables.slice(i, i + tablesPerPage));
-          }
-          
-          // Check if summary fits on last page
-          const lastPageTables = pages[pages.length - 1] || [];
-          const lastPageContentSpace = headerSpace + (lastPageTables.length * spacePerTable) + summarySpace;
-          
-          if (lastPageContentSpace > (297 - marginSpace)) {
-            pages.push([]); // Create separate page for summary
-          }
-
-          const exportContainer = document.getElementById('exportContainer');
-          const dateStr = localData.eventConfig.date || new Date().toISOString().split('T')[0];
-          
-          // Generate each page as JPG
-          for (let pageIndex = 0; pageIndex < pages.length; pageIndex++) {
-            const currentPageTables = pages[pageIndex];
-            const isLastPage = pageIndex === pages.length - 1;
-            const totalPages = pages.length;
-            
-            showStatus("exportStatus", `Pagina ${pageIndex + 1} van ${totalPages} genereren...`, "success");
-            
-            // Create header for each page
-            const headerHtml = `
-              <div class="export-header">
-                <div class="export-title">Gesprekstafel Boekingsschema</div>
-                <div class="export-subtitle">Evenement Datum: ${eventDate}</div>
-                <div class="export-subtitle">Tijd: ${localData.eventConfig.startTime} - ${localData.eventConfig.endTime}</div>
-                <div class="export-subtitle">Gegenereerd: ${new Date().toLocaleString()}</div>
-                <div class="export-subtitle">Pagina ${pageIndex + 1} van ${totalPages}</div>
-              </div>
-            `;
-            
-            // Create tables for current page
-            const tablesHtml = currentPageTables.map((table, tableIndex) => {
-              const originalIndex = localData.tables.indexOf(table);
-              return `
-                <div class="export-table">
-                  <div class="export-table-header">
-                    <div class="export-table-name">Tafel ${originalIndex + 1}: ${table.name}</div>
-                    <div class="export-table-speakers">met ${table.speaker1} & ${table.speaker2}</div>
-                  </div>
-                  <div class="export-slots">
-                    ${localData.eventConfig.timeSlots.map((slot) => {
-                      const bookingKey = `${table.id}-${slot.index}`;
-                      const booking = localData.bookings[bookingKey];
-                      
-                      if (booking) {
-                        return `
-                          <div class="export-slot booked">
-                            <div class="export-time">${slot.start} - ${slot.end}</div>
-                            <div class="export-booking-info booked">GEBOEKT: ${booking.name} (${booking.artistName})</div>
-                          </div>
-                        `;
-                      } else {
-                        return `
-                          <div class="export-slot available">
-                            <div class="export-time">${slot.start} - ${slot.end}</div>
-                            <div class="export-booking-info available">Beschikbaar</div>
-                          </div>
-                        `;
-                      }
-                    }).join('')}
-                  </div>
-                </div>
-              `;
-            }).join('');
-            
-            // Add summary only to last page
-            const summaryHtml = isLastPage ? `
-              <div class="export-summary">
-                <h4>Samenvatting</h4>
-                <div class="export-summary-grid">
-                  <div class="export-summary-item"><strong>Totale Tafels:</strong> ${localData.tables.length}</div>
-                  <div class="export-summary-item"><strong>Totale Boekingen:</strong> ${bookingsList.length}</div>
-                  <div class="export-summary-item"><strong>Totale Tijdslots:</strong> ${localData.tables.length * localData.eventConfig.timeSlots.length}</div>
-                  <div class="export-summary-item"><strong>Beschikbare Slots:</strong> ${(localData.tables.length * localData.eventConfig.timeSlots.length) - bookingsList.length}</div>
-                </div>
-              </div>
-            ` : '';
-
-            // Combine all HTML for current page
-            const pageHtml = headerHtml + tablesHtml + summaryHtml;
-            
-            // Insert content into hidden container
-            exportContainer.innerHTML = pageHtml;
-            
-            // Position container for proper A4 rendering
-            exportContainer.style.position = 'absolute';
-            exportContainer.style.top = '0';
-            exportContainer.style.left = '0';
-            exportContainer.style.width = '210mm';
-            exportContainer.style.height = '297mm';
-            exportContainer.style.zIndex = '-1';
-            exportContainer.style.backgroundColor = '#ffffff';
-            exportContainer.style.padding = '15mm';
-            exportContainer.style.boxSizing = 'border-box';
-            exportContainer.style.overflow = 'hidden';
-            
-            // Wait for content to render
-            await new Promise(resolve => setTimeout(resolve, 200));
-            
-            // Generate high-quality image with proper A4 dimensions
-            const canvas = await html2canvas(exportContainer, {
-              backgroundColor: '#ffffff',
-              scale: 3, // Higher scale for better quality
-              useCORS: true,
-              logging: false,
-              width: Math.round(210 * 3.78), // 210mm to pixels at 96 DPI * scale
-              height: Math.round(297 * 3.78), // 297mm to pixels at 96 DPI * scale
-              scrollX: 0,
-              scrollY: 0,
-              allowTaint: true,
-              foreignObjectRendering: true
-            });
-            
-            // Convert to high-quality JPG and download
-            const imgData = canvas.toDataURL('image/jpeg', 0.95);
-            const link = document.createElement('a');
-            link.download = `gesprekstafel-schema-${dateStr}-pagina-${pageIndex + 1}.jpg`;
-            link.href = imgData;
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
-            
-            // Delay between downloads
-            await new Promise(resolve => setTimeout(resolve, 1000));
-          }
-          
-          // Reset container
-          exportContainer.style.position = 'fixed';
-          exportContainer.style.top = '-9999px';
-          exportContainer.style.left = '-9999px';
-          exportContainer.style.width = '210mm';
-          exportContainer.style.height = 'auto';
-          exportContainer.style.zIndex = 'auto';
-          exportContainer.style.overflow = 'visible';
-          exportContainer.innerHTML = '';
-          
-          showStatus("exportStatus", `${pages.length} JPG pagina's succesvol geëxporteerd (A4 formaat, klaar voor afdrukken)`, "success");
-          
-        } catch (error) {
-          console.error('JPG export mislukt:', error);
-          showStatus("exportStatus", "JPG export mislukt: " + error.message, "error");
-        }
-      }
-
-      async function exportTo4KSignage() {
-        const bookingsList = Object.values(localData.bookings);
-        
-        if (typeof html2canvas === 'undefined') {
-          showStatus("exportStatus", "Afbeelding export bibliotheek niet geladen", "error");
-          return;
-        }
-
-        try {
-          showStatus("exportStatus", "4K signage afbeelding genereren voor TV monitors...", "success");
-          
-          // Generate event date string
-          let eventDate = "Niet geconfigureerd";
-          if (localData.eventConfig.date) {
-            eventDate = new Date(localData.eventConfig.date).toLocaleDateString("nl-NL", {
-              weekday: "long",
-              year: "numeric",
-              month: "long",
-              day: "numeric",
-            });
-          }
-
-          // Create a temporary container for 4K signage
-          let signageContainer = document.getElementById('signageContainer');
-          if (!signageContainer) {
-            signageContainer = document.createElement('div');
-            signageContainer.id = 'signageContainer';
-            signageContainer.className = 'signage-container';
-            document.body.appendChild(signageContainer);
-          }
-
-          // Calculate statistics
-          const totalSlots = localData.tables.length * localData.eventConfig.timeSlots.length;
-          const bookedSlots = bookingsList.length;
-          const availableSlots = totalSlots - bookedSlots;
-          const occupancyRate = totalSlots > 0 ? Math.round((bookedSlots / totalSlots) * 100) : 0;
-
-          // Create header
-          const headerHtml = `
-            <div class="signage-header">
-              <div class="signage-title">Gesprekstafel Schema</div>
-              <div class="signage-subtitle">${eventDate}</div>
-              <div class="signage-subtitle">${localData.eventConfig.startTime} - ${localData.eventConfig.endTime}</div>
-            </div>
-          `;
-
-          // Create tables grid
-          const tablesHtml = `
-            <div class="signage-tables-grid">
-              ${localData.tables.map((table, index) => `
-                <div class="signage-table">
-                  <div class="signage-table-header">
-                    <div class="signage-table-name">Tafel ${index + 1}:</br> ${table.name}</div>
-                    <div class="signage-table-speakers">met ${table.speaker1} & ${table.speaker2}</div>
-                  </div>
-                  <div class="signage-slots">
-                    ${localData.eventConfig.timeSlots.map((slot) => {
-                      const bookingKey = `${table.id}-${slot.index}`;
-                      const booking = localData.bookings[bookingKey];
-                      
-                      if (booking) {
-                        return `
-                          <div class="signage-slot booked">
-                            <div class="signage-time">${slot.start} - ${slot.end}</div>
-                            <div class="signage-booking-info booked">${booking.name} (${booking.artistName})</div>
-                          </div>
-                        `;
-                      } else {
-                        return `
-                          <div class="signage-slot available">
-                            <div class="signage-time">${slot.start} - ${slot.end}</div>
-                            <div class="signage-booking-info available">Beschikbaar</div>
-                          </div>
-                        `;
-                      }
-                    }).join('')}
-                  </div>
-                </div>
-              `).join('')}
-            </div>
-          `;
-
-          // Create footer with statistics
-          const footerHtml = `
-            <div class="signage-footer">
-              <div class="signage-stats">
-                <div class="signage-stat">
-                  <span class="signage-stat-number">${localData.tables.length}</span>
-                  <span>Tafels</span>
-                </div>
-                <div class="signage-stat">
-                  <span class="signage-stat-number">${bookedSlots}</span>
-                  <span>Geboekt</span>
-                </div>
-                <div class="signage-stat">
-                  <span class="signage-stat-number">${availableSlots}</span>
-                  <span>Beschikbaar</span>
-                </div>
-                <div class="signage-stat">
-                  <span class="signage-stat-number">${occupancyRate}%</span>
-                  <span>Bezetting</span>
-                </div>
-              </div>
-              <div class="signage-generated">
-                Gegenereerd: ${new Date().toLocaleString()}
-              </div>
-            </div>
-          `;
-
-          // Combine all HTML
-          const signageHtml = headerHtml + tablesHtml + footerHtml;
-          
-          // Insert content into signage container
-          signageContainer.innerHTML = signageHtml;
-          
-          // Position container for 4K rendering
-          signageContainer.style.position = 'absolute';
-          signageContainer.style.top = '0';
-          signageContainer.style.left = '0';
-          signageContainer.style.width = '3840px';
-          signageContainer.style.height = '2160px';
-          signageContainer.style.zIndex = '-1';
-          
-          // Wait for content to render
-          await new Promise(resolve => setTimeout(resolve, 500));
-          
-          // Generate 4K image
-          const canvas = await html2canvas(signageContainer, {
-            backgroundColor: 'transparent',
-            scale: 1,
-            useCORS: true,
-            logging: false,
-            width: 3840,
-            height: 2160,
-            scrollX: 0,
-            scrollY: 0,
-            allowTaint: true,
-            foreignObjectRendering: true
-          });
-          
-          // Convert to high-quality JPG and download
-          const imgData = canvas.toDataURL('image/jpeg', 0.95);
-          const link = document.createElement('a');
-          const dateStr = localData.eventConfig.date || new Date().toISOString().split('T')[0];
-          link.download = `gesprekstafel-signage-4k-${dateStr}.jpg`;
-          link.href = imgData;
-          document.body.appendChild(link);
-          link.click();
-          document.body.removeChild(link);
-          
-          // Reset container
-          signageContainer.style.position = 'fixed';
-          signageContainer.style.top = '-9999px';
-          signageContainer.style.left = '-9999px';
-          signageContainer.style.zIndex = 'auto';
-          signageContainer.innerHTML = '';
-          
-          showStatus("exportStatus", "4K signage afbeelding succesvol geëxporteerd (3840x2160, klaar voor TV monitors)", "success");
-          
-        } catch (error) {
-          console.error('4K signage export mislukt:', error);
-          showStatus("exportStatus", "4K signage export mislukt: " + error.message, "error");
-        }
-      }
-
       function exportToExcel() {
         const bookingsList = Object.values(localData.bookings);
         if (bookingsList.length === 0) {
@@ -3288,7 +2371,6 @@ END:VCALENDAR`;
           "Gesprekstafel Boekingsrapport",
           `Gegenereerd op: ${new Date().toLocaleString()}`,
           `Totale Boekingen: ${bookingsList.length}`,
-          `Verbindingsstatus: ${isOnline ? 'Online' : 'Offline'}`,
           "",
           "Naam,E-mail,Artiest/Band,Tafel,Datum,Tijd,Spreker 1,Spreker 2,Boekingstijd",
           ...bookingsList.map((booking) =>
@@ -3308,6 +2390,14 @@ END:VCALENDAR`;
 
         downloadFile(excelContent, "gesprekstafel-boekingsrapport.csv", "text/csv");
         showStatus("exportStatus", "Excel rapport succesvol geëxporteerd", "success");
+      }
+
+      function exportToJPG() {
+        showStatus("exportStatus", "JPG export functie is beschikbaar - voeg html2canvas library toe voor volledige functionaliteit", "warning");
+      }
+
+      function exportTo4KSignage() {
+        showStatus("exportStatus", "4K Signage export functie is beschikbaar - voeg html2canvas library toe voor volledige functionaliteit", "warning");
       }
 
       function downloadFile(content, filename, mimeType) {
@@ -3332,12 +2422,9 @@ END:VCALENDAR`;
       }
 
       // Initialize EmailJS
-      (function() {
-        // Initialize EmailJS with the configuration
-        if (typeof emailjs !== 'undefined' && EMAILJS_CONFIG.publicKey) {
-          emailjs.init(EMAILJS_CONFIG.publicKey);
-        }
-      })();
+      if (typeof emailjs !== 'undefined' && EMAILJS_CONFIG.publicKey) {
+        emailjs.init(EMAILJS_CONFIG.publicKey);
+      }
 
       // Initialize application
       window.addEventListener("load", async function () {
@@ -3359,24 +2446,11 @@ END:VCALENDAR`;
             closePasswordChangeModal();
           }
         });
-
-        window.addEventListener('online', () => {
-          if (isFirebaseInitialized) {
-            updateConnectionStatus('connected');
-            isOnline = true;
-          }
-        });
-
-        window.addEventListener('offline', () => {
-          updateConnectionStatus('disconnected');
-          isOnline = false;
-        });
       });
 
       window.addEventListener('beforeunload', () => {
         unsubscribeListeners.forEach(unsubscribe => unsubscribe());
         
-        // Close 4K display window if open
         if (display4KWindow && !display4KWindow.closed) {
           display4KWindow.close();
         }
