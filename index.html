@@ -1198,14 +1198,14 @@
       <div id="admin-interface" class="admin-interface">
         <div class="admin-header">
           <h1>Admin Dashboard</h1>
-          <div class="admin-user-info">
-            <span id="adminUserEmail"></span>
-            <button onclick="logout()" class="btn-secondary">Uitloggen</button>
-            <button onclick="switchToClient()" class="btn-secondary">
-              Terug naar Boekingen
-            </button>
-          </div>
-        </div>
+<div class="admin-user-info">
+  <span id="adminUserEmail"></span>
+  <div style="display: flex; gap: 10px;">
+    <button onclick="logout()" class="btn-secondary">Uitloggen</button>
+    <button onclick="logoutEverywhere()" class="btn-danger" style="font-size: 0.8rem; padding: 4px 8px;">Uitloggen Overal</button>
+    <button onclick="switchToClient()" class="btn-secondary">Terug naar Boekingen</button>
+  </div>
+</div>
 
         <!-- FIREBASE CONFIGURATION SECTION -->
         <div class="firebase-config-section">
@@ -1461,46 +1461,34 @@
       <!-- MODALS -->
       <div class="overlay" id="overlay"></div>
 
-      <!-- LOGIN MODAL -->
-      <div class="modal" id="loginModal">
-        <form onsubmit="loginAdmin(); return false;">
-          <h3>Admin Inloggen</h3>
-          <div class="form-group">
-            <label for="adminEmail">E-mail:</label>
-            <input
-              type="email"
-              id="adminEmail"
-              placeholder="Voer admin e-mail in"
-              style="width: 100%; margin-bottom: 15px"
-              required
-            />
-          </div>
-          <div class="form-group">
-            <label for="adminPassword">Wachtwoord:</label>
-            <input
-              type="password"
-              id="adminPassword"
-              placeholder="Voer wachtwoord in"
-              onkeypress="if(event.key==='Enter') loginAdmin()"
-              style="width: 100%; margin-bottom: 15px"
-              required
-            />
-          </div>
-          <div style="text-align: center">
-            <button type="submit" style="margin-right: 10px">
-              Inloggen
-            </button>
-            <button type="button" onclick="closeLoginModal()" class="btn-secondary">
-              Annuleren
-            </button>
-          </div>
-          <div
-            id="loginError"
-            class="status-message error"
-            style="display: none"
-          ></div>
-        </form>
-      </div>
+<div class="modal" id="loginModal">
+  <form onsubmit="loginAdmin(); return false;">
+    <h3>Admin Inloggen</h3>
+    <div class="form-group">
+      <label for="adminEmail">E-mail:</label>
+      <input type="email" id="adminEmail" placeholder="Voer admin e-mail in" style="width: 100%; margin-bottom: 15px" required />
+    </div>
+    <div class="form-group">
+      <label for="adminPassword">Wachtwoord:</label>
+      <input type="password" id="adminPassword" placeholder="Voer wachtwoord in" onkeypress="if(event.key==='Enter') loginAdmin()" style="width: 100%; margin-bottom: 15px" required />
+    </div>
+    <!-- ✅ NIEUWE REMEMBER ME CHECKBOX -->
+    <div class="form-group" style="margin-bottom: 15px;">
+      <label style="display: flex; align-items: center; gap: 8px; font-size: 0.9rem; cursor: pointer;">
+        <input type="checkbox" id="rememberMe" style="margin: 0;">
+        <span>Onthoud mij op dit apparaat</span>
+      </label>
+      <small style="color: #666; font-size: 0.8rem; margin-left: 20px;">
+        Blijf ingelogd voor 30 dagen (alleen op vertrouwde apparaten)
+      </small>
+    </div>
+    <div style="text-align: center">
+      <button type="submit" style="margin-right: 10px">Inloggen</button>
+      <button type="button" onclick="closeLoginModal()" class="btn-secondary">Annuleren</button>
+    </div>
+    <div id="loginError" class="status-message error" style="display: none"></div>
+  </form>
+</div>
 
       <!-- PASSWORD CHANGE MODAL -->
       <div class="modal" id="passwordChangeModal">
@@ -1954,7 +1942,14 @@ setupSignageRealtimeListeners();
       async function loginAdmin() {
         // Prevent form submission
         event?.preventDefault();
-        
+        const rememberMe = document.getElementById("rememberMe").checked;
+
+// ✅ NIEUWE: Sla login session op
+saveLoginSession(email, rememberMe);
+
+if (rememberMe) {
+  showUserManagementStatus("Succesvol ingelogd. U blijft 30 dagen ingelogd op dit apparaat.", "success");
+}
         const email = document.getElementById("adminEmail").value.trim();
         const password = document.getElementById("adminPassword").value;
 
@@ -2178,6 +2173,71 @@ setupSignageRealtimeListeners();
           element.style.display = "none";
         }, 5000);
       }
+      // Remember Me Functionality
+function saveLoginSession(email, rememberMe) {
+  const loginData = {
+    email: email,
+    timestamp: Date.now(),
+    rememberMe: rememberMe
+  };
+  
+  if (rememberMe) {
+    // Sla op voor 30 dagen
+    localStorage.setItem('adminLoginSession', JSON.stringify(loginData));
+  } else {
+    // Alleen voor huidige sessie
+    sessionStorage.setItem('adminLoginSession', JSON.stringify(loginData));
+  }
+}
+
+function getStoredLoginSession() {
+  // Probeer localStorage eerst (remember me)
+  let stored = localStorage.getItem('adminLoginSession');
+  if (stored) {
+    const loginData = JSON.parse(stored);
+    const thirtyDaysAgo = Date.now() - (30 * 24 * 60 * 60 * 1000);
+    
+    if (loginData.timestamp > thirtyDaysAgo && loginData.rememberMe) {
+      return loginData;
+    } else {
+      // Verlopen - verwijder
+      localStorage.removeItem('adminLoginSession');
+    }
+  }
+  
+  // Probeer sessionStorage (huidige sessie)
+  stored = sessionStorage.getItem('adminLoginSession');
+  if (stored) {
+    return JSON.parse(stored);
+  }
+  
+  return null;
+}
+
+function clearAllLoginSessions() {
+  localStorage.removeItem('adminLoginSession');
+  sessionStorage.removeItem('adminLoginSession');
+  localStorage.setItem('forceLogout', Date.now().toString());
+}
+
+async function logoutEverywhere() {
+  if (confirm("Weet u zeker dat u op alle apparaten wilt uitloggen?")) {
+    try {
+      if (auth && currentUser) {
+        await auth.signOut();
+      }
+      
+      currentUser = null;
+      isAdminMode = false;
+      clearAllLoginSessions();
+      switchToClient();
+      alert("U bent uitgelogd op alle apparaten.");
+      
+    } catch (error) {
+      console.error('Uitloggen mislukt:', error);
+    }
+  }
+}
 
       // Firestore data operations
       async function saveEventConfigToFirestore() {
@@ -3969,11 +4029,29 @@ document.addEventListener('keydown', (e) => {
           isOnline = false;
         });
 
-      }); // ← SLUIT window.addEventListener("load") AF
+      }); 
 
       window.addEventListener('beforeunload', () => {
         unsubscribeListeners.forEach(unsubscribe => unsubscribe());
       });
+      // Check for existing login session
+const storedLogin = getStoredLoginSession();
+if (storedLogin && !currentUser && auth) {
+  document.getElementById("adminEmail").value = storedLogin.email;
+  
+  auth.onAuthStateChanged((user) => {
+    if (user && user.email === storedLogin.email) {
+      currentUser = user;
+      isAdminMode = true;
+      switchToAdmin();
+      
+      const daysSinceLogin = Math.floor((Date.now() - storedLogin.timestamp) / (24 * 60 * 60 * 1000));
+      if (storedLogin.rememberMe) {
+        console.log(`Auto-ingelogd. Nog ${30 - daysSinceLogin} dagen geldig.`);
+      }
+    }
+  });
+}
     </script>
   </body>
 </html>
