@@ -3887,8 +3887,9 @@ document.addEventListener('keydown', (e) => {
         window.addEventListener('offline', () => {
           updateConnectionStatus('disconnected');
           isOnline = false;
-});
-      });
+        });
+
+      });  // ← Sluit window.addEventListener('load') af
 
       window.addEventListener('beforeunload', () => {
         unsubscribeListeners.forEach(unsubscribe => unsubscribe());
