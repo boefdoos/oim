@@ -3542,6 +3542,10 @@ async function exportToJPG() {
 }
 // Realtime Signage Management Functions
 function openSignageDisplay() {
+  if (!isAdminMode && !currentUser) {
+    alert("Toegang geweigerd: Alleen administrators kunnen signage openen.");
+    return;
+  }
   const signageElement = document.getElementById('signageFullscreen');
   signageElement.classList.add('active');
   isSignageOpen = true;
@@ -3788,11 +3792,20 @@ function showSignageStatus(message, type) {
 function checkSignageMode() {
   const urlParams = new URLSearchParams(window.location.search);
   if (urlParams.get('mode') === 'signage') {
-    // Hide admin interface and client interface
+    // Check admin status EERST
+    const adminToken = urlParams.get('token');
+    const isValidAdmin = adminToken === 'admin2025' || currentUser || isAdminMode;
+    
+    if (!isValidAdmin) {
+      // Redirect niet-admins naar normale interface
+      window.location.href = window.location.href.split('?')[0];
+      return;
+    }
+    
+    // Alleen voor admins - rest blijft hetzelfde
     document.getElementById('client-interface').style.display = 'none';
     document.getElementById('admin-interface').style.display = 'none';
     
-    // Open signage display
     setTimeout(() => {
       openSignageDisplay();
     }, 1000);
@@ -3921,20 +3934,19 @@ function setupSignageRealtimeListeners() {
           }
         });
 
-        // Keyboard shortcuts for signage
-        document.addEventListener('keydown', (e) => {
-          if (e.key === 'Escape' && isSignageOpen) {
-            exitSignageDisplay();
-          }
-          if (e.key === 'F5' && isSignageOpen) {
-            e.preventDefault();
-            refreshSignageNow();
-          }
-          if (e.ctrlKey && e.key === 's' && isAdminMode) {
-            e.preventDefault();
-            openSignageDisplay();
-          }
-        });
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape' && isSignageOpen && (isAdminMode || currentUser)) {
+    exitSignageDisplay();
+  }
+  if (e.key === 'F5' && isSignageOpen && (isAdminMode || currentUser)) {
+    e.preventDefault();
+    refreshSignageNow();
+  }
+  if (e.ctrlKey && e.key === 's' && isAdminMode && currentUser) {
+    e.preventDefault();
+    openSignageDisplay();
+  }
+});
 
         window.addEventListener('online', () => {
           if (isFirebaseInitialized) {
