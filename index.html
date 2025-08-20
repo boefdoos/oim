@@ -3889,8 +3889,6 @@ document.addEventListener('keydown', (e) => {
           isOnline = false;
         });
 
-      });  // ← Sluit window.addEventListener('load') af
-
       window.addEventListener('beforeunload', () => {
         unsubscribeListeners.forEach(unsubscribe => unsubscribe());
       });
