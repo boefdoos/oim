@@ -3541,21 +3541,31 @@ async function exportToJPG() {
 }
 // Realtime Signage Management Functions
 function openSignageDisplay() {
+  // BEVEILIGING: Alleen admins kunnen signage openen
   if (!isAdminMode && !currentUser) {
-    alert("Toegang geweigerd: Alleen administrators kunnen signage openen.");
+    alert("Toegang geweigerd: Alleen administrators kunnen het signage scherm openen.");
     return;
   }
-  const signageElement = document.getElementById('signageFullscreen');
-  signageElement.classList.add('active');
-  isSignageOpen = true;
   
-  // Start auto-refresh
-  startSignageAutoRefresh();
+  // Genereer beveiligde signage URL
+  const currentURL = window.location.href;
+  const signageURL = currentURL.split('?')[0] + '?mode=signage&token=admin2025';
   
-  // Initial render
-  renderSignageDisplay();
+  // Open signage in nieuw tabblad/venster
+  const signageWindow = window.open(
+    signageURL, 
+    'signage-display',
+    'width=' + screen.width + ',height=' + screen.height + ',fullscreen=yes,scrollbars=no,toolbar=no,menubar=no,status=no'
+  );
   
-  showSignageStatus("4K Signage display geopend. Druk F11 voor volledig scherm.", "success");
+  // Focus op het nieuwe venster
+  if (signageWindow) {
+    signageWindow.focus();
+    showSignageStatus("Signage geopend in nieuw tabblad. Sleep naar TV monitor en druk F11 voor volledig scherm.", "success");
+  } else {
+    // Fallback als popup geblokkeerd is
+    showSignageStatus("Popup geblokkeerd door browser. Gebruik 'Kopieer Signage URL' en open handmatig in nieuw tabblad.", "warning");
+  }
 }
 
 function exitSignageDisplay() {
