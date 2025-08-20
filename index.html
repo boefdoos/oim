@@ -3852,8 +3852,8 @@ function setupSignageRealtimeListeners() {
         if (localData.eventConfig.timeSlots.length === 0) {
           await generateTimeSlots();
         }
-        // Check for signage mode
-checkSignageMode();
+// Check for signage mode
+        checkSignageMode();
 
         document.getElementById("overlay").addEventListener("click", function (e) {
           if (e.target === this) {
@@ -3862,20 +3862,22 @@ checkSignageMode();
             closeConfirmationModal();
             closePasswordChangeModal();
           }
+        });
+
         // Keyboard shortcuts for signage
-document.addEventListener('keydown', (e) => {
-  if (e.key === 'Escape' && isSignageOpen) {
-    exitSignageDisplay();
-  }
-  if (e.key === 'F5' && isSignageOpen) {
-    e.preventDefault();
-    refreshSignageNow();
-  }
-  if (e.ctrlKey && e.key === 's' && isAdminMode) {
-    e.preventDefault();
-    openSignageDisplay();
-  }
-});
+        document.addEventListener('keydown', (e) => {
+          if (e.key === 'Escape' && isSignageOpen) {
+            exitSignageDisplay();
+          }
+          if (e.key === 'F5' && isSignageOpen) {
+            e.preventDefault();
+            refreshSignageNow();
+          }
+          if (e.ctrlKey && e.key === 's' && isAdminMode) {
+            e.preventDefault();
+            openSignageDisplay();
+          }
+        });
 
         window.addEventListener('online', () => {
           if (isFirebaseInitialized) {
@@ -3888,6 +3890,8 @@ document.addEventListener('keydown', (e) => {
           updateConnectionStatus('disconnected');
           isOnline = false;
         });
+
+      }); // ← SLUIT window.addEventListener("load") AF
 
       window.addEventListener('beforeunload', () => {
         unsubscribeListeners.forEach(unsubscribe => unsubscribe());
