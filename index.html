@@ -652,14 +652,6 @@
         font-weight: 500;
       }
 
-      .email-preview {
-        background: var(--gray-100);
-        padding: 20px;
-        border-radius: 8px;
-        margin-top: 20px;
-        border: 2px solid var(--gray-300);
-      }
-
       .hidden {
         display: none;
       }
@@ -1518,11 +1510,7 @@
         <div id="confirmationDetails"></div>
         <div class="booking-actions">
           <button onclick="addToCalendar()" class="btn-success">Toevoegen aan Kalender</button>
-          <button onclick="showEmailPreview()" class="btn-secondary">
-            E-mail Bevestiging Bekijken
-          </button>
         </div>
-        <div id="emailPreview" class="email-preview hidden"></div>
       </div>
     </div>
 
@@ -2542,7 +2530,6 @@
       function closeConfirmationModal() {
         document.getElementById("overlay").style.display = "none";
         document.getElementById("confirmationModal").style.display = "none";
-        document.getElementById("emailPreview").classList.add("hidden");
       }
 
       function addToCalendar() {
