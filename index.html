@@ -786,104 +786,114 @@
         margin-bottom: 40px;
         overflow-y: auto;
         padding: 0 20px;
+        min-height: 0; /* Important for proper grid sizing */
       }
 
       .signage-table {
-        background: rgba(255, 255, 255, 0.95);
-        border-radius: 16px;
-        overflow: hidden;
-        box-shadow: 0 12px 40px rgba(0, 0, 0, 0.3);
-        color: var(--primary-blue);
-        border: 3px solid rgba(255, 255, 255, 0.2);
+        background: rgba(255, 255, 255, 0.95) !important;
+        border-radius: 16px !important;
+        overflow: hidden !important;
+        box-shadow: 0 12px 40px rgba(0, 0, 0, 0.3) !important;
+        color: var(--primary-blue) !important;
+        border: 3px solid rgba(255, 255, 255, 0.2) !important;
+        display: flex !important;
+        flex-direction: column !important;
+        min-height: 400px !important;
       }
 
       .signage-table-header {
-        background: linear-gradient(135deg, var(--primary-blue) 0%, var(--secondary-blue) 100%);
-        padding: 25px;
-        color: var(--white);
-        text-align: center;
-        border-bottom: 3px solid rgba(255, 255, 255, 0.1);
+        background: linear-gradient(135deg, var(--primary-blue) 0%, var(--secondary-blue) 100%) !important;
+        padding: 25px !important;
+        color: var(--white) !important;
+        text-align: center !important;
+        border-bottom: 3px solid rgba(255, 255, 255, 0.1) !important;
+        flex-shrink: 0 !important;
       }
 
       .signage-table-name {
-        font-size: clamp(20px, 2.5vw, 32px);
-        font-weight: 700;
-        margin-bottom: 10px;
-        text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.3);
-        line-height: 1.2;
+        font-size: clamp(20px, 2.5vw, 32px) !important;
+        font-weight: 700 !important;
+        margin-bottom: 10px !important;
+        text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.3) !important;
+        line-height: 1.2 !important;
+        color: white !important;
       }
 
       .signage-table-speakers {
-        font-size: clamp(16px, 1.8vw, 24px);
-        opacity: 0.95;
-        font-weight: 500;
-        line-height: 1.3;
+        font-size: clamp(16px, 1.8vw, 24px) !important;
+        opacity: 0.95 !important;
+        font-weight: 500 !important;
+        line-height: 1.3 !important;
+        color: white !important;
       }
 
       .signage-slots {
-        padding: 20px;
-        background: var(--white);
-        max-height: 600px;
-        overflow-y: auto;
+        padding: 20px !important;
+        background: var(--white) !important;
+        flex: 1 !important;
+        overflow-y: auto !important;
+        display: flex !important;
+        flex-direction: column !important;
+        gap: 8px !important;
       }
 
       .signage-slot {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        padding: 15px 20px;
-        margin-bottom: 10px;
-        border-radius: 8px;
-        font-size: clamp(14px, 1.2vw, 18px);
-        min-height: 50px;
-        transition: all 0.2s ease;
-        box-shadow: 0 3px 8px rgba(0, 0, 0, 0.1);
+        display: flex !important;
+        justify-content: space-between !important;
+        align-items: center !important;
+        padding: 15px 20px !important;
+        border-radius: 8px !important;
+        font-size: clamp(14px, 1.2vw, 18px) !important;
+        min-height: 50px !important;
+        transition: all 0.2s ease !important;
+        box-shadow: 0 3px 8px rgba(0, 0, 0, 0.1) !important;
+        margin-bottom: 8px !important;
       }
 
       .signage-slot.available {
-        background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%);
-        border: 3px solid var(--success);
+        background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%) !important;
+        border: 3px solid var(--success) !important;
       }
 
       .signage-slot.booked {
-        background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
-        border: 3px solid var(--warning);
+        background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%) !important;
+        border: 3px solid var(--warning) !important;
       }
 
       .signage-time {
-        font-weight: 700;
-        min-width: 140px;
-        font-size: clamp(16px, 1.4vw, 20px);
-        color: var(--primary-blue);
-        background: rgba(255, 255, 255, 0.8);
-        padding: 8px 12px;
-        border-radius: 6px;
-        text-align: center;
-        border: 2px solid var(--light-blue);
+        font-weight: 700 !important;
+        min-width: 140px !important;
+        font-size: clamp(16px, 1.4vw, 20px) !important;
+        color: var(--primary-blue) !important;
+        background: rgba(255, 255, 255, 0.8) !important;
+        padding: 8px 12px !important;
+        border-radius: 6px !important;
+        text-align: center !important;
+        border: 2px solid var(--light-blue) !important;
       }
 
       .signage-booking-info {
-        flex: 1;
-        text-align: center;
-        font-weight: 700;
-        font-size: clamp(14px, 1.3vw, 18px);
-        margin-left: 20px;
-        padding: 10px 15px;
-        border-radius: 8px;
-        line-height: 1.3;
+        flex: 1 !important;
+        text-align: center !important;
+        font-weight: 700 !important;
+        font-size: clamp(14px, 1.3vw, 18px) !important;
+        margin-left: 20px !important;
+        padding: 10px 15px !important;
+        border-radius: 8px !important;
+        line-height: 1.3 !important;
       }
 
       .signage-booking-info.booked {
-        color: #78350f;
-        background: rgba(255, 255, 255, 0.9);
-        border: 2px solid var(--warning);
+        color: #78350f !important;
+        background: rgba(255, 255, 255, 0.9) !important;
+        border: 2px solid var(--warning) !important;
       }
 
       .signage-booking-info.available {
-        color: #064e3b;
-        font-style: italic;
-        background: rgba(255, 255, 255, 0.9);
-        border: 2px solid var(--success);
+        color: #064e3b !important;
+        font-style: italic !important;
+        background: rgba(255, 255, 255, 0.9) !important;
+        border: 2px solid var(--success) !important;
       }
 
       .signage-footer {
@@ -2772,7 +2782,10 @@ END:VCALENDAR`;
         if (!isSignageOpen) return;
         
         const signageContent = document.getElementById('signageContent');
-        if (!signageContent) return;
+        if (!signageContent) {
+          console.error('Signage content element not found');
+          return;
+        }
         
         const customTitle = document.getElementById('signageTitle')?.value || 'Planning Expertenhub';
         
@@ -2793,12 +2806,35 @@ END:VCALENDAR`;
         const occupancyRate = totalSlots > 0 ? Math.round((bookedSlots / totalSlots) * 100) : 0;
 
         // Debug logging
-        console.log('Signage Debug:', {
+        console.log('Signage Render Debug:', {
           tables: localData.tables.length,
           timeSlots: localData.eventConfig.timeSlots.length,
           bookings: Object.keys(localData.bookings).length,
-          bookingsList: bookingsList.length
+          bookingsList: bookingsList.length,
+          tablesData: localData.tables,
+          bookingsData: localData.bookings
         });
+
+        // Check if we have the necessary data
+        if (localData.tables.length === 0) {
+          signageContent.innerHTML = `
+            <div class="signage-header">
+              <div class="signage-title">${customTitle}</div>
+              <div class="signage-subtitle">Geen tafels geconfigureerd</div>
+            </div>
+          `;
+          return;
+        }
+
+        if (localData.eventConfig.timeSlots.length === 0) {
+          signageContent.innerHTML = `
+            <div class="signage-header">
+              <div class="signage-title">${customTitle}</div>
+              <div class="signage-subtitle">Geen tijdslots geconfigureerd</div>
+            </div>
+          `;
+          return;
+        }
 
         const headerHtml = `
           <div class="signage-header">
@@ -2811,36 +2847,39 @@ END:VCALENDAR`;
         const tablesHtml = `
           <div class="signage-tables">
             ${localData.tables.map((table, index) => {
-              console.log(`Rendering table ${index + 1}: ${table.name}`);
+              console.log(`Rendering signage table ${index + 1}:`, table);
+              
+              const slotsHtml = localData.eventConfig.timeSlots.map((slot) => {
+                const bookingKey = `${table.id}-${slot.index}`;
+                const booking = localData.bookings[bookingKey];
+                
+                console.log(`Slot ${slot.start}-${slot.end} (${bookingKey}):`, booking ? 'BOOKED' : 'AVAILABLE');
+                
+                if (booking) {
+                  return `
+                    <div class="signage-slot booked">
+                      <div class="signage-time">${slot.start} - ${slot.end}</div>
+                      <div class="signage-booking-info booked">GEBOEKT: ${booking.name} (${booking.artistName})</div>
+                    </div>
+                  `;
+                } else {
+                  return `
+                    <div class="signage-slot available">
+                      <div class="signage-time">${slot.start} - ${slot.end}</div>
+                      <div class="signage-booking-info available">Beschikbaar</div>
+                    </div>
+                  `;
+                }
+              }).join('');
+              
               return `
-                <div class="signage-table">
-                  <div class="signage-table-header">
-                    <div class="signage-table-name">Tafel ${index + 1}: ${table.name}</div>
-                    <div class="signage-table-speakers">met ${table.speaker1} & ${table.speaker2}</div>
+                <div class="signage-table" style="background: rgba(255, 255, 255, 0.95); border-radius: 16px; overflow: hidden; box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2); color: #333; border: 3px solid rgba(255, 255, 255, 0.2); margin-bottom: 20px;">
+                  <div class="signage-table-header" style="background: linear-gradient(135deg, var(--primary-blue) 0%, var(--secondary-blue) 100%); padding: 25px; color: white; text-align: center; border-bottom: 3px solid rgba(255, 255, 255, 0.1);">
+                    <div class="signage-table-name" style="font-size: clamp(20px, 2.5vw, 32px); font-weight: 700; margin-bottom: 10px; text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.3); line-height: 1.2;">Tafel ${index + 1}: ${table.name}</div>
+                    <div class="signage-table-speakers" style="font-size: clamp(16px, 1.8vw, 24px); opacity: 0.95; font-weight: 500; line-height: 1.3;">met ${table.speaker1} & ${table.speaker2}</div>
                   </div>
-                  <div class="signage-slots">
-                    ${localData.eventConfig.timeSlots.map((slot) => {
-                      const bookingKey = `${table.id}-${slot.index}`;
-                      const booking = localData.bookings[bookingKey];
-                      
-                      console.log(`Slot ${slot.start}-${slot.end}:`, bookingKey, booking ? 'BOOKED' : 'AVAILABLE');
-                      
-                      if (booking) {
-                        return `
-                          <div class="signage-slot booked">
-                            <div class="signage-time">${slot.start} - ${slot.end}</div>
-                            <div class="signage-booking-info booked">GEBOEKT: ${booking.name} (${booking.artistName})</div>
-                          </div>
-                        `;
-                      } else {
-                        return `
-                          <div class="signage-slot available">
-                            <div class="signage-time">${slot.start} - ${slot.end}</div>
-                            <div class="signage-booking-info available">Beschikbaar</div>
-                          </div>
-                        `;
-                      }
-                    }).join('')}
+                  <div class="signage-slots" style="padding: 20px; background: white; max-height: 600px; overflow-y: auto;">
+                    ${slotsHtml}
                   </div>
                 </div>
               `;
@@ -2874,7 +2913,15 @@ END:VCALENDAR`;
           </div>
         `;
 
-        signageContent.innerHTML = headerHtml + tablesHtml + footerHtml;
+        const fullHtml = headerHtml + tablesHtml + footerHtml;
+        console.log('Setting signage content HTML length:', fullHtml.length);
+        signageContent.innerHTML = fullHtml;
+        
+        // Verify the content was set
+        setTimeout(() => {
+          const tables = signageContent.querySelectorAll('.signage-table');
+          console.log('Signage tables rendered:', tables.length);
+        }, 100);
       }
 
       function setupSignageRealtimeListeners() {
