@@ -3796,30 +3796,298 @@ function showSignageStatus(message, type) {
     element.style.display = 'none';
   }, 5000);
 }
-
-// Check if page should open in signage mode
 function checkSignageMode() {
   const urlParams = new URLSearchParams(window.location.search);
   if (urlParams.get('mode') === 'signage') {
-    // Check admin status EERST
     const adminToken = urlParams.get('token');
     const isValidAdmin = adminToken === 'admin2025' || currentUser || isAdminMode;
     
     if (!isValidAdmin) {
-      // Redirect niet-admins naar normale interface
       window.location.href = window.location.href.split('?')[0];
       return;
     }
     
-    // Alleen voor admins - rest blijft hetzelfde
+    // Activeer signage in HUIDIGE pagina
     document.getElementById('client-interface').style.display = 'none';
     document.getElementById('admin-interface').style.display = 'none';
     
+    const signageElement = document.getElementById('signageFullscreen');
+    signageElement.classList.add('active');
+    isSignageOpen = true;
+    
     setTimeout(() => {
-      openSignageDisplay();
-    }, 1000);
+      renderSignageDisplay();
+      if (signageAutoRefresh) {
+        startSignageAutoRefresh();
+      }
+    }, 500);
   }
 }
+      // EXTRA: Voeg deze functie toe voor lokale signage activatie
+function activateSignageInCurrentWindow() {
+  // Verberg andere interfaces
+  document.getElementById('client-interface').style.display = 'none';
+  document.getElementById('admin-interface').style.display = 'none';
+  
+  // Toon signage fullscreen
+  const signageElement = document.getElementById('signageFullscreen');
+  signageElement.classList.add('active');
+  isSignageOpen = true;
+  
+  // Render content
+  renderSignageDisplay();
+  
+  // Start auto-refresh als ingeschakeld
+  if (signageAutoRefresh) {
+    startSignageAutoRefresh();
+  }
+  
+  // Update refresh indicator
+  updateSignageRefreshIndicator('live');
+}
+
+// FIX voor openSignageDisplay - voorkom loop en voeg lokale optie toe
+function openSignageDisplay() {
+  // BEVEILIGING: Alleen admins kunnen signage openen
+  if (!isAdminMode && !currentUser) {
+    alert("Toegang geweigerd: Alleen administrators kunnen het signage scherm openen.");
+    return;
+  }
+  
+  // Check of we al in signage mode zitten
+  const urlParams = new URLSearchParams(window.location.search);
+  if (urlParams.get('mode') === 'signage') {
+    // Al in signage mode - activeer lokaal
+    activateSignageInCurrentWindow();
+    return;
+  }
+  
+  // Normaal geval - open in nieuw tabblad
+  const currentURL = window.location.href;
+  const signageURL = currentURL.split('?')[0] + '?mode=signage&token=admin2025';
+  
+  const signageWindow = window.open(
+    signageURL, 
+    'signage-display',
+    'width=' + screen.width + ',height=' + screen.height + ',fullscreen=yes,scrollbars=no,toolbar=no,menubar=no,status=no'
+  );
+  
+  if (signageWindow) {
+    signageWindow.focus();
+    showSignageStatus("Signage geopend in nieuw tabblad. Sleep naar TV monitor en druk F11 voor volledig scherm.", "success");
+  } else {
+    showSignageStatus("Popup geblokkeerd door browser. Gebruik 'Kopieer Signage URL' en open handmatig in nieuw tabblad.", "warning");
+  }
+}
+
+// FIX voor startSignageAutoRefresh - verbeter interval management
+function startSignageAutoRefresh() {
+  if (!signageAutoRefresh) return;
+  
+  stopSignageAutoRefresh(); // Clear any existing interval
+  
+  const intervalInput = document.getElementById('signageRefreshInterval');
+  const interval = (intervalInput ? parseInt(intervalInput.value) : 30) * 1000;
+  
+  signageRefreshInterval = setInterval(() => {
+    if (isSignageOpen && signageAutoRefresh) {
+      console.log('Auto-refreshing signage display'); // Debug
+      renderSignageDisplay();
+      updateSignageRefreshIndicator('updating');
+      
+      setTimeout(() => {
+        updateSignageRefreshIndicator('live');
+      }, 1000);
+    } else {
+      // Stop interval als signage niet meer open is
+      stopSignageAutoRefresh();
+    }
+  }, interval);
+  
+  console.log(`Signage auto-refresh gestart met ${interval/1000}s interval`); // Debug
+}
+
+// FIX voor renderSignageDisplay - compleet uitgewerkt
+function renderSignageDisplay() {
+  console.log('renderSignageDisplay aangeroepen', { isSignageOpen, localData }); // Debug
+  
+  const signageContent = document.getElementById('signageContent');
+  if (!signageContent) {
+    console.error('Signage content element niet gevonden');
+    return;
+  }
+  
+  // Check of er data beschikbaar is
+  if (!localData.tables || localData.tables.length === 0) {
+    console.log('Geen tafels beschikbaar'); // Debug
+    signageContent.innerHTML = `
+      <div style="display: flex; justify-content: center; align-items: center; height: 100%; color: white; font-size: 48px; text-align: center;">
+        <div>
+          <h2>Geen tafels geconfigureerd</h2>
+          <p style="font-size: 24px; opacity: 0.8;">Configureer eerst de tafels in het admin panel</p>
+        </div>
+      </div>
+    `;
+    return;
+  }
+  
+  if (!localData.eventConfig.timeSlots || localData.eventConfig.timeSlots.length === 0) {
+    console.log('Geen tijdslots beschikbaar'); // Debug
+    signageContent.innerHTML = `
+      <div style="display: flex; justify-content: center; align-items: center; height: 100%; color: white; font-size: 48px; text-align: center;">
+        <div>
+          <h2>Geen tijdslots geconfigureerd</h2>
+          <p style="font-size: 24px; opacity: 0.8;">Genereer eerst tijdslots in het admin panel</p>
+        </div>
+      </div>
+    `;
+    return;
+  }
+  
+  console.log(`Rendering signage met ${localData.tables.length} tafels en ${localData.eventConfig.timeSlots.length} tijdslots`); // Debug
+  
+  // Get custom title from admin interface (with fallback)
+  const titleInput = document.getElementById('signageTitle');
+  const customTitle = (titleInput && titleInput.value) ? titleInput.value : 'Planning Expertenhub';
+  
+  // Generate event date string
+  let eventDate = "Niet geconfigureerd";
+  if (localData.eventConfig.date) {
+    eventDate = new Date(localData.eventConfig.date).toLocaleDateString("nl-NL", {
+      weekday: "long",
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+    });
+  }
+
+  // Calculate statistics
+  const bookingsList = Object.values(localData.bookings || {});
+  const totalSlots = localData.tables.length * localData.eventConfig.timeSlots.length;
+  const bookedSlots = bookingsList.length;
+  const availableSlots = totalSlots - bookedSlots;
+  const occupancyRate = totalSlots > 0 ? Math.round((bookedSlots / totalSlots) * 100) : 0;
+
+  // Create header
+  const headerHtml = `
+    <div class="signage-realtime-header">
+      <div class="signage-realtime-title">${customTitle}</div>
+      <div class="signage-realtime-subtitle">${eventDate}</div>
+      <div class="signage-realtime-subtitle">${localData.eventConfig.startTime} - ${localData.eventConfig.endTime}</div>
+    </div>
+  `;
+
+  // Create tables grid
+  const tablesHtml = `
+    <div class="signage-realtime-tables">
+      ${localData.tables.map((table, index) => `
+        <div class="signage-realtime-table">
+          <div class="signage-realtime-table-header">
+            <div class="signage-realtime-table-name">Tafel ${index + 1}: ${table.name}</div>
+            <div class="signage-realtime-table-speakers">met ${table.speaker1} & ${table.speaker2}</div>
+          </div>
+          <div class="signage-realtime-slots">
+            ${localData.eventConfig.timeSlots.map((slot) => {
+              const bookingKey = `${table.id}-${slot.index}`;
+              const booking = localData.bookings[bookingKey];
+              
+              if (booking) {
+                return `
+                  <div class="signage-realtime-slot booked">
+                    <div class="signage-realtime-time">${slot.start} - ${slot.end}</div>
+                    <div class="signage-realtime-booking-info booked">${booking.name} (${booking.artistName})</div>
+                  </div>
+                `;
+              } else {
+                return `
+                  <div class="signage-realtime-slot available">
+                    <div class="signage-realtime-time">${slot.start} - ${slot.end}</div>
+                    <div class="signage-realtime-booking-info available">Beschikbaar</div>
+                  </div>
+                `;
+              }
+            }).join('')}
+          </div>
+        </div>
+      `).join('')}
+    </div>
+  `;
+
+  // Create footer with statistics
+  const footerHtml = `
+    <div class="signage-realtime-footer">
+      <div class="signage-realtime-stats">
+        <div class="signage-realtime-stat">
+          <span class="signage-realtime-stat-number">${localData.tables.length}</span>
+          <span>Tafels</span>
+        </div>
+        <div class="signage-realtime-stat">
+          <span class="signage-realtime-stat-number">${bookedSlots}</span>
+          <span>Geboekt</span>
+        </div>
+        <div class="signage-realtime-stat">
+          <span class="signage-realtime-stat-number">${availableSlots}</span>
+          <span>Beschikbaar</span>
+        </div>
+        <div class="signage-realtime-stat">
+          <span class="signage-realtime-stat-number">${occupancyRate}%</span>
+          <span>Bezetting</span>
+        </div>
+      </div>
+      <div class="signage-realtime-generated">
+        Laatste update: ${new Date().toLocaleTimeString()}
+      </div>
+    </div>
+  `;
+
+  // Combine all HTML and insert
+  const fullHtml = headerHtml + tablesHtml + footerHtml;
+  signageContent.innerHTML = fullHtml;
+  
+  console.log('Signage content gerenderd:', fullHtml.length, 'characters'); // Debug
+}
+
+// DEBUG FUNCTIE - tijdelijk toevoegen voor troubleshooting
+function debugSignageState() {
+  console.log('=== SIGNAGE DEBUG INFO ===');
+  console.log('isSignageOpen:', isSignageOpen);
+  console.log('signageAutoRefresh:', signageAutoRefresh);
+  console.log('localData.tables.length:', localData.tables?.length || 0);
+  console.log('localData.eventConfig.timeSlots.length:', localData.eventConfig?.timeSlots?.length || 0);
+  console.log('localData.bookings:', Object.keys(localData.bookings || {}).length, 'boekingen');
+  console.log('signageRefreshInterval:', signageRefreshInterval ? 'ACTIEF' : 'INACTIEF');
+  
+  const signageElement = document.getElementById('signageFullscreen');
+  console.log('signageFullscreen element:', signageElement ? 'GEVONDEN' : 'NIET GEVONDEN');
+  console.log('signageFullscreen.classList:', signageElement?.classList.toString() || 'N/A');
+  
+  const signageContent = document.getElementById('signageContent');
+  console.log('signageContent element:', signageContent ? 'GEVONDEN' : 'NIET GEVONDEN');
+  console.log('signageContent.innerHTML length:', signageContent?.innerHTML?.length || 0);
+  
+  console.log('URL parameters:', new URLSearchParams(window.location.search).toString());
+  console.log('========================');
+}
+
+// VERBETERDE updateSignageRefreshIndicator met extra checks
+function updateSignageRefreshIndicator(status) {
+  const dot = document.getElementById('signageRefreshDot');
+  const text = document.getElementById('signageRefreshText');
+  
+  if (!dot || !text) {
+    console.warn('Signage refresh indicator elementen niet gevonden');
+    return;
+  }
+  
+  if (status === 'updating') {
+    dot.className = 'signage-refresh-dot updating';
+    text.textContent = 'Updating...';
+  } else {
+    dot.className = 'signage-refresh-dot';
+    text.textContent = 'Live';
+  }
+  
+  console.log('Refresh indicator updated:', status); // Debug
 
 // Enhanced Firebase listeners for signage updates
 function setupSignageRealtimeListeners() {
