@@ -2,7 +2,7 @@
 <html lang="nl">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
     <title>Ostend Is Music 2025 Expertenhub</title>
     <style>
       * {
@@ -32,9 +32,11 @@
           sans-serif;
         background: var(--primary-blue);
         min-height: 100vh;
-        padding: 20px;
+        padding: 15px;
         color: var(--gray-800);
         line-height: 1.5;
+        -webkit-text-size-adjust: 100%;
+        -webkit-tap-highlight-color: transparent;
       }
 
       .container {
@@ -42,26 +44,28 @@
         margin: 0 auto;
         background: var(--light-blue);
         border-radius: 12px;
-        padding: 40px;
+        padding: 20px;
         box-shadow: 0 10px 25px rgba(30, 58, 138, 0.1);
       }
 
       h1 {
         text-align: center;
-        margin-bottom: 20px;
+        margin-bottom: 15px;
         color: var(--black);
-        font-size: 2rem;
+        font-size: clamp(1.4rem, 4vw, 2rem);
         font-weight: 700;
+        line-height: 1.2;
       }
 
       h2 {
         text-align: center;
-        margin-bottom: 20px;
+        margin-bottom: 15px;
         color: var(--black);
-        font-size: 1.5rem;
+        font-size: clamp(1.1rem, 3.5vw, 1.5rem);
         font-weight: 600;
         border-bottom: 2px solid var(--light-blue);
-        padding-bottom: 15px;
+        padding-bottom: 10px;
+        line-height: 1.2;
       }
 
       h3 {
@@ -81,7 +85,7 @@
 
       .form-grid {
         display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
         gap: 15px;
         margin-bottom: 20px;
       }
@@ -101,11 +105,12 @@
       input,
       select,
       button {
-        padding: 12px;
+        padding: 14px;
         border: 2px solid var(--gray-300);
         border-radius: 6px;
-        font-size: 0.9rem;
+        font-size: 1rem;
         transition: all 0.2s ease;
+        min-height: 44px;
       }
 
       input:focus,
@@ -211,8 +216,8 @@
 
       .client-booking-grid {
         display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-        gap: 20px;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 15px;
         margin-top: 20px;
       }
 
@@ -287,13 +292,14 @@
       }
 
       .slot-btn {
-        padding: 8px 16px;
+        padding: 10px 16px;
         border: none;
         border-radius: 6px;
         cursor: pointer;
         font-weight: 600;
-        font-size: 0.8rem;
+        font-size: 0.9rem;
         transition: all 0.2s ease;
+        min-height: 40px;
       }
 
       .slot-btn.available {
@@ -319,12 +325,14 @@
         left: 50%;
         transform: translate(-50%, -50%);
         background: var(--white);
-        padding: 30px;
+        padding: 20px;
         border-radius: 12px;
         box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3);
         z-index: 1000;
-        min-width: 400px;
-        max-width: 500px;
+        min-width: min(400px, 90vw);
+        max-width: min(500px, 95vw);
+        max-height: 90vh;
+        overflow-y: auto;
         border: 2px solid var(--light-blue);
       }
 
@@ -1219,6 +1227,169 @@
 
       .export-summary-item {
         padding: 8px 0;
+      }
+
+      /* Mobile Optimizations */
+      @media (max-width: 768px) {
+        body {
+          padding: 10px;
+        }
+
+        .container {
+          padding: 15px;
+          border-radius: 8px;
+        }
+
+        .form-grid {
+          grid-template-columns: 1fr;
+          gap: 10px;
+        }
+
+        .client-booking-grid {
+          grid-template-columns: 1fr;
+          gap: 12px;
+        }
+
+        .nav-tabs {
+          flex-direction: column;
+        }
+
+        .nav-tab {
+          padding: 12px 15px;
+          font-size: 0.9rem;
+        }
+
+        .admin-header {
+          flex-direction: column;
+          gap: 15px;
+          text-align: center;
+        }
+
+        .admin-user-info {
+          flex-direction: column;
+          gap: 10px;
+        }
+
+        .signage-buttons {
+          grid-template-columns: 1fr;
+          gap: 10px;
+        }
+
+        .tables-grid {
+          grid-template-columns: 1fr;
+        }
+
+        .table-title {
+          font-size: 1rem;
+        }
+
+        .speakers {
+          font-size: 0.8rem;
+        }
+
+        .time-slot-item {
+          flex-direction: column;
+          gap: 8px;
+          text-align: center;
+          padding: 12px;
+        }
+
+        .slot-btn {
+          width: 100%;
+          padding: 12px;
+          font-size: 0.9rem;
+        }
+
+        .bookings-table {
+          font-size: 0.8rem;
+        }
+
+        .bookings-table th,
+        .bookings-table td {
+          padding: 8px 4px;
+        }
+
+        .modal {
+          padding: 15px;
+          margin: 10px;
+          max-height: 85vh;
+        }
+
+        .booking-actions {
+          flex-direction: column;
+          gap: 10px;
+        }
+
+        .booking-actions button {
+          width: 100%;
+        }
+
+        .admin-access-btn {
+          width: 60px;
+          height: 60px;
+          font-size: 20px;
+          bottom: 15px;
+          right: 15px;
+        }
+
+        .connection-status {
+          top: 10px;
+          right: 10px;
+          font-size: 0.7rem;
+          padding: 6px 10px;
+        }
+      }
+
+      @media (max-width: 480px) {
+        .container {
+          padding: 12px;
+        }
+
+        h1 {
+          font-size: clamp(1.2rem, 5vw, 1.6rem);
+        }
+
+        h2 {
+          font-size: clamp(1rem, 4vw, 1.2rem);
+        }
+
+        .event-info {
+          font-size: 0.9rem;
+          padding: 12px;
+        }
+
+        .section {
+          padding: 15px;
+          margin-bottom: 20px;
+        }
+
+        .time-slot-item {
+          padding: 10px;
+        }
+
+        .time-info {
+          font-size: 0.8rem;
+        }
+
+        .modal {
+          padding: 12px;
+          margin: 5px;
+        }
+
+        input, select, button {
+          padding: 12px;
+          font-size: 0.9rem;
+        }
+
+        .live-signage-controls {
+          padding: 15px;
+        }
+
+        .admin-access-btn {
+          width: 50px;
+          height: 50px;
+          font-size: 16px;
+        }
       }
     </style>
   </head>
