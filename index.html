@@ -46,7 +46,7 @@
       .container {
         max-width: 1200px;
         margin: 0 auto;
-        background: var(--light-blue);
+        background: var(--primary-blue);
         border-radius: 12px;
         padding: 20px;
         box-shadow: 0 10px 25px rgba(30, 58, 138, 0.1);
@@ -54,17 +54,17 @@
 
       h1 {
         text-align: center;
-        margin-bottom: 15px;
-        color: var(--black);
-        font-size: clamp(1.4rem, 4vw, 2rem);
-        font-weight: 700;
-        line-height: 1.2;
+        margin-bottom: 25px;
+        color: #ffffff;
+        font-size: clamp(2.0rem, 5vw, 2rem);
+        font-weight: 900;
+        line-height: 1.0;
       }
 
       h2 {
         text-align: center;
         margin-bottom: 15px;
-        color: var(--black);
+        color: #ffffff;
         font-size: clamp(1.1rem, 3.5vw, 1.5rem);
         font-weight: 600;
         border-bottom: 2px solid var(--light-blue);
@@ -74,7 +74,7 @@
 
       h3 {
         margin-bottom: 15px;
-        color: var(--black);
+        color: #ffffff;
         font-size: 1.2rem;
         font-weight: 600;
       }
@@ -82,7 +82,7 @@
       .section {
         margin-bottom: 30px;
         padding: 25px;
-        background: var(--light-blue);
+        background: var(--primary-blue);
         border-radius: 8px;
         border: 1px solid var(--secondary-blue);
       }
@@ -102,7 +102,7 @@
       label {
         margin-bottom: 5px;
         font-weight: 600;
-        color: var(--black);
+        color: #ffffff;
         font-size: 0.9rem;
       }
 
@@ -405,7 +405,7 @@
       .nav-tabs {
         display: flex;
         margin-bottom: 25px;
-        border-bottom: 3px solid var(--light-blue);
+        border-bottom: 0px solid var(--primary-blue);
         background: var(--light-blue);
         border-radius: 8px 8px 0 0;
         overflow: hidden;
@@ -423,7 +423,7 @@
       }
 
       .nav-tab.active {
-        background: var(--primary-blue);
+        background: var(--gray-600);
         color: var(--white);
       }
 
@@ -1378,7 +1378,7 @@
         }
 
         h1 {
-          font-size: clamp(1.2rem, 5vw, 1.6rem);
+          font-size: clamp(1.8rem, 5vw, 1.6rem);
         }
 
         h2 {
@@ -1558,16 +1558,17 @@
         </div>
 
         <div class="nav-tabs">
-          <button class="nav-tab active" onclick="switchTab('setup')">
+          <button class="signage-btn" onclick="switchTab('setup')">
             Evenement Instellen
           </button>
-          <button class="nav-tab" onclick="switchTab('bookings')">
+          <button class="signage-btn" onclick="switchTab('bookings')">
             Boekingen Beheren
           </button>
-          <button class="nav-tab" onclick="switchTab('export')">
+          <button class="signage-btn" onclick="switchTab('export')">
             Exporteren & Rapporten
           </button>
         </div>
+        
 
         <div id="setup-tab" class="tab-content active">
           <div class="section">
