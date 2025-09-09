@@ -1759,6 +1759,31 @@
           <button onclick="addToCalendar()" class="btn-success">Toevoegen aan Kalender</button>
         </div>
       </div>
+
+      <!-- EDIT TABLE MODAL -->
+      <div class="modal" id="editTableModal">
+        <button class="close-btn" onclick="closeEditTableModal()">&times;</button>
+        <form onsubmit="updateTable(); return false;">
+          <h3 style="color: var(--primary-blue); margin-bottom: 20px;">Tafel Bewerken</h3>
+          <div class="form-group">
+            <label for="editTableName">Tafel Naam:</label>
+            <input type="text" id="editTableName" required />
+          </div>
+          <div class="form-group">
+            <label for="editSpeaker1">Spreker 1:</label>
+            <input type="text" id="editSpeaker1" required />
+          </div>
+          <div class="form-group">
+            <label for="editSpeaker2">Spreker 2:</label>
+            <input type="text" id="editSpeaker2" required />
+          </div>
+          <div style="text-align: center; margin-top: 20px;">
+            <button type="submit" style="margin-right: 10px;">Wijzigingen Opslaan</button>
+            <button type="button" onclick="closeEditTableModal()" class="btn-secondary">Annuleren</button>
+          </div>
+          <div id="editTableStatus" class="status-message" style="display: none"></div>
+        </form>
+      </div>
     </div>
 
     <!-- Hidden container for export -->
@@ -1844,6 +1869,7 @@
       const MAX_BOOKINGS_PER_EMAIL = 3;
       let currentBookingConfirmation = null;
       let currentBookingSelection = null;
+      let currentEditingTable = null;
       let isAdminMode = false;
 
       // Realtime Signage Management
@@ -2627,7 +2653,10 @@
           <div class="table-card">
             <h4>Tafel ${index + 1}: ${table.name}</h4>
             <p><strong>Sprekers:</strong> ${table.speaker1} & ${table.speaker2}</p>
-            <button onclick="removeTable('${table.id}')" class="btn-danger" style="margin-top: 15px;">Verwijderen</button>
+            <div style="display: flex; gap: 10px; margin-top: 15px;">
+              <button onclick="editTable('${table.id}')" class="btn-success" style="flex: 1;">Bewerken</button>
+              <button onclick="removeTable('${table.id}')" class="btn-danger" style="flex: 1;">Verwijderen</button>
+            </div>
           </div>
         `).join("");
       }
@@ -2662,6 +2691,125 @@
             }
             alert('Tafel verwijderen mislukt. Probeer opnieuw.');
           }
+        }
+      }
+
+      // Table editing functions
+      function editTable(tableId) {
+        const table = localData.tables.find(t => t.id === tableId);
+        if (!table) {
+          alert('Tafel niet gevonden');
+          return;
+        }
+
+        currentEditingTable = table;
+        
+        // Fill the form with current table data
+        document.getElementById('editTableName').value = table.name;
+        document.getElementById('editSpeaker1').value = table.speaker1;
+        document.getElementById('editSpeaker2').value = table.speaker2;
+        
+        // Show the modal
+        document.getElementById('overlay').style.display = 'block';
+        document.getElementById('editTableModal').style.display = 'block';
+        document.getElementById('editTableStatus').style.display = 'none';
+        
+        // Focus the first input
+        setTimeout(() => {
+          document.getElementById('editTableName').focus();
+        }, 100);
+      }
+
+      function closeEditTableModal() {
+        document.getElementById('overlay').style.display = 'none';
+        document.getElementById('editTableModal').style.display = 'none';
+        currentEditingTable = null;
+      }
+
+      async function updateTable() {
+        event?.preventDefault();
+        
+        if (!currentEditingTable) {
+          showEditTableStatus('Geen tafel geselecteerd voor bewerking', 'error');
+          return;
+        }
+
+        const name = document.getElementById('editTableName').value.trim();
+        const speaker1 = document.getElementById('editSpeaker1').value.trim();
+        const speaker2 = document.getElementById('editSpeaker2').value.trim();
+
+        if (!name || !speaker1 || !speaker2) {
+          showEditTableStatus('Vul alle velden in', 'error');
+          return;
+        }
+
+        try {
+          showEditTableStatus('Wijzigingen opslaan...', 'success');
+          
+          // Update the table object
+          const updatedTable = {
+            ...currentEditingTable,
+            name: name,
+            speaker1: speaker1,
+            speaker2: speaker2
+          };
+
+          // Update in Firestore if available
+          if (db) {
+            await updateTableInFirestore(currentEditingTable.id, updatedTable);
+          } else {
+            // Update in local data
+            const index = localData.tables.findIndex(t => t.id === currentEditingTable.id);
+            if (index !== -1) {
+              localData.tables[index] = updatedTable;
+              renderTables();
+              renderClientInterface();
+              saveDataToLocalStorage();
+            }
+          }
+
+          showEditTableStatus('Tafel succesvol bijgewerkt!', 'success');
+          
+          setTimeout(() => {
+            closeEditTableModal();
+          }, 1500);
+          
+        } catch (error) {
+          console.error('Tafel bijwerken mislukt:', error);
+          showEditTableStatus('Tafel bijwerken mislukt. Probeer opnieuw.', 'error');
+        }
+        
+        return false;
+      }
+
+      async function updateTableInFirestore(tableId, updatedTable) {
+        if (!db) {
+          throw new Error('Firestore niet beschikbaar');
+        }
+
+        try {
+          await db.collection('tables').doc(tableId).update({
+            name: updatedTable.name,
+            speaker1: updatedTable.speaker1,
+            speaker2: updatedTable.speaker2,
+            updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+          });
+        } catch (error) {
+          console.error('Fout bij bijwerken van tafel in Firestore:', error);
+          throw error;
+        }
+      }
+
+      function showEditTableStatus(message, type) {
+        const element = document.getElementById('editTableStatus');
+        element.textContent = message;
+        element.className = `status-message ${type}`;
+        element.style.display = 'block';
+
+        if (type !== 'success' || message.includes('succesvol')) {
+          setTimeout(() => {
+            element.style.display = 'none';
+          }, 5000);
         }
       }
 
@@ -3978,6 +4126,7 @@ END:VCALENDAR`;
             closeBookingForm();
             closeLoginModal();
             closeConfirmationModal();
+            closeEditTableModal();
           }
         });
 
