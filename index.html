@@ -1844,11 +1844,12 @@
         measurementId: "G-PH6EPPW3BY"
       };
 
-      // EmailJS Configuration - Needs to be configured in admin interface
+      // EmailJS Configuration - HARDCODED voor alle clients
+      // Vervang deze placeholder waarden met je werkelijke EmailJS configuratie
       let EMAILJS_CONFIG = {
-        serviceId: "",
-        templateId: "",
-        publicKey: "",
+        serviceId: "service_xxxxxxx",     // Vervang met jouw EmailJS Service ID
+        templateId: "template_xxxxxxx",   // Vervang met jouw EmailJS Template ID  
+        publicKey: "xxxxxxxxxxxxxxxxx",   // Vervang met jouw EmailJS Public Key
         fromName: "Event Team"
       };
 
@@ -4094,12 +4095,15 @@ END:VCALENDAR`;
         }, 5000);
       }
 
-      // Initialize EmailJS
-      (function() {
-        if (typeof emailjs !== 'undefined' && EMAILJS_CONFIG.publicKey) {
+      // Initialize EmailJS voor alle clients
+      function initializeEmailJS() {
+        if (typeof emailjs !== 'undefined' && EMAILJS_CONFIG.publicKey && EMAILJS_CONFIG.publicKey !== 'xxxxxxxxxxxxxxxxx') {
           emailjs.init(EMAILJS_CONFIG.publicKey);
+          console.log('EmailJS geïnitialiseerd voor alle clients');
+        } else {
+          console.warn('EmailJS configuratie niet ingesteld - vervang placeholder waarden in de code');
         }
-      })();
+      }
 
       // Initialize application
       window.addEventListener("load", async function () {
@@ -4112,6 +4116,9 @@ END:VCALENDAR`;
         loadEmailConfig();
 
         await initializeFirebase();
+        
+        // Initialize EmailJS voor alle clients
+        initializeEmailJS();
         
         document.getElementById('loadingOverlay').style.display = 'none';
 
