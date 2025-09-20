@@ -1510,18 +1510,51 @@
           </div>
         </div>
 
-        <!-- EMAIL STATUS SECTION -->
-        <div class="section" style="background: #f0fdf4; border: 2px solid var(--success);">
-          <h3 style="color: var(--success);">✅ E-mail Bevestigingen</h3>
+        <!-- EMAILJS CONFIGURATION SECTION -->
+        <div class="section" style="background: #f0f8ff; border: 2px solid var(--secondary-blue);">
+          <h3 style="color: var(--primary-blue);">📧 EmailJS Configuratie</h3>
           <p style="margin-bottom: 15px; font-size: 0.9rem; color: var(--black);">
-            E-mail bevestigingen zijn automatisch geactiveerd voor alle boekingen.
+            Configureer EmailJS om automatisch boekingsbevestigingen naar gebruikers te sturen.
           </p>
-          <div style="padding: 15px; background: rgba(16, 185, 129, 0.1); border-radius: 6px; border-left: 4px solid var(--success);">
-            <strong style="color: var(--success);">Configuratie Status:</strong><br>
-            <span style="color: var(--black);">📧 EmailJS Service: Actief</span><br>
-            <span style="color: var(--black);">📤 Template: Ostend Is Music Boekingsbevestiging</span><br>
-            <span style="color: var(--black);">👤 Afzender: Ostend Is Music</span>
+          
+          <details style="margin-bottom: 15px; padding: 10px; background: #f8f9fa; border-radius: 4px; border: 1px solid #e1e8ed;">
+            <summary style="cursor: pointer; font-weight: 500; color: var(--primary-blue);">Hoe EmailJS Configuratie te verkrijgen</summary>
+            <div style="margin-top: 10px; font-size: 0.85rem; line-height: 1.4; color: var(--black);">
+              <ol>
+                <li>Ga naar <a href="https://www.emailjs.com" target="_blank" style="color: var(--secondary-blue);">EmailJS.com</a> en maak een gratis account aan</li>
+                <li>Maak een e-mailservice aan (Gmail, Outlook, etc.)</li>
+                <li>Maak een e-mailtemplate aan met deze variabelen: {{user_name}}, {{user_email}}, {{artist_name}}, {{table_name}}, {{speakers}}, {{event_date}}, {{time_slot}}</li>
+                <li>Verkrijg uw Service ID vanaf de Email Services pagina</li>
+                <li>Verkrijg uw Template ID vanaf de Email Templates pagina</li>
+                <li>Verkrijg uw Public Key vanaf Account Settings → API Keys</li>
+              </ol>
+            </div>
+          </details>
+          
+          <div class="form-grid">
+            <div class="form-group">
+              <label for="emailServiceId">EmailJS Service ID:</label>
+              <input type="text" id="emailServiceId" placeholder="service_xxxxxxx" />
+            </div>
+            <div class="form-group">
+              <label for="emailTemplateId">EmailJS Template ID:</label>
+              <input type="text" id="emailTemplateId" placeholder="template_xxxxxxx" />
+            </div>
+            <div class="form-group">
+              <label for="emailPublicKey">EmailJS Public Key:</label>
+              <input type="text" id="emailPublicKey" placeholder="Uw public key" />
+            </div>
+            <div class="form-group">
+              <label for="emailFromName">Afzender Naam:</label>
+              <input type="text" id="emailFromName" placeholder="Event Team" value="Event Team" />
+            </div>
           </div>
+          <div style="display: flex; gap: 10px; margin-top: 15px;">
+            <button onclick="updateEmailConfig()" class="btn-success">E-mail Configuratie Opslaan</button>
+            <button onclick="testEmailConfig()" class="btn-secondary">Test E-mail Versturen</button>
+            <button onclick="clearEmailConfig()" class="btn-danger">Configuratie Wissen</button>
+          </div>
+          <div id="emailConfigStatus" class="status-message" style="display: none"></div>
         </div>
 
         <div class="nav-tabs">
@@ -1811,12 +1844,12 @@
         measurementId: "G-PH6EPPW3BY"
       };
 
-      // EmailJS Configuration - Direct ingesteld (geen admin configuratie nodig)
+      // EmailJS Configuration - Needs to be configured in admin interface
       let EMAILJS_CONFIG = {
-        serviceId: "service_0m2owju",     // Werkelijke EmailJS Service ID
-        templateId: "template_58z1525",   // Werkelijke EmailJS Template ID  
-        publicKey: "VehBeO9qQGs5Tbvvn",   // Werkelijke EmailJS Public Key
-        fromName: "Ostend Is Music"
+        serviceId: "",
+        templateId: "",
+        publicKey: "",
+        fromName: "Event Team"
       };
 
       // Global data storage
@@ -2356,14 +2389,135 @@
         document.getElementById('slotDuration').value = localData.eventConfig.slotDuration;
       }
 
-      // EmailJS initialisatie functie
-      function initializeEmailJS() {
-        if (typeof emailjs !== 'undefined') {
-          emailjs.init(EMAILJS_CONFIG.publicKey);
-          console.log('EmailJS geïnitialiseerd met service:', EMAILJS_CONFIG.serviceId);
-        } else {
-          console.warn('EmailJS bibliotheek niet geladen');
+      // EmailJS configuration management
+      function getStoredEmailConfig() {
+        const stored = localStorage.getItem('emailConfig');
+        return stored ? JSON.parse(stored) : null;
+      }
+
+      function storeEmailConfig(config) {
+        localStorage.setItem('emailConfig', JSON.stringify(config));
+      }
+
+      function updateEmailConfig() {
+        const config = {
+          serviceId: document.getElementById('emailServiceId').value.trim(),
+          templateId: document.getElementById('emailTemplateId').value.trim(),
+          publicKey: document.getElementById('emailPublicKey').value.trim(),
+          fromName: document.getElementById('emailFromName').value.trim() || 'Event Team'
+        };
+
+        // Validate required fields
+        if (!config.serviceId || !config.templateId || !config.publicKey) {
+          showEmailConfigStatus('Alle EmailJS velden zijn vereist', 'error');
+          return;
         }
+
+        // Update global config
+        EMAILJS_CONFIG = config;
+        storeEmailConfig(config);
+        
+        // Reinitialize EmailJS
+        if (typeof emailjs !== 'undefined') {
+          emailjs.init(config.publicKey);
+        }
+        
+        showEmailConfigStatus('E-mail configuratie succesvol opgeslagen en geactiveerd', 'success');
+      }
+
+      function clearEmailConfig() {
+        if (confirm('Weet u zeker dat u de e-mail configuratie wilt wissen?')) {
+          localStorage.removeItem('emailConfig');
+          EMAILJS_CONFIG = {
+            serviceId: "",
+            templateId: "",
+            publicKey: "",
+            fromName: "Event Team"
+          };
+          
+          // Clear form fields
+          document.getElementById('emailServiceId').value = '';
+          document.getElementById('emailTemplateId').value = '';
+          document.getElementById('emailPublicKey').value = '';
+          document.getElementById('emailFromName').value = 'Event Team';
+          
+          showEmailConfigStatus('E-mail configuratie gewist', 'warning');
+        }
+      }
+
+      async function testEmailConfig() {
+        if (!EMAILJS_CONFIG.serviceId || !EMAILJS_CONFIG.templateId || !EMAILJS_CONFIG.publicKey) {
+          showEmailConfigStatus('Configureer eerst EmailJS instellingen', 'error');
+          return;
+        }
+
+        if (typeof emailjs === 'undefined') {
+          showEmailConfigStatus('EmailJS bibliotheek niet geladen', 'error');
+          return;
+        }
+
+        const testEmail = currentUser ? currentUser.email : 'test@example.com';
+        
+        const testParams = {
+          user_name: 'Test Gebruiker',
+          user_email: testEmail,
+          artist_name: 'Test Artiest',
+          table_name: 'Test Tafel',
+          speakers: 'Spreker 1 & Spreker 2',
+          event_date: 'Test Datum',
+          time_slot: '10:00 - 10:10',
+          to_email: testEmail,
+          from_name: EMAILJS_CONFIG.fromName
+        };
+
+        try {
+          showEmailConfigStatus('Test e-mail verzenden...', 'success');
+          
+          await emailjs.send(
+            EMAILJS_CONFIG.serviceId,
+            EMAILJS_CONFIG.templateId,
+            testParams,
+            EMAILJS_CONFIG.publicKey
+          );
+          
+          showEmailConfigStatus(`✅ Test e-mail succesvol verzonden naar ${testEmail}`, 'success');
+        } catch (error) {
+          console.error('Test e-mail mislukt:', error);
+          showEmailConfigStatus('❌ Test e-mail mislukt: ' + (error.text || error.message), 'error');
+        }
+      }
+
+      function loadEmailConfig() {
+        const stored = getStoredEmailConfig();
+        if (stored) {
+          EMAILJS_CONFIG = { ...EMAILJS_CONFIG, ...stored };
+          
+          // Load into form fields
+          document.getElementById('emailServiceId').value = stored.serviceId || '';
+          document.getElementById('emailTemplateId').value = stored.templateId || '';
+          document.getElementById('emailPublicKey').value = stored.publicKey || '';
+          document.getElementById('emailFromName').value = stored.fromName || 'Event Team';
+          
+          // Initialize EmailJS with stored config
+          if (typeof emailjs !== 'undefined' && stored.publicKey) {
+            emailjs.init(stored.publicKey);
+          }
+          
+          console.log('EmailJS configuratie geladen:', stored);
+        } else {
+          console.log('Geen opgeslagen EmailJS configuratie gevonden');
+        }
+      }
+
+      function showEmailConfigStatus(message, type) {
+        const element = document.getElementById('emailConfigStatus');
+        element.textContent = message;
+        element.className = `status-message ${type}`;
+        element.style.display = 'block';
+
+        setTimeout(() => {
+          element.style.display = 'none';
+        }, 5000);
       }
 
       function switchToAdmin() {
@@ -2372,6 +2526,9 @@
         isAdminMode = true;
         renderBookingsOverview();
         updateSignageStatus();
+        
+        // Load Email configuration
+        loadEmailConfig();
       }
 
       function switchToClient() {
@@ -3937,15 +4094,12 @@ END:VCALENDAR`;
         }, 5000);
       }
 
-      // Initialize EmailJS voor alle clients
-      function initializeEmailJS() {
-        if (typeof emailjs !== 'undefined' && EMAILJS_CONFIG.publicKey && EMAILJS_CONFIG.publicKey !== 'xxxxxxxxxxxxxxxxx') {
+      // Initialize EmailJS
+      (function() {
+        if (typeof emailjs !== 'undefined' && EMAILJS_CONFIG.publicKey) {
           emailjs.init(EMAILJS_CONFIG.publicKey);
-          console.log('EmailJS geïnitialiseerd voor alle clients');
-        } else {
-          console.warn('EmailJS configuratie niet ingesteld - vervang placeholder waarden in de code');
         }
-      }
+      })();
 
       // Initialize application
       window.addEventListener("load", async function () {
@@ -3954,10 +4108,10 @@ END:VCALENDAR`;
         // Check for persistent admin login
         checkAdminLoginState();
 
+        // Load Email configuration early
+        loadEmailConfig();
+
         await initializeFirebase();
-        
-        // Initialize EmailJS 
-        initializeEmailJS();
         
         document.getElementById('loadingOverlay').style.display = 'none';
 
