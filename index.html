@@ -2356,16 +2356,6 @@
         document.getElementById('slotDuration').value = localData.eventConfig.slotDuration;
       }
 
-      // EmailJS initialisatie functie
-      function initializeEmailJS() {
-        if (typeof emailjs !== 'undefined') {
-          emailjs.init(EMAILJS_CONFIG.publicKey);
-          console.log('EmailJS geïnitialiseerd met service:', EMAILJS_CONFIG.serviceId);
-        } else {
-          console.warn('EmailJS bibliotheek niet geladen');
-        }
-      }
-
       function switchToAdmin() {
         document.getElementById("client-interface").style.display = "none";
         document.getElementById("admin-interface").style.display = "block";
