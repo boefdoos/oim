@@ -1547,11 +1547,11 @@
               </div>
               <div class="form-group">
                 <label for="startTime">Starttijd:</label>
-                <input type="time" id="startTime" value="09:00" />
+                <input type="time" id="startTime" value="16:30" />
               </div>
               <div class="form-group">
                 <label for="endTime">Eindtijd:</label>
-                <input type="time" id="endTime" value="17:00" />
+                <input type="time" id="endTime" value="18:00" />
               </div>
               <div class="form-group">
                 <label for="slotDuration">Tijdslot Duur (minuten):</label>
@@ -1564,7 +1564,10 @@
                 />
               </div>
             </div>
-            <button onclick="generateTimeSlots()">Tijdslots Genereren</button>
+            <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+              <button onclick="generateTimeSlots()" style="flex: 1; min-width: 200px;">Tijdslots Genereren</button>
+              <button onclick="resetEventConfigToDefaults()" class="btn-warning" style="flex: 1; min-width: 200px;">🔄 Reset naar Standaard Tijden (16:30-18:00)</button>
+            </div>
             <div
               id="eventStatus"
               class="status-message"
@@ -1823,8 +1826,8 @@
       let localData = {
         eventConfig: {
           date: "",
-          startTime: "09:00",
-          endTime: "17:00",
+          startTime: "16:30",
+          endTime: "18:00",
           slotDuration: 10,
           timeSlots: [],
         },
@@ -2380,6 +2383,59 @@
 
         if (tabName === "bookings") {
           renderBookingsOverview();
+        }
+      }
+
+      async function resetEventConfigToDefaults() {
+        if (!confirm('Weet u zeker dat u de tijdslots wilt resetten naar de standaard tijden (16:30-18:00)?\n\nDit verwijdert ALLE bestaande tijdslots en boekingen!')) {
+          return;
+        }
+
+        try {
+          showStatus("eventStatus", "Resetten naar standaard tijden...", "success");
+
+          // Reset naar defaults
+          const today = new Date().toISOString().split('T')[0];
+          localData.eventConfig = {
+            date: today,
+            startTime: "16:30",
+            endTime: "18:00",
+            slotDuration: 10,
+            timeSlots: []
+          };
+
+          // Update UI fields
+          document.getElementById('eventDate').value = today;
+          document.getElementById('startTime').value = "16:30";
+          document.getElementById('endTime').value = "18:00";
+          document.getElementById('slotDuration').value = 10;
+
+          // Save to Firestore
+          await saveEventConfigToFirestore();
+
+          // Verwijder alle bestaande boekingen
+          if (db) {
+            const bookingsSnapshot = await db.collection('bookings').get();
+            const batch = db.batch();
+            bookingsSnapshot.forEach((doc) => {
+              batch.delete(doc.ref);
+            });
+            await batch.commit();
+          }
+          localData.bookings = {};
+
+          // Genereer nieuwe tijdslots
+          await generateTimeSlots();
+
+          showStatus("eventStatus", "✅ Tijdslots succesvol gereset naar 16:30-18:00. Alle oude boekingen zijn verwijderd.", "success");
+          
+          // Refresh de interface
+          renderClientInterface();
+          renderBookingsOverview();
+          
+        } catch (error) {
+          console.error('Reset mislukt:', error);
+          showStatus("eventStatus", "❌ Reset mislukt: " + error.message, "error");
         }
       }
 
