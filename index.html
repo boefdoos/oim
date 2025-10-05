@@ -1547,11 +1547,11 @@
               </div>
               <div class="form-group">
                 <label for="startTime">Starttijd:</label>
-              <input type="time" id="startTime" value="16:30" />
+                <input type="time" id="startTime" value="09:00" />
               </div>
               <div class="form-group">
                 <label for="endTime">Eindtijd:</label>
-                <input type="time" id="endTime" value="18:00" />
+                <input type="time" id="endTime" value="17:00" />
               </div>
               <div class="form-group">
                 <label for="slotDuration">Tijdslot Duur (minuten):</label>
@@ -2348,26 +2348,13 @@
       }
 
       function updateEventUI() {
-  if (localData.eventConfig.date) {
-    document.getElementById('eventDate').value = localData.eventConfig.date;
-  }
-  
-  // ✅ VOEG DEZE CHECK TOE:
-  if (localData.eventConfig.startTime && localData.eventConfig.startTime !== "09:00") {
-    document.getElementById('startTime').value = localData.eventConfig.startTime;
-  } else if (!localData.eventConfig.startTime) {
-    // Gebruik saved waarden of fallback
-    document.getElementById('startTime').value = "16:30";
-  }
-  
-  if (localData.eventConfig.endTime && localData.eventConfig.endTime !== "17:00") {
-    document.getElementById('endTime').value = localData.eventConfig.endTime;
-  } else if (!localData.eventConfig.endTime) {
-    document.getElementById('endTime').value = "18:00";
-  }
-  
-  document.getElementById('slotDuration').value = localData.eventConfig.slotDuration;
-}
+        if (localData.eventConfig.date) {
+          document.getElementById('eventDate').value = localData.eventConfig.date;
+        }
+        document.getElementById('startTime').value = localData.eventConfig.startTime;
+        document.getElementById('endTime').value = localData.eventConfig.endTime;
+        document.getElementById('slotDuration').value = localData.eventConfig.slotDuration;
+      }
 
       function switchToAdmin() {
         document.getElementById("client-interface").style.display = "none";
@@ -3964,6 +3951,8 @@ END:VCALENDAR`;
         
         document.getElementById('loadingOverlay').style.display = 'none';
 
+        if (localData.eventConfig.timeSlots.length === 0) {
+          await generateTimeSlots();
         }
 
         checkSignageMode();
