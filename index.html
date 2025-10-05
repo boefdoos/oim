@@ -2348,13 +2348,26 @@
       }
 
       function updateEventUI() {
-        if (localData.eventConfig.date) {
-          document.getElementById('eventDate').value = localData.eventConfig.date;
-        }
-        document.getElementById('startTime').value = localData.eventConfig.startTime;
-        document.getElementById('endTime').value = localData.eventConfig.endTime;
-        document.getElementById('slotDuration').value = localData.eventConfig.slotDuration;
-      }
+  if (localData.eventConfig.date) {
+    document.getElementById('eventDate').value = localData.eventConfig.date;
+  }
+  
+  // ✅ VOEG DEZE CHECK TOE:
+  if (localData.eventConfig.startTime && localData.eventConfig.startTime !== "09:00") {
+    document.getElementById('startTime').value = localData.eventConfig.startTime;
+  } else if (!localData.eventConfig.startTime) {
+    // Gebruik saved waarden of fallback
+    document.getElementById('startTime').value = "16:30";
+  }
+  
+  if (localData.eventConfig.endTime && localData.eventConfig.endTime !== "17:00") {
+    document.getElementById('endTime').value = localData.eventConfig.endTime;
+  } else if (!localData.eventConfig.endTime) {
+    document.getElementById('endTime').value = "18:00";
+  }
+  
+  document.getElementById('slotDuration').value = localData.eventConfig.slotDuration;
+}
 
       function switchToAdmin() {
         document.getElementById("client-interface").style.display = "none";
