@@ -3951,8 +3951,6 @@ END:VCALENDAR`;
         
         document.getElementById('loadingOverlay').style.display = 'none';
 
-        if (localData.eventConfig.timeSlots.length === 0) {
-          await generateTimeSlots();
         }
 
         checkSignageMode();
