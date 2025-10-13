@@ -871,7 +871,7 @@
 
       .signage-slot {
         display: flex !important;
-        justify-content: space-between !important;
+        justify-content: flex-start !important;
         align-items: center !important;
         padding: 6px 10px !important;
         border-radius: 4px !important;
@@ -879,6 +879,7 @@
         min-height: 30px !important;
         box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1) !important;
         margin-bottom: 2px !important;
+        gap: 8px !important;
       }
 
       .signage-slot.available {
@@ -893,7 +894,9 @@
 
       .signage-time {
         font-weight: 700 !important;
-        min-width: 80px !important;
+        width: 105px !important;
+        min-width: 105px !important;
+        max-width: 105px !important;
         font-size: clamp(10px, 1vw, 12px) !important;
         color: var(--primary-blue) !important;
         background: rgba(255, 255, 255, 0.9) !important;
@@ -901,6 +904,7 @@
         border-radius: 3px !important;
         text-align: center !important;
         border: 1px solid var(--light-blue) !important;
+        flex-shrink: 0 !important;
       }
 
       .signage-booking-info {
@@ -908,7 +912,6 @@
         text-align: center !important;
         font-weight: 600 !important;
         font-size: clamp(9px, 0.9vw, 11px) !important;
-        margin-left: 8px !important;
         padding: 4px 8px !important;
         border-radius: 3px !important;
         line-height: 1.2 !important;
@@ -983,7 +986,9 @@
         }
         
         .signage-time {
-          min-width: 70px !important;
+          width: 95px !important;
+          min-width: 95px !important;
+          max-width: 95px !important;
           font-size: clamp(8px, 0.9vw, 10px) !important;
           padding: 3px 5px !important;
         }
@@ -1046,14 +1051,15 @@
         }
         
         .signage-time {
-          min-width: 60px !important;
+          width: 85px !important;
+          min-width: 85px !important;
+          max-width: 85px !important;
           font-size: clamp(7px, 0.8vw, 9px) !important;
           padding: 2px 4px !important;
         }
         
         .signage-booking-info {
           font-size: clamp(7px, 0.7vw, 9px) !important;
-          margin-left: 6px !important;
           padding: 2px 6px !important;
         }
         
@@ -1104,11 +1110,12 @@
         }
         
         .signage-time {
-          min-width: 50px !important;
+          width: 55px !important;
+          min-width: 55px !important;
+          max-width: 55px !important;
         }
         
         .signage-booking-info {
-          margin-left: 4px !important;
           padding: 2px 4px !important;
         }
         
@@ -2455,25 +2462,46 @@
           return;
         }
 
+        // Validate duration
+        if (!duration || duration < 5 || duration > 60) {
+          showStatus("eventStatus", "Tijdslot duur moet tussen 5 en 60 minuten zijn", "error");
+          return;
+        }
+
         localData.eventConfig.date = date;
         localData.eventConfig.startTime = startTime;
         localData.eventConfig.endTime = endTime;
         localData.eventConfig.slotDuration = duration;
 
         const slots = [];
-        const start = new Date(`${date}T${startTime}`);
-        const end = new Date(`${date}T${endTime}`);
+        
+        // Parse tijd strings correct
+        const [startHour, startMinute] = startTime.split(':').map(Number);
+        const [endHour, endMinute] = endTime.split(':').map(Number);
+        
+        // Create dates with correct timezone handling
+        const start = new Date(date);
+        start.setHours(startHour, startMinute, 0, 0);
+        
+        const end = new Date(date);
+        end.setHours(endHour, endMinute, 0, 0);
 
         let current = new Date(start);
         let slotIndex = 0;
 
+        // Generate slots ensuring we stay within boundaries
         while (current < end) {
           const slotEnd = new Date(current.getTime() + duration * 60000);
+          
+          // Only add slot if end time doesn't exceed event end time
           if (slotEnd <= end) {
+            const slotStartTime = `${String(current.getHours()).padStart(2, '0')}:${String(current.getMinutes()).padStart(2, '0')}`;
+            const slotEndTime = `${String(slotEnd.getHours()).padStart(2, '0')}:${String(slotEnd.getMinutes()).padStart(2, '0')}`;
+            
             slots.push({
               index: slotIndex++,
-              start: current.toTimeString().slice(0, 5),
-              end: slotEnd.toTimeString().slice(0, 5),
+              start: slotStartTime,
+              end: slotEndTime,
               startTime: current.toISOString(),
               endTime: slotEnd.toISOString(),
             });
@@ -2481,10 +2509,18 @@
           current = new Date(slotEnd);
         }
 
+        if (slots.length === 0) {
+          showStatus("eventStatus", "Geen geldige tijdslots kunnen worden gegenereerd. Controleer start- en eindtijd.", "error");
+          return;
+        }
+
         localData.eventConfig.timeSlots = slots;
         await saveEventConfigToFirestore();
         
-        showStatus("eventStatus", `${slots.length} tijdslots gegenereerd van ${startTime} tot ${endTime}`, "success");
+        showStatus("eventStatus", `✅ ${slots.length} tijdslots succesvol gegenereerd van ${startTime} tot ${endTime}`, "success");
+        
+        // Update UI
+        renderClientInterface();
       }
 
       async function addTable() {
@@ -3441,7 +3477,7 @@ END:VCALENDAR`;
               return `
                 <div class="signage-table">
                   <div class="signage-table-header">
-                    <div class="signage-table-name">Tafel ${index + 1}: ${table.name}</div>
+                    <div class="signage-table-name">${table.name}</div>
                     <div class="signage-table-speakers">met ${table.speaker1} & ${table.speaker2}</div>
                   </div>
                   <div class="signage-slots">
@@ -3717,7 +3753,7 @@ END:VCALENDAR`;
               return `
                 <div class="export-table">
                   <div class="export-table-header">
-                    <div class="export-table-name">Tafel ${originalIndex + 1}: ${table.name}</div>
+                    <div class="export-table-name">${table.name}</div>
                     <div class="export-table-speakers">met ${table.speaker1} & ${table.speaker2}</div>
                   </div>
                   <div class="export-slots">
@@ -3870,7 +3906,7 @@ END:VCALENDAR`;
               ${localData.tables.map((table, index) => `
                 <div style="background: rgba(255, 255, 255, 0.95); border-radius: 16px; overflow: hidden; box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2); color: #333;">
                   <div style="background: linear-gradient(135deg, var(--primary-blue) 0%, var(--secondary-blue) 100%); padding: 20px; color: white; text-align: center;">
-                    <div style="font-size: 28px; font-weight: bold; margin-bottom: 8px;">Tafel ${index + 1}: ${table.name}</div>
+                    <div style="font-size: 28px; font-weight: bold; margin-bottom: 8px;">${table.name}</div>
                     <div style="font-size: 20px; opacity: 0.9;">met ${table.speaker1} & ${table.speaker2}</div>
                   </div>
                   <div style="padding: 15px; max-height: 600px; overflow-y: auto;">
