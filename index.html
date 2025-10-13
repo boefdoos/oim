@@ -3457,17 +3457,20 @@ END:VCALENDAR`;
                 const bookingKey = `${table.id}-${slot.index}`;
                 const booking = localData.bookings[bookingKey];
                 
+                // Format tijd consistent: altijd start-end formaat
+                const timeDisplay = `${slot.start}-${slot.end}`;
+                
                 if (booking) {
                   return `
                     <div class="signage-slot booked">
-                      <div class="signage-time">${slot.start}-${slot.end}</div>
+                      <div class="signage-time">${timeDisplay}</div>
                       <div class="signage-booking-info booked">${booking.name} (${booking.artistName})</div>
                     </div>
                   `;
                 } else {
                   return `
                     <div class="signage-slot available">
-                      <div class="signage-time">${slot.start}-${slot.end}</div>
+                      <div class="signage-time">${timeDisplay}</div>
                       <div class="signage-booking-info available">Beschikbaar</div>
                     </div>
                   `;
